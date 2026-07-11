@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Select External</h:title>
+        <model>
+            <instance>
+                <data id="parity_select_external" orx:version="1">
+                    <intro/>
+                    <place/>
+                    <fruits/>
+                    <geom_selected/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <instance id="places" src="jr://file/parity_places.geojson"/>
+            <instance id="fruits" src="jr://file/parity_fruits.xml"/>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/place" type="string"/>
+            <bind nodeset="/data/fruits" type="string"/>
+            <!-- geometry of the selected geojson feature, in ODK format -->
+            <bind nodeset="/data/geom_selected" type="string"
+                  calculate="instance('places')/root/item[id=/data/place]/geometry"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <!-- select_one_from_file parity_places.geojson (value=id, label=title) -->
+        <select1 ref="/data/place">
+            <label>Pick a place</label>
+            <itemset nodeset="instance('places')/root/item">
+                <value ref="id"/>
+                <label ref="title"/>
+            </itemset>
+        </select1>
+        <!-- select_multiple_from_file parity_fruits.xml (value=name, label=label) -->
+        <select ref="/data/fruits">
+            <label>Pick fruits</label>
+            <itemset nodeset="instance('fruits')/root/item">
+                <value ref="name"/>
+                <label ref="label"/>
+            </itemset>
+        </select>
+    </h:body>
+</h:html>

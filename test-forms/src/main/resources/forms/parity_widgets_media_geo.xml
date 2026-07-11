@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Media Geo</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_media_geo" orx:version="1">
+                    <image_field/>
+                    <audio_field/>
+                    <file_field/>
+                    <geo_field>38.25 -77.0 0 0</geo_field>
+                    <geo_copy/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/image_field" type="binary"/>
+            <bind nodeset="/data/audio_field" type="binary"/>
+            <bind nodeset="/data/file_field" type="binary"/>
+            <!-- Geo is SEEDED via a default so the stored value round-trips deterministically. -->
+            <bind nodeset="/data/geo_field" type="geopoint"/>
+            <bind nodeset="/data/geo_copy" type="string" calculate="/data/geo_field"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <upload mediatype="image/*" ref="/data/image_field">
+            <label>Image upload</label>
+        </upload>
+        <upload mediatype="audio/*" ref="/data/audio_field">
+            <label>Audio upload</label>
+        </upload>
+        <upload mediatype="application/*" ref="/data/file_field">
+            <label>File upload</label>
+        </upload>
+        <input ref="/data/geo_field">
+            <label>Geopoint</label>
+        </input>
+    </h:body>
+</h:html>

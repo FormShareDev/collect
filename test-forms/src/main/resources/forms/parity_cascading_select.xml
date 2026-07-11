@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Cascading Select</h:title>
+        <model>
+            <instance>
+                <data id="parity_cascading_select" orx:version="1">
+                    <country/>
+                    <region/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <instance id="regions">
+                <root>
+                    <item>
+                        <itextId>region-accra</itextId>
+                        <country>ghana</country>
+                        <name>Greater Accra</name>
+                        <value>accra</value>
+                    </item>
+                    <item>
+                        <itextId>region-ashanti</itextId>
+                        <country>ghana</country>
+                        <name>Ashanti</name>
+                        <value>ashanti</value>
+                    </item>
+                    <item>
+                        <itextId>region-nairobi</itextId>
+                        <country>kenya</country>
+                        <name>Nairobi</name>
+                        <value>nairobi</value>
+                    </item>
+                    <item>
+                        <itextId>region-mombasa</itextId>
+                        <country>kenya</country>
+                        <name>Mombasa</name>
+                        <value>mombasa</value>
+                    </item>
+                </root>
+            </instance>
+            <bind nodeset="/data/country" type="string"/>
+            <bind nodeset="/data/region" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <select1 ref="/data/country">
+            <label>Country</label>
+            <item><label>Ghana</label><value>ghana</value></item>
+            <item><label>Kenya</label><value>kenya</value></item>
+        </select1>
+        <select1 ref="/data/region">
+            <label>Region</label>
+            <itemset nodeset="instance('regions')/root/item[country=/data/country]">
+                <value ref="value"/>
+                <label ref="name"/>
+            </itemset>
+        </select1>
+    </h:body>
+</h:html>

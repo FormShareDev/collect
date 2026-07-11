@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Group Relevance</h:title>
+        <model>
+            <instance>
+                <data id="parity_group_relevance" orx:version="1">
+                    <show/>
+                    <optional_section>
+                        <opt_a/>
+                        <opt_b/>
+                    </optional_section>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/show" type="string"/>
+            <bind nodeset="/data/optional_section" relevant="/data/show = 'yes'"/>
+            <bind nodeset="/data/optional_section/opt_a" type="string"/>
+            <bind nodeset="/data/optional_section/opt_b" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <select1 ref="/data/show">
+            <label>Show optional section?</label>
+            <item><label>Yes</label><value>yes</value></item>
+            <item><label>No</label><value>no</value></item>
+        </select1>
+        <group ref="/data/optional_section">
+            <label>Optional section</label>
+            <input ref="/data/optional_section/opt_a">
+                <label>Optional A</label>
+            </input>
+            <input ref="/data/optional_section/opt_b">
+                <label>Optional B</label>
+            </input>
+        </group>
+    </h:body>
+</h:html>

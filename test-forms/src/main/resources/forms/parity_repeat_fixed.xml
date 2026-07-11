@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Repeat Fixed</h:title>
+        <model>
+            <instance>
+                <data id="parity_repeat_fixed" orx:version="1">
+                    <intro/>
+                    <visit_count/>
+                    <visit jr:template="">
+                        <note/>
+                    </visit>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/visit_count" type="string" calculate="3" readonly="true()"/>
+            <bind nodeset="/data/visit/note" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <group ref="/data/visit">
+            <label>Visit</label>
+            <repeat nodeset="/data/visit" jr:count=" /data/visit_count ">
+                <input ref="/data/visit/note">
+                    <label>Visit note</label>
+                </input>
+            </repeat>
+        </group>
+    </h:body>
+</h:html>

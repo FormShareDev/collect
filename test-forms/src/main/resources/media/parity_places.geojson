@@ -1,0 +1,14 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "id": "fs87b",
+      "geometry": { "type": "Point", "coordinates": [7.0801379, 46.5841618] },
+      "properties": { "title": "Giger Museum" } },
+    { "type": "Feature", "id": "lon1",
+      "geometry": { "type": "Point", "coordinates": [-0.1, 51.5] },
+      "properties": { "title": "London Point" } },
+    { "type": "Feature", "id": "nyc1",
+      "geometry": { "type": "Point", "coordinates": [-74.0, 40.7] },
+      "properties": { "title": "New York Point" } }
+  ]
+}

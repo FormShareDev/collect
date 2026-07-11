@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Datetime</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_datetime" orx:version="1">
+                    <date_default>2026-01-15</date_default>
+                    <time_default>14:30:00.000-05:00</time_default>
+                    <datetime_default>2026-01-15T14:30:00.000-05:00</datetime_default>
+                    <date_ethiopian>2026-01-15</date_ethiopian>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/date_default" type="date"/>
+            <bind nodeset="/data/time_default" type="time"/>
+            <bind nodeset="/data/datetime_default" type="dateTime"/>
+            <bind nodeset="/data/date_ethiopian" type="date"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/date_default">
+            <label>Date default</label>
+        </input>
+        <input ref="/data/time_default">
+            <label>Time default</label>
+        </input>
+        <input ref="/data/datetime_default">
+            <label>Datetime default</label>
+        </input>
+        <input ref="/data/date_ethiopian" appearance="ethiopian">
+            <label>Date ethiopian</label>
+        </input>
+    </h:body>
+</h:html>

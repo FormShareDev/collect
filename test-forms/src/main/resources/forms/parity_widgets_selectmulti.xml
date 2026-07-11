@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Select Multi</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_selectmulti" orx:version="1">
+                    <multi_default/>
+                    <multi_columns/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/multi_default" type="string"/>
+            <bind nodeset="/data/multi_columns" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <!-- select-multiple: stored value is space-separated in DOCUMENT order regardless of tap order. -->
+        <select ref="/data/multi_default">
+            <label>Multi default</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select>
+        <select appearance="columns" ref="/data/multi_columns">
+            <label>Multi columns</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select>
+    </h:body>
+</h:html>

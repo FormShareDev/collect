@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Relevance Basic</h:title>
+        <model>
+            <instance>
+                <data id="parity_relevance_basic" orx:version="1">
+                    <q_start/>
+                    <has_details/>
+                    <detail_text/>
+                    <level2/>
+                    <level2_text/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/q_start" type="string"/>
+            <bind nodeset="/data/has_details" type="string"/>
+            <bind nodeset="/data/detail_text" type="string" relevant="/data/has_details = 'yes'"/>
+            <bind nodeset="/data/level2" type="string" relevant="/data/has_details = 'yes'"/>
+            <bind nodeset="/data/level2_text" type="string" relevant="/data/level2 = 'yes'"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/q_start">
+            <label>Start question</label>
+        </input>
+        <select1 ref="/data/has_details">
+            <label>Do you want to add details?</label>
+            <item><label>Yes</label><value>yes</value></item>
+            <item><label>No</label><value>no</value></item>
+        </select1>
+        <input ref="/data/detail_text">
+            <label>Detail text</label>
+        </input>
+        <select1 ref="/data/level2">
+            <label>Add second level?</label>
+            <item><label>Yes</label><value>yes</value></item>
+            <item><label>No</label><value>no</value></item>
+        </select1>
+        <input ref="/data/level2_text">
+            <label>Second level text</label>
+        </input>
+    </h:body>
+</h:html>

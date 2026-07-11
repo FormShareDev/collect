@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Constraint Regex</h:title>
+        <model>
+            <instance>
+                <data id="parity_constraint_regex" orx:version="1">
+                    <code/>
+                    <confirm/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/code" type="string"
+                  constraint="regex(., '^[A-Z]{2}[0-9]{3}$')"
+                  jr:constraintMsg="Code must be 2 letters then 3 digits"/>
+            <bind nodeset="/data/confirm" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/code">
+            <label>Code (2 letters + 3 digits)</label>
+        </input>
+        <input ref="/data/confirm">
+            <label>Confirm</label>
+        </input>
+    </h:body>
+</h:html>

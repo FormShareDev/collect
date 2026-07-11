@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Field List</h:title>
+        <model>
+            <instance>
+                <data id="parity_fieldlist" orx:version="1">
+                    <intro/>
+                    <f1/>
+                    <f2/>
+                    <f3/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/f1" type="string"/>
+            <bind nodeset="/data/f2" type="int"/>
+            <bind nodeset="/data/f3" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <group appearance="field-list">
+            <label>Page one</label>
+            <input ref="/data/f1">
+                <label>Text field</label>
+            </input>
+            <input ref="/data/f2">
+                <label>Integer field</label>
+            </input>
+            <select1 ref="/data/f3">
+                <label>Pick one</label>
+                <item><label>Red</label><value>red</value></item>
+                <item><label>Green</label><value>green</value></item>
+                <item><label>Blue</label><value>blue</value></item>
+            </select1>
+        </group>
+    </h:body>
+</h:html>

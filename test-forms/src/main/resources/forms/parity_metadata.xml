@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Metadata</h:title>
+        <model>
+            <instance>
+                <data id="parity_metadata" orx:version="1">
+                    <note_text/>
+                    <meta>
+                        <start/>
+                        <end/>
+                        <today/>
+                        <deviceid/>
+                        <username/>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/note_text" type="string"/>
+            <bind nodeset="/data/meta/start" type="dateTime" jr:preload="timestamp" jr:preloadParams="start"/>
+            <bind nodeset="/data/meta/end" type="dateTime" jr:preload="timestamp" jr:preloadParams="end"/>
+            <bind nodeset="/data/meta/today" type="date" jr:preload="date" jr:preloadParams="today"/>
+            <bind nodeset="/data/meta/deviceid" type="string" jr:preload="property" jr:preloadParams="deviceid"/>
+            <bind nodeset="/data/meta/username" type="string" jr:preload="property" jr:preloadParams="username"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/note_text">
+            <label>Enter some text</label>
+        </input>
+    </h:body>
+</h:html>

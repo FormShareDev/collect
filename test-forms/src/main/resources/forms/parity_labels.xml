@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Labels</h:title>
+        <model>
+            <instance>
+                <data id="parity_labels" orx:version="1">
+                    <intro/>
+                    <num/>
+                    <fld_var/>
+                    <fld_fn/>
+                    <fld_bold/>
+                    <fld_italic/>
+                    <fld_link/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/num" type="int"/>
+            <bind nodeset="/data/fld_var" type="string"/>
+            <bind nodeset="/data/fld_fn" type="string"/>
+            <bind nodeset="/data/fld_bold" type="string"/>
+            <bind nodeset="/data/fld_italic" type="string"/>
+            <bind nodeset="/data/fld_link" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Start</label>
+        </input>
+        <group appearance="field-list">
+            <label>Labels</label>
+            <input ref="/data/num">
+                <label>Number</label>
+            </input>
+            <!-- output of a VARIABLE -->
+            <input ref="/data/fld_var">
+                <label>Value is <output value="/data/num"/></label>
+            </input>
+            <!-- output of a FUNCTION / expression -->
+            <input ref="/data/fld_fn">
+                <label>Doubled is <output value="/data/num * 2"/></label>
+            </input>
+            <!-- Markdown: bold / italic / link -->
+            <input ref="/data/fld_bold">
+                <label>Weight in **kg**</label>
+            </input>
+            <input ref="/data/fld_italic">
+                <label>Enter _name_ here</label>
+            </input>
+            <input ref="/data/fld_link">
+                <label>See [ODK](https://getodk.org)</label>
+            </input>
+        </group>
+    </h:body>
+</h:html>

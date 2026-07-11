@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Repeat Functions</h:title>
+        <model>
+            <instance>
+                <data id="parity_repeat_functions" orx:version="1">
+                    <intro/>
+                    <row_count/>
+                    <row jr:template="">
+                        <val/>
+                    </row>
+                    <sum_vals/>
+                    <count_vals/>
+                    <first_val/>
+                    <pos_join/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/row_count" type="string" calculate="3" readonly="true()"/>
+            <bind nodeset="/data/row/val" type="int"/>
+            <bind nodeset="/data/sum_vals" type="int"
+                  calculate="sum(/data/row/val)"/>
+            <bind nodeset="/data/count_vals" type="int"
+                  calculate="count(/data/row/val)"/>
+            <bind nodeset="/data/first_val" type="int"
+                  calculate="indexed-repeat(/data/row/val, /data/row, 1)"/>
+            <bind nodeset="/data/pos_join" type="string"
+                  calculate="join(',', /data/row/val)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <group ref="/data/row">
+            <label>Row</label>
+            <repeat nodeset="/data/row" jr:count=" /data/row_count ">
+                <input ref="/data/row/val">
+                    <label>Value</label>
+                </input>
+            </repeat>
+        </group>
+    </h:body>
+</h:html>

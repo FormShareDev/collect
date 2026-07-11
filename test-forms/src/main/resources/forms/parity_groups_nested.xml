@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Groups Nested</h:title>
+        <model>
+            <instance>
+                <data id="parity_groups_nested" orx:version="1">
+                    <flat_q/>
+                    <A>
+                        <a_q/>
+                        <B>
+                            <b_q/>
+                            <C>
+                                <c_q/>
+                            </C>
+                        </B>
+                    </A>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/flat_q" type="string"/>
+            <bind nodeset="/data/A/a_q" type="string"/>
+            <bind nodeset="/data/A/B/b_q" type="string"/>
+            <bind nodeset="/data/A/B/C/c_q" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/flat_q">
+            <label>Flat question</label>
+        </input>
+        <group ref="/data/A">
+            <label>Group A</label>
+            <input ref="/data/A/a_q">
+                <label>A question</label>
+            </input>
+            <group ref="/data/A/B">
+                <label>Group B</label>
+                <input ref="/data/A/B/b_q">
+                    <label>B question</label>
+                </input>
+                <group ref="/data/A/B/C">
+                    <label>Group C</label>
+                    <input ref="/data/A/B/C/c_q">
+                        <label>C question</label>
+                    </input>
+                </group>
+            </group>
+        </group>
+    </h:body>
+</h:html>

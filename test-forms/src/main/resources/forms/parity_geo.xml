@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Geo</h:title>
+        <model>
+            <instance>
+                <data id="parity_geo" orx:version="1">
+                    <intro/>
+                    <poly>0.0 0.0 0.0 0.0; 0.0 0.01 0.0 0.0; 0.01 0.01 0.0 0.0; 0.01 0.0 0.0 0.0; 0.0 0.0 0.0 0.0</poly>
+                    <path>0.0 0.0 0.0 0.0; 0.0 0.01 0.0 0.0; 0.01 0.01 0.0 0.0</path>
+                    <pt_in>0.005 0.005 0.0 0.0</pt_in>
+                    <pt_out>1.0 1.0 0.0 0.0</pt_out>
+                    <fn_area/>
+                    <fn_enclosed/>
+                    <fn_distance/>
+                    <fn_geofence_in/>
+                    <fn_geofence_out/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/poly" type="geoshape"/>
+            <bind nodeset="/data/path" type="geotrace"/>
+            <bind nodeset="/data/pt_in" type="geopoint"/>
+            <bind nodeset="/data/pt_out" type="geopoint"/>
+            <bind nodeset="/data/fn_area" type="string" calculate="area(/data/poly)"/>
+            <bind nodeset="/data/fn_enclosed" type="string" calculate="enclosed-area(/data/poly)"/>
+            <bind nodeset="/data/fn_distance" type="string" calculate="distance(/data/path)"/>
+            <bind nodeset="/data/fn_geofence_in" type="string" calculate="geofence(/data/pt_in, /data/poly)"/>
+            <bind nodeset="/data/fn_geofence_out" type="string" calculate="geofence(/data/pt_out, /data/poly)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Start</label>
+        </input>
+    </h:body>
+</h:html>

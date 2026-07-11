@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Defaults</h:title>
+        <model>
+            <instance>
+                <data id="parity_defaults" orx:version="1">
+                    <seed>42</seed>
+                    <txt_static>N/A</txt_static>
+                    <txt_dyn/>
+                    <a/>
+                    <b/>
+                    <live_calc/>
+                    <dyn_label/>
+                    <ro_calc/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <!-- seed: fixed instance value that feeds the dynamic default -->
+            <bind nodeset="/data/seed" type="string"/>
+            <!-- static default: instance node pre-filled with "N/A"; only overwritten if the user edits it -->
+            <bind nodeset="/data/txt_static" type="string"/>
+            <!-- dynamic default: computed once from another node -->
+            <bind nodeset="/data/txt_dyn" type="string" calculate="concat('id-', /data/seed)"/>
+            <bind nodeset="/data/a" type="int"/>
+            <bind nodeset="/data/b" type="int"/>
+            <!-- live calculate: recomputes as a and b change -->
+            <bind nodeset="/data/live_calc" type="int" calculate="/data/a + /data/b"/>
+            <!-- dynamic label mirror -->
+            <bind nodeset="/data/dyn_label" type="string"/>
+            <!-- readonly calculate -->
+            <bind nodeset="/data/ro_calc" type="int" calculate="/data/a * /data/b" readonly="true()"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/txt_static">
+            <label>Static default</label>
+        </input>
+        <input ref="/data/a">
+            <label>Value A</label>
+        </input>
+        <input ref="/data/b">
+            <label>Value B</label>
+        </input>
+        <input ref="/data/dyn_label">
+            <label>Echo of A is <output value="/data/a"/></label>
+        </input>
+        <input ref="/data/ro_calc">
+            <label>Read-only product</label>
+        </input>
+    </h:body>
+</h:html>

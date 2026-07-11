@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Text</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_text" orx:version="1">
+                    <str_default/>
+                    <str_multiline/>
+                    <url_field/>
+                    <note_field/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/str_default" type="string"/>
+            <bind nodeset="/data/str_multiline" type="string"/>
+            <bind nodeset="/data/url_field" type="string"/>
+            <bind nodeset="/data/note_field" type="string" readonly="true()" calculate="'computed note value'"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/str_default">
+            <label>String default</label>
+        </input>
+        <input ref="/data/str_multiline" appearance="multiline">
+            <label>String multiline</label>
+        </input>
+        <input ref="/data/url_field">
+            <label>Url field</label>
+        </input>
+        <input ref="/data/note_field">
+            <label>Note field</label>
+        </input>
+    </h:body>
+</h:html>

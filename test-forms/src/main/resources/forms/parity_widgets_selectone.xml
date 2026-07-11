@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Select One</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_selectone" orx:version="1">
+                    <sel_default/>
+                    <sel_columns/>
+                    <sel_minimal/>
+                    <sel_quick/>
+                    <sel_likert/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/sel_default" type="string"/>
+            <bind nodeset="/data/sel_columns" type="string"/>
+            <bind nodeset="/data/sel_minimal" type="string"/>
+            <bind nodeset="/data/sel_quick" type="string"/>
+            <bind nodeset="/data/sel_likert" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <!-- Same 3-option choice list (values a/b/c) rendered in five appearances. -->
+        <select1 ref="/data/sel_default">
+            <label>Select default</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select1>
+        <select1 appearance="columns" ref="/data/sel_columns">
+            <label>Select columns</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select1>
+        <select1 appearance="minimal" ref="/data/sel_minimal">
+            <label>Select minimal</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select1>
+        <select1 appearance="quick" ref="/data/sel_quick">
+            <label>Select quick</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select1>
+        <select1 appearance="likert" ref="/data/sel_likert">
+            <label>Select likert</label>
+            <item><label>Apple</label><value>a</value></item>
+            <item><label>Banana</label><value>b</value></item>
+            <item><label>Cherry</label><value>c</value></item>
+        </select1>
+    </h:body>
+</h:html>

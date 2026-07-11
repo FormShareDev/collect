@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Collect Extensions</h:title>
+        <model>
+            <instance>
+                <data id="parity_collect_extensions" orx:version="1">
+                    <note1/>
+                    <geom_cross>1.0 1.0 0.0 0.0; 1.0 3.0 0.0 0.0; 2.0 3.0 0.0 0.0; 2.0 2.0 0.0 0.0; 0.0 2.0 0.0 0.0</geom_cross>
+                    <geom_simple>0.0 0.0 0.0 0.0; 0.0 2.0 0.0 0.0; 2.0 2.0 0.0 0.0</geom_simple>
+                    <pull_label/>
+                    <pull_id/>
+                    <fn_selfcross/>
+                    <fn_simple/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <instance id="cities" src="jr://file-csv/cities.csv"/>
+            <bind nodeset="/data/note1" type="string"/>
+            <!-- pulldata() over the external CSV (name,label,id). Gated on note1 so it recomputes
+                 AFTER cities.csv has loaded (avoids the async-load race). -->
+            <bind nodeset="/data/pull_label" type="string"
+                  calculate="if(/data/note1 = 'go', pulldata('cities', 'label', 'name', 'tokyo'), '')"/>
+            <bind nodeset="/data/pull_id" type="string"
+                  calculate="if(/data/note1 = 'go', pulldata('cities', 'id', 'name', 'lima'), '')"/>
+            <!-- intersects(geometry): SINGLE-arg SELF-intersection test. Input must be geotrace/
+                 geoshape (a string throws). geom_cross self-crosses -> true; geom_simple does not. -->
+            <bind nodeset="/data/geom_cross" type="geotrace"/>
+            <bind nodeset="/data/geom_simple" type="geotrace"/>
+            <bind nodeset="/data/fn_selfcross" type="string" calculate="intersects(/data/geom_cross)"/>
+            <bind nodeset="/data/fn_simple" type="string" calculate="intersects(/data/geom_simple)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/note1">
+            <label>Intro</label>
+        </input>
+    </h:body>
+</h:html>

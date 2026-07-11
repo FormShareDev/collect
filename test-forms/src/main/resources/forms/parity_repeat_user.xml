@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Repeat User</h:title>
+        <model>
+            <instance>
+                <data id="parity_repeat_user" orx:version="1">
+                    <intro/>
+                    <item jr:template="">
+                        <item_name/>
+                    </item>
+                    <item_count/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/item/item_name" type="string"/>
+            <bind nodeset="/data/item_count" type="int"
+                  calculate="count(/data/item/item_name)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <group ref="/data/item">
+            <label>Item</label>
+            <repeat nodeset="/data/item">
+                <input ref="/data/item/item_name">
+                    <label>Item name</label>
+                </input>
+            </repeat>
+        </group>
+    </h:body>
+</h:html>

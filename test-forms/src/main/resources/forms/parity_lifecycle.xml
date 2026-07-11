@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms"
+        xmlns:odk="http://www.opendatakit.org/xforms">
+    <h:head>
+        <h:title>Parity Lifecycle</h:title>
+        <model>
+            <instance>
+                <data id="parity_lifecycle" orx:version="1">
+                    <name/>
+                    <color/>
+                    <city/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <submission odk:client-editable="true"/>
+            <bind nodeset="/data/name" type="string"/>
+            <bind nodeset="/data/color" type="string"/>
+            <bind nodeset="/data/city" type="string"/>
+            <bind nodeset="/data/meta/instanceID" type="string" readonly="true()" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/name">
+            <label>What is your name?</label>
+        </input>
+        <input ref="/data/color">
+            <label>Favourite colour?</label>
+        </input>
+        <input ref="/data/city">
+            <label>Which city?</label>
+        </input>
+    </h:body>
+</h:html>

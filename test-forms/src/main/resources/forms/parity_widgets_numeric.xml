@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Numeric</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_numeric" orx:version="1">
+                    <int_default/>
+                    <int_thousands/>
+                    <dec_default/>
+                    <dec_plain/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/int_default" type="int"/>
+            <bind nodeset="/data/int_thousands" type="int"/>
+            <bind nodeset="/data/dec_default" type="decimal"/>
+            <bind nodeset="/data/dec_plain" type="decimal"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/int_default">
+            <label>Integer default</label>
+        </input>
+        <input ref="/data/int_thousands" appearance="thousands-sep">
+            <label>Integer thousands</label>
+        </input>
+        <input ref="/data/dec_default">
+            <label>Decimal default</label>
+        </input>
+        <!-- bearing appearance would trigger compass capture (non-deterministic); a plain decimal
+             is used instead so the stored value is deterministic. Real bearing capture is skipped. -->
+        <input ref="/data/dec_plain">
+            <label>Decimal plain</label>
+        </input>
+    </h:body>
+</h:html>

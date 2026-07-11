@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:odk="http://www.opendatakit.org/xforms"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Rank Trigger Note</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_rank_trigger_note" orx:version="1">
+                    <rank_field/>
+                    <trigger_field/>
+                    <note_field>Read only note</note_field>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/rank_field" type="odk:rank"/>
+            <bind nodeset="/data/trigger_field" type="string"/>
+            <bind nodeset="/data/note_field" type="string" readonly="true()"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <odk:rank ref="/data/rank_field">
+            <label>Rank field</label>
+            <item><label>Alpha</label><value>a</value></item>
+            <item><label>Bravo</label><value>b</value></item>
+            <item><label>Charlie</label><value>c</value></item>
+        </odk:rank>
+        <trigger ref="/data/trigger_field">
+            <label>Trigger field</label>
+        </trigger>
+        <input ref="/data/note_field">
+            <label>Note field</label>
+        </input>
+    </h:body>
+</h:html>

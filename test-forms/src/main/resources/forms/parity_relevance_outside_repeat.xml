@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Relevance Outside Repeat</h:title>
+        <model>
+            <instance>
+                <data id="parity_relevance_outside_repeat" orx:version="1">
+                    <has_kids/>
+                    <num_kids/>
+                    <kids jr:template="">
+                        <child_name/>
+                        <child_age/>
+                    </kids>
+                    <summary_count/>
+                    <names_join/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/has_kids" type="string"/>
+            <bind nodeset="/data/num_kids" type="int" relevant="/data/has_kids = 'yes'"/>
+            <bind nodeset="/data/kids/child_name" type="string"/>
+            <bind nodeset="/data/kids/child_age" type="int"/>
+            <bind nodeset="/data/summary_count" type="int"
+                  calculate="count(/data/kids/child_name)"/>
+            <bind nodeset="/data/names_join" type="string"
+                  calculate="join(', ', /data/kids/child_name)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <select1 ref="/data/has_kids">
+            <label>Do you have children?</label>
+            <item><label>Yes</label><value>yes</value></item>
+            <item><label>No</label><value>no</value></item>
+        </select1>
+        <input ref="/data/num_kids">
+            <label>How many children?</label>
+        </input>
+        <group ref="/data/kids" relevant="/data/has_kids = 'yes'">
+            <label>Child</label>
+            <repeat nodeset="/data/kids" jr:count="/data/num_kids">
+                <input ref="/data/kids/child_name">
+                    <label>Child name</label>
+                </input>
+                <input ref="/data/kids/child_age">
+                    <label>Child age</label>
+                </input>
+            </repeat>
+        </group>
+    </h:body>
+</h:html>

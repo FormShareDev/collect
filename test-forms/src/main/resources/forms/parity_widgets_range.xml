@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Widgets Range</h:title>
+        <model>
+            <instance>
+                <data id="parity_widgets_range" orx:version="1">
+                    <range_int>5</range_int>
+                    <range_dec>2.5</range_dec>
+                    <range_vert>7</range_vert>
+                    <range_picker>3</range_picker>
+                    <range_rating/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/range_int" type="int"/>
+            <bind nodeset="/data/range_dec" type="decimal"/>
+            <bind nodeset="/data/range_vert" type="int"/>
+            <bind nodeset="/data/range_picker" type="int"/>
+            <bind nodeset="/data/range_rating" type="int"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <range ref="/data/range_int" start="0" end="10" step="1">
+            <label>Range integer</label>
+        </range>
+        <range ref="/data/range_dec" start="0" end="10" step="0.5">
+            <label>Range decimal</label>
+        </range>
+        <range ref="/data/range_vert" appearance="vertical" start="0" end="10" step="1">
+            <label>Range vertical</label>
+        </range>
+        <range ref="/data/range_picker" appearance="picker" start="0" end="10" step="1">
+            <label>Range picker</label>
+        </range>
+        <range ref="/data/range_rating" appearance="rating" start="1" end="5" step="1">
+            <label>Range rating</label>
+        </range>
+    </h:body>
+</h:html>

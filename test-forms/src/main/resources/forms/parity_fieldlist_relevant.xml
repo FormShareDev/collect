@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Field List Relevant</h:title>
+        <model>
+            <instance>
+                <data id="parity_fieldlist_relevant" orx:version="1">
+                    <intro/>
+                    <trigger/>
+                    <always_q/>
+                    <extra_q/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/trigger" type="string"/>
+            <bind nodeset="/data/always_q" type="string"/>
+            <!-- relevance on a question INSIDE a field-list group: toggles live on the same screen -->
+            <bind nodeset="/data/extra_q" type="string" relevant="/data/trigger = 'yes'"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <group appearance="field-list">
+            <label>Section</label>
+            <select1 ref="/data/trigger">
+                <label>Show extra?</label>
+                <item><label>Yes</label><value>yes</value></item>
+                <item><label>No</label><value>no</value></item>
+            </select1>
+            <input ref="/data/always_q">
+                <label>Always</label>
+            </input>
+            <input ref="/data/extra_q">
+                <label>Extra</label>
+            </input>
+        </group>
+    </h:body>
+</h:html>

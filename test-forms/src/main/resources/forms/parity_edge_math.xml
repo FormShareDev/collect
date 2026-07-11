@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Edge Math</h:title>
+        <model>
+            <instance>
+                <data id="parity_edge_math" orx:version="1">
+                    <start/>
+                    <div_by_zero/>
+                    <zero_div_zero/>
+                    <big_mult/>
+                    <date_diff/>
+                    <sqrt_neg/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/start" type="string"/>
+            <bind nodeset="/data/div_by_zero" type="string" calculate="1 div 0"/>
+            <bind nodeset="/data/zero_div_zero" type="string" calculate="0 div 0"/>
+            <bind nodeset="/data/big_mult" type="string" calculate="99999999 * 99999999"/>
+            <bind nodeset="/data/date_diff" type="string"
+                  calculate="date('2026-01-01') - date('2020-01-01')"/>
+            <bind nodeset="/data/sqrt_neg" type="string" calculate="sqrt(-1)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/start">
+            <label>Type anything to begin</label>
+        </input>
+    </h:body>
+</h:html>

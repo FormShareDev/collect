@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns="http://www.w3.org/2002/xforms"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:jr="http://openrosa.org/javarosa"
+        xmlns:orx="http://openrosa.org/xforms">
+    <h:head>
+        <h:title>Parity Repeat Nested</h:title>
+        <model>
+            <instance>
+                <data id="parity_repeat_nested" orx:version="1">
+                    <intro/>
+                    <household jr:template="">
+                        <hh_name/>
+                        <hh_size/>
+                        <member jr:template="">
+                            <member_name/>
+                        </member>
+                        <hh_member_count/>
+                    </household>
+                    <total_members/>
+                    <meta>
+                        <instanceID/>
+                    </meta>
+                </data>
+            </instance>
+            <bind nodeset="/data/intro" type="string"/>
+            <bind nodeset="/data/household/hh_name" type="string"/>
+            <bind nodeset="/data/household/hh_size" type="int"/>
+            <bind nodeset="/data/household/member/member_name" type="string"/>
+            <bind nodeset="/data/household/hh_member_count" type="int"
+                  calculate="count(../member)"/>
+            <bind nodeset="/data/total_members" type="int"
+                  calculate="count(/data/household/member)"/>
+            <bind nodeset="/data/meta/instanceID" type="string" jr:preload="uid"/>
+        </model>
+    </h:head>
+    <h:body>
+        <input ref="/data/intro">
+            <label>Intro</label>
+        </input>
+        <group ref="/data/household">
+            <label>Household</label>
+            <repeat nodeset="/data/household">
+                <input ref="/data/household/hh_name">
+                    <label>Household name</label>
+                </input>
+                <input ref="/data/household/hh_size">
+                    <label>Household size</label>
+                </input>
+                <group ref="/data/household/member">
+                    <label>Member</label>
+                    <repeat nodeset="/data/household/member" jr:count="../hh_size">
+                        <input ref="/data/household/member/member_name">
+                            <label>Member name</label>
+                        </input>
+                    </repeat>
+                </group>
+            </repeat>
+        </group>
+    </h:body>
+</h:html>
