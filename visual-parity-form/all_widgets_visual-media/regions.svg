@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="120" viewBox="0 0 300 120">
+  <rect id="region_a" x="5"   y="5" width="90" height="110" fill="#e07b7b"/>
+  <rect id="region_b" x="105" y="5" width="90" height="110" fill="#7be0a1"/>
+  <rect id="region_c" x="205" y="5" width="90" height="110" fill="#7ba1e0"/>
+  <text x="30" y="65">A</text><text x="130" y="65">B</text><text x="230" y="65">C</text>
+</svg>

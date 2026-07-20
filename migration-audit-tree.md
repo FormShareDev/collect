@@ -1,0 +1,2848 @@
+# Collect → iOS Migration — Class Audit Tree
+
+Two files drive this audit:
+
+- **`codebase-map.json`** — every class's functions & metadata. Look a class up by `qualified_name`.
+- **this file** — the class dependency tree and the order to audit in. Classes only; no function detail.
+
+## How to audit
+
+Work **bottom-up** — deepest dependencies first, entry points last:
+
+1. Go down the **Audit checklist** from Level 0. For each class, find it by `qualified_name` in `codebase-map.json` to get its function list.
+2. For that class ask: **Where is it in the iOS app?** and **Are its functions implemented?** Tick the box.
+3. A class's dependencies (`needs ↓`) are at lower levels and are already audited by the time you reach it; its dependents come later.
+4. A class tagged **`[C#]`** lives in a dependency **cycle** — it can't be linearised, so audit the whole cluster (see *Dependency clusters*) as one unit; a suggested inner order is provided.
+
+## Overview
+
+- Classes: **1345** · dependency edges: **4431** · audit levels: **10**
+- Roots (nothing depends on them — audit last): **174**
+- Leaves (depend on nothing internal — audit first): **496**
+- Dependency cycles: **18** — largest is **306 classes** in `collect_app` (cluster `C1`)
+
+## ⟲ Dependency clusters (audit each as one group)
+
+These classes are mutually recursive; dependency order can't separate them. Audit all members of a cluster together (order below is a heuristic, not a guarantee).
+
+### `C1` — 306 classes · collect_app · level 8
+
+- [ ] `org.odk.collect.android.utilities.LocaleHelper` · object · used-by 2
+- [ ] `org.odk.collect.android.utilities.SavepointsRepositoryProvider` · class · used-by 9
+- [ ] `org.odk.collect.android.utilities.FileUtils` · class · used-by 24
+- [ ] `org.odk.collect.android.geo.MapConfiguratorProvider` · class · used-by 5
+- [ ] `org.odk.collect.android.application.initialization.MapsInitializer` · class · used-by 3
+- [ ] `org.odk.collect.android.projects.ProjectsDataService` · class · used-by 38
+- [ ] `org.odk.collect.android.storage.StoragePathProvider` · class · used-by 24
+- [ ] `org.odk.collect.android.database.forms.DatabaseFormsRepository` · class · used-by 2
+- [ ] `org.odk.collect.android.utilities.FormsRepositoryProvider` · class · used-by 22
+- [ ] `org.odk.collect.android.injection.config.CollectSelfieCameraDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.CollectProjectsDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.CollectOsmDroidDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.CollectGoogleMapsDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.CollectGeoDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.CollectDrawDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.application.Collect` · class · used-by 41
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper` · class · used-by 5
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataManager` · interface · used-by 9
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataHandler` · interface · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerBase` · class · used-by 2
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerSearch` · class · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataUtil` · class · used-by 8
+- [ ] `org.odk.collect.android.utilities.Appearances` · object · used-by 30
+- [ ] `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter.DatabaseHelper` · class · used-by 1
+- [ ] `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter` · class · used-by 6
+- [ ] `org.odk.collect.android.fastexternalitemset.ItemsetDao` · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.questions.SelectChoiceUtils` · object · used-by 1
+- [ ] `org.odk.collect.android.formentry.FormEntryViewModel` · class · used-by 13
+- [ ] `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment` · class · used-by 3
+- [ ] `org.odk.collect.android.widgets.items.SelectOneFromMapDialogFragment` · class · used-by 3
+- [ ] `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils` · object · used-by 20
+- [ ] `org.odk.collect.android.widgets.items.SelectOneImageMapWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.items.SelectImageMapWidget.JavaScriptInterface` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.ItemsWidgetUtils` · object · used-by 9
+- [ ] `org.odk.collect.android.widgets.items.SelectImageMapWidget` · class · used-by 4
+- [ ] `org.odk.collect.android.utilities.ThemeUtils` · class · used-by 11
+- [ ] `org.odk.collect.android.utilities.ContentUriProvider` · class · used-by 3
+- [ ] `org.odk.collect.android.utilities.MediaUtils` · class · used-by 17
+- [ ] `org.odk.collect.android.listeners.WidgetValueChangedListener` · interface · used-by 3
+- [ ] `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel` · class · used-by 6
+- [ ] `org.odk.collect.android.widgets.QuestionWidget` · class · used-by 49
+- [ ] `org.odk.collect.android.utilities.InstancesRepositoryProvider` · class · used-by 22
+- [ ] `org.odk.collect.android.utilities.AuthDialogUtility` · class · used-by 3
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget` · class · used-by 5
+- [ ] `org.odk.collect.android.utilities.ImageCompressionController` · class · used-by 2
+- [ ] `org.odk.collect.android.utilities.ContentUriHelper` · object · used-by 11
+- [ ] `org.odk.collect.android.widgets.utilities.GeoPolyDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.range.RangePickerIntegerWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.range.RangePickerDecimalWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog` · class · used-by 9
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.PersianDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.MyanmarDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.IslamicDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.FixedDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.EthiopianDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CopticDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.BuddhistDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.BikramSambatDatePickerDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils` · class · used-by 8
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CustomTimePickerDialog` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.datetime.DateTimeWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.GeoTraceWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.GeoShapeWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalAppsUtils` · class · used-by 5
+- [ ] `org.odk.collect.android.utilities.ExternalAppIntentProvider` · class · used-by 5
+- [ ] `org.odk.collect.android.utilities.EncryptionUtils` · class · used-by 3
+- [ ] `org.odk.collect.android.utilities.EncryptionUtils.EncryptedFormInformation` · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.saving.FormSaver` · interface · used-by 4
+- [ ] `org.odk.collect.android.utilities.FormUtils` · class · used-by 2
+- [ ] `org.odk.collect.android.javarosawrapper.JavaRosaFormController` · class · used-by 3
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalAnswerResolver` · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.FormEntryUseCases` · object · used-by 2
+- [ ] `org.odk.collect.android.tasks.SaveFormToDisk` · class · used-by 4
+- [ ] `org.odk.collect.android.tasks.SaveFormIndexTask` · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.ExternalizableFormDefCache` · class · used-by 2
+- [ ] `org.odk.collect.android.listeners.FormLoaderListener` · interface · used-by 2
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataReaderImpl` · class · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataUseCases` · object · used-by 1
+- [ ] `org.odk.collect.android.tasks.FormLoaderTask` · class · used-by 3
+- [ ] `org.odk.collect.android.instancemanagement.LocalInstancesUseCases` · object · used-by 2
+- [ ] `org.odk.collect.android.upload.InstanceServerUploader` · class · used-by 2
+- [ ] `org.odk.collect.android.instancemanagement.InstanceSubmitter` · class · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerPull` · class · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataManagerImpl` · class · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.CollectFormEntryControllerFactory` · class · used-by 2
+- [ ] `org.odk.collect.android.instancemanagement.InstancesDataService` · class · used-by 21
+- [ ] `org.odk.collect.android.formentry.questions.NoButtonsItem` · class · used-by 5
+- [ ] `org.odk.collect.android.adapters.AbstractSelectListAdapter.ViewHolder` · class · used-by 1
+- [ ] `org.odk.collect.android.adapters.AbstractSelectListAdapter` · class · used-by 11
+- [ ] `org.odk.collect.android.fragments.viewmodels.SelectMinimalViewModel` · class · used-by 2
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog` · class · used-by 6
+- [ ] `org.odk.collect.android.adapters.RankingListAdapter.ItemViewHolder` · class · used-by 1
+- [ ] `org.odk.collect.android.adapters.RankingListAdapter` · class · used-by 2
+- [ ] `org.odk.collect.android.utilities.RankingItemTouchHelperCallback` · class · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.RankingWidgetDialog` · class · used-by 2
+- [ ] `org.odk.collect.android.fragments.MediaLoadingFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.savepoints.SavepointUseCases` · object · used-by 1
+- [ ] `org.odk.collect.android.external.FormUriViewModel` · class · used-by 1
+- [ ] `org.odk.collect.android.external.FormUriActivity` · class · used-by 3
+- [ ] `org.odk.collect.android.formmanagement.FormFillingIntentFactory` · object · used-by 5
+- [ ] `org.odk.collect.android.formhierarchy.QuestionAnswerProcessor` · object · used-by 1
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyViewModel` · data class · used-by 3
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragment.FormHiearchyMenuProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.repeats.DeleteRepeatDialogFragment` · class · used-by 4
+- [ ] `org.odk.collect.android.widgets.utilities.StringRequesterImpl` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.FileRequesterImpl` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.MediaWidgetAnswerViewModel` · class · used-by 4
+- [ ] `org.odk.collect.android.widgets.video.VideoWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.video.ExVideoWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.AudioRecorderRecordingStatusHandler` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.ActivityGeoDataRequester` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.range.RangeIntegerWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.range.RangeDecimalWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.BaseSelectListWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.adapters.SelectOneListAdapter.ViewHolder` · class · used-by 1
+- [ ] `org.odk.collect.android.adapters.SelectOneListAdapter` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.items.SelectOneWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.SelectMinimalWidget` · class · used-by 2
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectOneMinimalDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.SelectOneMinimalWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.SelectOneFromMapWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.RenderIntoQuestionWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning` · class · used-by 6
+- [ ] `org.odk.collect.android.adapters.SelectMultipleListAdapter.ViewHolder` · class · used-by 1
+- [ ] `org.odk.collect.android.adapters.SelectMultipleListAdapter` · class · used-by 2
+- [ ] `org.odk.collect.android.widgets.items.SelectMultiWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectMultiMinimalDialog` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.SelectMultiMinimalWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.SelectMultiImageMapWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.RankingWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.ListWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.ListMultiWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.LikertWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.items.LabelWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.TimeWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.DateWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.barcode.BarcodeWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.arbitraryfile.ExArbitraryFileWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.arbitraryfile.ArbitraryFileWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.UrlWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.TriggerWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.StringWidgetUtils` · class · used-by 9
+- [ ] `org.odk.collect.android.widgets.StringWidget` · class · used-by 6
+- [ ] `org.odk.collect.android.widgets.TimedGridWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.StringNumberWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.SignatureWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.RatingWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.PrinterWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.OSMWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.IntegerWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.ImageCaptureIntentCreator` · object · used-by 2
+- [ ] `org.odk.collect.android.widgets.ImageWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.GeoPointWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.GeoPointMapWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.ExStringWidget` · class · used-by 3
+- [ ] `org.odk.collect.android.widgets.ExIntegerWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.ExImageWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.ExDecimalWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.ExAudioWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.DrawWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.DecimalWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.CounterWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.views.DayNightProgressDialog` · class · used-by 3
+- [ ] `org.odk.collect.android.activities.BearingActivity` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.BearingWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.AudioWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.AnnotateWidget` · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.WidgetFactory` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.media.PromptAutoplayer` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.ODKView` · class · used-by 3
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveTask` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel` · class · used-by 6
+- [ ] `org.odk.collect.android.formentry.saving.DiskFormSaver` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationHelper` · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager` · class · used-by 3
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationViewModel` · class · used-by 3
+- [ ] `org.odk.collect.android.activities.FormEntryViewModelFactory` · class · used-by 2
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragmentHostActivity` · class · used-by 3
+- [ ] `org.odk.collect.android.formentry.saving.SaveFormProgressDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.saving.SaveAnswerFileErrorDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.audit.ChangesReasonPromptDialogFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.QuitFormDialog` · object · used-by 1
+- [ ] `org.odk.collect.android.projects.ProjectDeleter` · class · used-by 5
+- [ ] `org.odk.collect.android.preferences.screens.BasePreferencesFragment` · class · used-by 3
+- [ ] `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment` · class · used-by 10
+- [ ] `org.odk.collect.android.preferences.Defaults` · object · used-by 5
+- [ ] `org.odk.collect.android.projects.SettingsConnectionMatcherImpl` · class · used-by 3
+- [ ] `org.odk.collect.android.configure.qr.AppConfigurationGenerator` · class · used-by 9
+- [ ] `org.odk.collect.android.projects.ManualProjectCreatorDialog` · class · used-by 3
+- [ ] `org.odk.collect.android.projects.QrCodeProjectCreatorDialog` · class · used-by 3
+- [ ] `org.odk.collect.android.mainmenu.CurrentProjectViewModel` · class · used-by 4
+- [ ] `org.odk.collect.android.projects.ProjectSettingsDialog` · class · used-by 3
+- [ ] `org.odk.collect.android.instancemanagement.InstanceDiskSynchronizer` · class · used-by 1
+- [ ] `org.odk.collect.android.mainmenu.MainMenuViewModel` · class · used-by 2
+- [ ] `org.odk.collect.android.mainmenu.MainMenuViewModelFactory` · class · used-by 2
+- [ ] `org.odk.collect.android.utilities.InstanceUploaderUtils` · class · used-by 1
+- [ ] `org.odk.collect.android.tasks.InstanceUploaderTask` · class · used-by 2
+- [ ] `org.odk.collect.android.instancemanagement.send.InstanceUploaderActivity` · class · used-by 2
+- [ ] `org.odk.collect.android.dao.CursorLoaderFactory` · class · used-by 4
+- [ ] `org.odk.collect.android.formmanagement.LocalFormUseCases` · object · used-by 3
+- [ ] `org.odk.collect.android.formmanagement.matchexactly.ServerFormsSynchronizer` · class · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.ServerFormUseCases` · object · used-by 3
+- [ ] `org.odk.collect.android.formmanagement.FormsDataService` · class · used-by 15
+- [ ] `org.odk.collect.android.backgroundwork.SyncFormsTaskSpec` · class · used-by 3
+- [ ] `org.odk.collect.android.backgroundwork.SendFormsTaskSpec` · class · used-by 2
+- [ ] `org.odk.collect.android.backgroundwork.AutoUpdateTaskSpec` · class · used-by 2
+- [ ] `org.odk.collect.android.backgroundwork.FormUpdateAndInstanceSubmitScheduler` · class · used-by 2
+- [ ] `org.odk.collect.android.adapters.InstanceUploaderAdapter` · class · used-by 1
+- [ ] `org.odk.collect.android.instancemanagement.send.InstanceUploaderListActivity` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.dialogs.ServerAuthDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel` · class · used-by 8
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListMenuProvider` · class · used-by 2
+- [ ] `org.odk.collect.android.activities.FormMapActivity` · class · used-by 2
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListActivity` · class · used-by 3
+- [ ] `org.odk.collect.android.formmanagement.drafts.BulkFinalizationViewModel` · class · used-by 1
+- [ ] `org.odk.collect.android.instancemanagement.InstanceListItemView` · object · used-by 1
+- [ ] `org.odk.collect.android.adapters.InstanceListCursorAdapter` · class · used-by 1
+- [ ] `org.odk.collect.android.activities.AppListActivity` · class · used-by 3
+- [ ] `org.odk.collect.android.activities.InstanceChooserList` · class · used-by 2
+- [ ] `org.odk.collect.android.tasks.DownloadFormsTask` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.ProjectDependencyModuleFactory` · class · used-by 4
+- [ ] `org.odk.collect.android.tasks.DownloadFormListTask` · class · used-by 2
+- [ ] `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog` · class · used-by 2
+- [ ] `org.odk.collect.android.activities.FormListActivity` · class · used-by 1
+- [ ] `org.odk.collect.android.activities.FormDownloadListActivity` · class · used-by 2
+- [ ] `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel` · class · used-by 3
+- [ ] `org.odk.collect.android.formlists.savedformlist.SavedFormListListMenuProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.formlists.savedformlist.DeleteSavedFormFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.formlists.blankformlist.DeleteBlankFormFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.activities.DeleteFormsActivity.ViewModelFactory` · class · used-by 1
+- [ ] `org.odk.collect.android.activities.DeleteFormsActivity` · class · used-by 2
+- [ ] `org.odk.collect.android.mainmenu.MainMenuFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.activities.FirstLaunchViewModel` · class · used-by 1
+- [ ] `org.odk.collect.android.activities.FirstLaunchActivity` · class · used-by 3
+- [ ] `org.odk.collect.android.activities.CrashHandlerActivity` · class · used-by 1
+- [ ] `org.odk.collect.android.mainmenu.MainMenuActivity` · class · used-by 11
+- [ ] `org.odk.collect.android.preferences.screens.UserInterfacePreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.ServerPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment` · class · used-by 6
+- [ ] `org.odk.collect.android.projects.ProjectResetter` · class · used-by 3
+- [ ] `org.odk.collect.android.preferences.dialogs.ResetDialogPreferenceFragmentCompat` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog.DeleteProjectViewModel` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog` · class · used-by 2
+- [ ] `org.odk.collect.android.configure.qr.QRCodeGenerator` · interface · used-by 7
+- [ ] `org.odk.collect.android.configure.qr.QRCodeViewModel` · class · used-by 3
+- [ ] `org.odk.collect.android.configure.qr.ShowQRCodeFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.fragments.BarCodeScannerFragment` · class · used-by 3
+- [ ] `org.odk.collect.android.configure.qr.QRCodeScannerFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.configure.qr.QRCodeMenuProvider` · class · used-by 2
+- [ ] `org.odk.collect.android.configure.qr.QRCodeActivityResultDelegate` · class · used-by 1
+- [ ] `org.odk.collect.android.configure.qr.QRCodeTabsActivity` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.ProjectManagementPreferencesFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment.ProjectDetailsSummaryProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.MapsPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.FormMetadataPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.IdentityPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.FormManagementPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.DevToolsPreferencesFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.screens.ExperimentalPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.UserSettingsAccessPreferencesFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.screens.MainMenuAccessPreferencesFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.screens.FormEntryAccessPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.AccessControlPreferencesFragment` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.dialogs.ChangeAdminPasswordDialog` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.dialogs.AdminPasswordDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.ProjectPreferencesFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity` · class · used-by 5
+- [ ] `org.odk.collect.android.formentry.FormEntryMenuProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.BackgroundAudioPermissionDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.dao.helpers.InstancesDaoHelper` · class · used-by 1
+- [ ] `org.odk.collect.android.audio.AudioRecordingErrorDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.audio.AudioRecordingControllerFragment` · class · used-by 2
+- [ ] `org.odk.collect.android.activities.FormFillingActivity` · class · used-by 12
+- [ ] `org.odk.collect.android.tasks.MediaLoadingTask` · class · used-by 2
+- [ ] `org.odk.collect.android.projects.ProjectCreatorImpl` · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.source.SharedPreferencesSettingsProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.notifications.builders.FormsSyncStoppedNotificationBuilder` · object · used-by 1
+- [ ] `org.odk.collect.android.notifications.builders.FormsSyncFailedNotificationBuilder` · object · used-by 1
+- [ ] `org.odk.collect.android.notifications.builders.FormsSubmissionNotificationBuilder` · object · used-by 1
+- [ ] `org.odk.collect.android.notifications.builders.FormUpdatesDownloadedNotificationBuilder` · object · used-by 1
+- [ ] `org.odk.collect.android.notifications.builders.FormUpdatesAvailableNotificationBuilder` · object · used-by 1
+- [ ] `org.odk.collect.android.notifications.NotificationManagerNotifier` · class · used-by 6
+- [ ] `org.odk.collect.android.database.itemsets.DatabaseFastExternalItemsetsRepository` · class · used-by 1
+- [ ] `org.odk.collect.android.configure.qr.CachingQRCodeGenerator` · class · used-by 1
+- [ ] `org.odk.collect.android.application.initialization.upgrade.BeforeProjectsInstallDetector` · class · used-by 1
+- [ ] `org.odk.collect.android.application.initialization.GoogleDriveProjectsDeleter` · class · used-by 2
+- [ ] `org.odk.collect.android.application.initialization.ExistingProjectMigrator` · class · used-by 3
+- [ ] `org.odk.collect.android.application.initialization.upgrade.UpgradeInitializer` · class · used-by 2
+- [ ] `org.odk.collect.android.application.initialization.UserPropertiesInitializer` · class · used-by 1
+- [ ] `org.odk.collect.android.logic.actions.setgeopoint.CollectSetGeopointAction` · class · used-by 1
+- [ ] `org.odk.collect.android.logic.actions.setgeopoint.CollectSetGeopointActionHandler` · class · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.DynamicPreloadParseProcessor` · class · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.DynamicPreloadXFormParserFactory` · class · used-by 1
+- [ ] `org.odk.collect.android.application.initialization.JavaRosaInitializer` · class · used-by 1
+- [ ] `org.odk.collect.android.application.initialization.ApplicationInitializer` · class · used-by 2
+- [ ] `org.odk.collect.android.application.CollectSettingsChangeHandler` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.AppDependencyModule` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.AppDependencyComponent.Builder` · interface · used-by 1
+- [ ] `org.odk.collect.android.external.InstanceProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.external.FormsProvider` · class · used-by 1
+- [ ] `org.odk.collect.android.external.AndroidShortcutsActivity` · class · used-by 1
+- [ ] `org.odk.collect.android.injection.config.AppDependencyComponent` · interface · used-by 10
+- [ ] `org.odk.collect.android.injection.DaggerUtils` · object · used-by 58
+- [ ] `org.odk.collect.android.activities.AboutActivity` · class · used-by 2
+
+### `C2` — 9 classes · geo · level 6
+
+- [ ] `org.odk.collect.geo.GeoDependencyComponentProvider` · interface · used-by 7
+- [ ] `org.odk.collect.geo.selection.SelectionMapFragment` · class · used-by 3
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyFragment` · class · used-by 2
+- [ ] `org.odk.collect.geo.geopoint.GeoPointMapActivity` · class · used-by 2
+- [ ] `org.odk.collect.geo.geopoint.GeoPointDialogFragment` · class · used-by 2
+- [ ] `org.odk.collect.geo.geopoint.GeoPointActivity` · class · used-by 2
+- [ ] `org.odk.collect.geo.GeoDependencyModule` · class · used-by 2
+- [ ] `org.odk.collect.geo.GeoDependencyComponent.Builder` · interface · used-by 1
+- [ ] `org.odk.collect.geo.GeoDependencyComponent` · interface · used-by 3
+
+### `C3` — 5 classes · timedgrid · level 1
+
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetConfiguration` · data class · used-by 5
+- [ ] `org.odk.collect.timedgrid.TimedGridRenderer` · interface · used-by 2
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetLayout` · class · used-by 1
+- [ ] `org.odk.collect.timedgrid.CommonTimedGridRenderer` · class · used-by 1
+- [ ] `org.odk.collect.timedgrid.AssessmentType` · enum class · used-by 4
+
+### `C4` — 5 classes · draw · level 4
+
+- [ ] `org.odk.collect.draw.DrawDependencyComponent` · interface · used-by 3
+- [ ] `org.odk.collect.draw.DrawDependencyComponentProvider` · interface · used-by 4
+- [ ] `org.odk.collect.draw.DrawView` · class · used-by 3
+- [ ] `org.odk.collect.draw.DrawViewModel` · class · used-by 1
+- [ ] `org.odk.collect.draw.DrawActivity` · class · used-by 6
+
+### `C5` — 4 classes · audio-recorder · level 4
+
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyComponentProvider` · interface · used-by 2
+- [ ] `org.odk.collect.audiorecorder.recording.AudioRecorderService` · class · used-by 2
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent.Builder` · interface · used-by 1
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent` · interface · used-by 3
+
+### `C6` — 4 classes · google-maps · level 5
+
+- [ ] `org.odk.collect.googlemaps.GoogleMapsDependencyComponent` · interface · used-by 3
+- [ ] `org.odk.collect.googlemaps.GoogleMapsDependencyComponentProvider` · interface · used-by 2
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment` · class · used-by 4
+- [ ] `org.odk.collect.googlemaps.GoogleMapConfigurator` · class · used-by 2
+
+### `C7` — 4 classes · entities · level 6
+
+- [ ] `org.odk.collect.entities.EntitiesDependencyComponentProvider` · interface · used-by 2
+- [ ] `org.odk.collect.entities.browser.EntityBrowserActivity` · class · used-by 2
+- [ ] `org.odk.collect.entities.EntitiesDependencyComponent.Builder` · interface · used-by 1
+- [ ] `org.odk.collect.entities.EntitiesDependencyComponent` · interface · used-by 3
+
+### `C8` — 3 classes · collect_app · level 1
+
+- [ ] `org.odk.collect.android.views.SlidingTabStrip.SimpleTabColorizer` · class · used-by 1
+- [ ] `org.odk.collect.android.views.SlidingTabStrip` · class · used-by 1
+- [ ] `org.odk.collect.android.views.SlidingTabLayout` · class · used-by 2
+
+### `C9` — 3 classes · selfie-camera · level 2
+
+- [ ] `org.odk.collect.selfiecamera.SelfieCameraDependencyComponent` · interface · used-by 2
+- [ ] `org.odk.collect.selfiecamera.SelfieCameraDependencyComponentProvider` · interface · used-by 2
+- [ ] `org.odk.collect.selfiecamera.CaptureSelfieActivity` · class · used-by 2
+
+### `C10` — 3 classes · osmdroid · level 5
+
+- [ ] `org.odk.collect.osmdroid.OsmDroidDependencyComponentProvider` · interface · used-by 2
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment` · class · used-by 3
+- [ ] `org.odk.collect.osmdroid.OsmDroidDependencyComponent` · interface · used-by 3
+
+### `C11` — 3 classes · location · level 5
+
+- [ ] `org.odk.collect.location.LocationDependencyComponentProvider` · interface · used-by 2
+- [ ] `org.odk.collect.location.tracker.LocationTrackerService` · class · used-by 2
+- [ ] `org.odk.collect.location.LocationDependencyComponent` · interface · used-by 2
+
+### `C12` — 2 classes · forms · level 0
+
+- [ ] `org.odk.collect.forms.Form.Builder` · class · used-by 1
+- [ ] `org.odk.collect.forms.Form` · class · used-by 26
+
+### `C13` — 2 classes · forms · level 0
+
+- [ ] `org.odk.collect.forms.instances.Instance.Builder` · class · used-by 1
+- [ ] `org.odk.collect.forms.instances.Instance` · class · used-by 50
+
+### `C14` — 2 classes · image-loader · level 1
+
+- [ ] `org.odk.collect.imageloader.ImageLoader` · fun interface · used-by 5
+- [ ] `org.odk.collect.imageloader.GlideImageLoader` · class · used-by 6
+
+### `C15` — 2 classes · maps · level 3
+
+- [ ] `org.odk.collect.maps.MapFragment.ReadyListener` · fun interface · used-by 2
+- [ ] `org.odk.collect.maps.MapFragment` · interface · used-by 18
+
+### `C16` — 2 classes · google-maps · level 3
+
+- [ ] `org.odk.collect.googlemaps.scaleview.ViewConfig` · class · used-by 1
+- [ ] `org.odk.collect.googlemaps.scaleview.MapScaleView` · class · used-by 2
+
+### `C17` — 2 classes · collect_app · level 4
+
+- [ ] `org.odk.collect.android.javarosawrapper.FormController` · interface · used-by 41
+- [ ] `org.odk.collect.android.formentry.audit.AuditEventLogger` · class · used-by 6
+
+### `C18` — 2 classes · mapbox · level 7
+
+- [ ] `org.odk.collect.mapbox.MapboxMapFragment` · class · used-by 1
+- [ ] `org.odk.collect.mapbox.MapboxMapConfigurator` · class · used-by 1
+
+## Audit checklist — deepest first
+
+### Level 0 — 500 classes — foundational (no internal dependencies)
+
+- [ ] `org.odk.collect.analytics.Analytics` · analytics · interface · used-by 37
+- [ ] `org.odk.collect.androidshared.ColorPickerDialog.Companion` · androidshared · object · used-by 0
+- [ ] `org.odk.collect.androidshared.ColorPickerViewModel` · androidshared · class · used-by 2
+- [ ] `org.odk.collect.androidshared.bitmap.ImageFileUtils` · androidshared · object · used-by 9
+- [ ] `org.odk.collect.androidshared.data.AppState` · androidshared · class · used-by 10
+- [ ] `org.odk.collect.androidshared.data.Consumable` · androidshared · data class · used-by 17
+- [ ] `org.odk.collect.androidshared.data.Updatable` · androidshared · interface · used-by 3
+- [ ] `org.odk.collect.androidshared.livedata.LiveDataUtils.CombinedLiveData` · androidshared · class · used-by 1
+- [ ] `org.odk.collect.androidshared.livedata.LiveDataUtils.Quad` · androidshared · class · used-by 1
+- [ ] `org.odk.collect.androidshared.livedata.NonNullLiveData` · androidshared · class · used-by 20
+- [ ] `org.odk.collect.androidshared.system.BroadcastReceiverRegister` · androidshared · interface · used-by 3
+- [ ] `org.odk.collect.androidshared.system.CameraUtils` · androidshared · class · used-by 4
+- [ ] `org.odk.collect.androidshared.system.ContextUtils` · androidshared · object · used-by 3
+- [ ] `org.odk.collect.androidshared.system.ExternalFilesUtils` · androidshared · object · used-by 1
+- [ ] `org.odk.collect.androidshared.system.IntentLauncher` · androidshared · interface · used-by 14
+- [ ] `org.odk.collect.androidshared.system.OpenGLVersionChecker` · androidshared · object · used-by 2
+- [ ] `org.odk.collect.androidshared.system.PlayServicesChecker` · androidshared · class · used-by 5
+- [ ] `org.odk.collect.androidshared.ui.AlertStore` · androidshared · class · used-by 2
+- [ ] `org.odk.collect.androidshared.ui.ComposeThemeProvider` · androidshared · interface · used-by 2
+- [ ] `org.odk.collect.androidshared.ui.DialogFragmentUtils` · androidshared · object · used-by 26
+- [ ] `org.odk.collect.androidshared.ui.DialogUtils` · androidshared · object · used-by 1
+- [ ] `org.odk.collect.androidshared.ui.DisableableAnimatorWrapper` · androidshared · class · used-by 1
+- [ ] `org.odk.collect.androidshared.ui.DisplayString.Raw` · androidshared · data class · used-by 1
+- [ ] `org.odk.collect.androidshared.ui.DisplayString.Resource` · androidshared · data class · used-by 1
+- [ ] `org.odk.collect.androidshared.ui.FragmentFactoryBuilder` · androidshared · class · used-by 18
+- [ ] `org.odk.collect.androidshared.ui.ListFragmentStateAdapter` · androidshared · class · used-by 2
+- [ ] `org.odk.collect.androidshared.ui.ObviousProgressBar` · androidshared · class · used-by 3
+- [ ] `org.odk.collect.androidshared.ui.ObviousProgressBar.Companion` · androidshared · object · used-by 0
+- [ ] `org.odk.collect.androidshared.ui.OffsetUtils` · androidshared · object · used-by 0
+- [ ] `org.odk.collect.androidshared.ui.ReturnToAppActivity` · androidshared · class · used-by 2
+- [ ] `org.odk.collect.androidshared.ui.SnackbarUtils.Action` · androidshared · data class · used-by 1
+- [ ] `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarDetails` · androidshared · data class · used-by 3
+- [ ] `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard` · androidshared · object · used-by 19
+- [ ] `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeMaterialButton` · androidshared · class · used-by 5
+- [ ] `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeTextInputEditText` · androidshared · class · used-by 0
+- [ ] `org.odk.collect.androidshared.utils.AppBarUtils` · androidshared · object · used-by 1
+- [ ] `org.odk.collect.androidshared.utils.CompressionUtils` · androidshared · object · used-by 4
+- [ ] `org.odk.collect.androidshared.utils.PathUtils` · androidshared · object · used-by 0
+- [ ] `org.odk.collect.androidshared.utils.ScreenUtils` · androidshared · class · used-by 7
+- [ ] `org.odk.collect.androidshared.utils.SettingsUniqueIdGenerator.Companion` · androidshared · object · used-by 0
+- [ ] `org.odk.collect.androidshared.utils.UniqueIdGenerator` · androidshared · interface · used-by 15
+- [ ] `org.odk.collect.androidshared.utils.Validator` · androidshared · object · used-by 5
+- [ ] `org.odk.collect.async.Cancellable` · async · interface · used-by 10
+- [ ] `org.odk.collect.async.NotificationInfo` · async · data class · used-by 4
+- [ ] `org.odk.collect.async.OngoingWorkListener` · async · interface · used-by 4
+- [ ] `org.odk.collect.async.Scheduler.NetworkType` · async · enum class · used-by 1
+- [ ] `org.odk.collect.async.TaskSpec` · async · interface · used-by 7
+- [ ] `org.odk.collect.async.TaskSpec.Result` · async · enum class · used-by 0
+- [ ] `org.odk.collect.async.TaskSpecWorker.Companion` · async · object · used-by 0
+- [ ] `org.odk.collect.audioclips.Clip` · audio-clips · data class · used-by 10
+- [ ] `org.odk.collect.audioclips.PlaybackFailedException` · audio-clips · data class · used-by 2
+- [ ] `org.odk.collect.audioclips.ThreadSafeMediaPlayerWrapper` · audio-clips · class · used-by 1
+- [ ] `org.odk.collect.audiorecorder.recorder.Output` · audio-recorder · enum class · used-by 9
+- [ ] `org.odk.collect.audiorecorder.recorder.RecordingResource` · audio-recorder · interface · used-by 2
+- [ ] `org.odk.collect.audiorecorder.recording.AudioRecorderService.Companion` · audio-recorder · object · used-by 0
+- [ ] `org.odk.collect.audiorecorder.recording.MicInUseException` · audio-recorder · class · used-by 3
+- [ ] `org.odk.collect.audiorecorder.recording.RecordingSession` · audio-recorder · data class · used-by 8
+- [ ] `org.odk.collect.audiorecorder.recording.SetupException` · audio-recorder · class · used-by 2
+- [ ] `org.odk.collect.audiorecorder.recording.internal.RecordingForegroundServiceNotification.Companion` · audio-recorder · object · used-by 0
+- [ ] `org.odk.collect.android.activities.AboutActivity.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.activities.ActivityUtils` · collect_app · class · used-by 10
+- [ ] `org.odk.collect.android.activities.FormFillingActivity.LocationProvidersReceiver` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.activities.FormMapActivity.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.adapters.AboutItemClickListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.adapters.AboutListAdapter.ViewHolder` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.adapters.FormDownloadListAdapter.ViewHolder` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.analytics.AnalyticsEvents` · collect_app · object · used-by 20
+- [ ] `org.odk.collect.android.application.FeatureFlags` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.application.initialization.MapsInitializer.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.audio.AudioButton.Listener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.audio.AudioControllerView.Listener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.audio.AudioControllerView.SwipableParent` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.audio.AudioFileAppender` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.android.audio.BackgroundAudioHelpDialogFragment` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.audio.VolumeBar` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.audio.Waveform` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.backgroundwork.BackgroundWorkUtils` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.backgroundwork.FormUpdateScheduler` · collect_app · interface · used-by 7
+- [ ] `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler` · collect_app · interface · used-by 7
+- [ ] `org.odk.collect.android.backgroundwork.TaskData` · collect_app · object · used-by 5
+- [ ] `org.odk.collect.android.configure.qr.CachingQRCodeGenerator.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.configure.qr.QRCodeMenuProvider.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.database.DatabaseConstants` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.database.entities.DatabaseEntitiesRepository.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.database.entities.EntitiesTable` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.database.entities.ListsTable` · collect_app · object · used-by 2
+- [ ] `org.odk.collect.android.database.forms.DatabaseFormColumns` · collect_app · object · used-by 3
+- [ ] `org.odk.collect.android.database.instances.DatabaseInstanceColumns` · collect_app · object · used-by 7
+- [ ] `org.odk.collect.android.database.savepoints.DatabaseSavepointsColumns` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.dynamicpreload.DynamicPreloadExtra` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataReader` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalSelectChoice` · collect_app · class · used-by 6
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataSearchType` · collect_app · enum · used-by 1
+- [ ] `org.odk.collect.android.exception.EncryptionException` · collect_app · class · used-by 3
+- [ ] `org.odk.collect.android.exception.ExternalDataException` · collect_app · class · used-by 8
+- [ ] `org.odk.collect.android.exception.ExternalParamsException` · collect_app · class · used-by 3
+- [ ] `org.odk.collect.android.exception.JavaRosaException` · collect_app · class · used-by 7
+- [ ] `org.odk.collect.android.external.FormInspectionResult.Error` · collect_app · data class · used-by 2
+- [ ] `org.odk.collect.android.external.FormInspectionResult.Valid` · collect_app · object · used-by 2
+- [ ] `org.odk.collect.android.external.FormUriActivity.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.external.FormsContract` · collect_app · class · used-by 7
+- [ ] `org.odk.collect.android.external.InstancesContract` · collect_app · class · used-by 11
+- [ ] `org.odk.collect.android.fastexternalitemset.XPathParseTool` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.AppStateFormSessionRepository.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.formentry.BackgroundAudioViewModel.RecordAudioActionRegistry` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.formentry.CurrentFormIndex` · collect_app · data class · used-by 2
+- [ ] `org.odk.collect.android.formentry.FormAnimationType` · collect_app · enum class · used-by 2
+- [ ] `org.odk.collect.android.formentry.FormDefCache` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.formentry.FormEndView.Listener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.FormEntryMenuProvider.FormEntryMenuClickListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.FormError` · collect_app · sealed class · used-by 2
+- [ ] `org.odk.collect.android.formentry.FormError.Fatal` · collect_app · data class · used-by 0
+- [ ] `org.odk.collect.android.formentry.FormError.NonFatal` · collect_app · data class · used-by 0
+- [ ] `org.odk.collect.android.formentry.FormIndexAnimationHandler.Direction` · collect_app · enum class · used-by 3
+- [ ] `org.odk.collect.android.formentry.FormLoadingDialogFragment.FormLoadingDialogFragmentListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.FormOpeningMode` · collect_app · object · used-by 6
+- [ ] `org.odk.collect.android.formentry.FormSession` · collect_app · data class · used-by 6
+- [ ] `org.odk.collect.android.formentry.RecordingWarningDialogFragment` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.SwipeHandler.OnSwipeListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.SwipeHandler.View` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.formentry.audit.AuditEvent.AuditEventType` · collect_app · enum · used-by 1
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager.BackgroundLocationMessage` · collect_app · enum · used-by 1
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager.BackgroundLocationState` · collect_app · enum · used-by 1
+- [ ] `org.odk.collect.android.formentry.questions.AnswersProvider` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.questions.QuestionDetails` · collect_app · class · used-by 56
+- [ ] `org.odk.collect.android.formentry.repeats.AddRepeatDialog.Listener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveRequest` · collect_app · class · used-by 3
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveResult.State` · collect_app · enum · used-by 2
+- [ ] `org.odk.collect.android.formentry.saving.FormSaver.ProgressListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragment.FormHiearchyMenuProvider.OnClickListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragmentHostActivity.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.formhierarchy.HierarchyItem` · collect_app · data class · used-by 6
+- [ ] `org.odk.collect.android.formhierarchy.HierarchyItemType` · collect_app · enum class · used-by 2
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListItem` · collect_app · data class · used-by 7
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel.SortOrder` · collect_app · enum class · used-by 1
+- [ ] `org.odk.collect.android.formlists.blankformlist.OnFormItemClickListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel.SortOrder` · collect_app · enum class · used-by 1
+- [ ] `org.odk.collect.android.formlists.sorting.FormListSortingAdapter.ViewHolder` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.formlists.sorting.FormListSortingOption` · collect_app · data class · used-by 8
+- [ ] `org.odk.collect.android.formmanagement.EntityListUpdateException` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.LocalFormUseCases.IdFile` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.MediaFilesDownloadResult` · collect_app · data class · used-by 2
+- [ ] `org.odk.collect.android.formmanagement.ServerFormDetails.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.ServerFormDetails.Type` · collect_app · enum class · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException.DiskError` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException.DownloadingInterrupted` · collect_app · sealed class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException.FormParsingError` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException.FormSourceError` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException.FormWithNoHash` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException.InvalidSubmission` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloader.ProgressReporter` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.download.ServerFormDownloader.FileResult` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.drafts.DraftsMenuProvider` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.formmanagement.metadata.FormMetadata` · collect_app · data class · used-by 3
+- [ ] `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog.FormDownloadResultDialogListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.LocationProvidersDisabledDialog` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.MovingBackwardsDialog.MovingBackwardsDialogListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.fragments.dialogs.NumberPickerDialog.NumberPickerListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.RankingWidgetDialog.RankingListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.ResetSettingsResultDialog.ResetSettingsResultDialogListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog.SelectMinimalDialogListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.fragments.dialogs.SimpleDialog` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.fragments.viewmodels.RankingViewModel` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.instancemanagement.FinalizeAllResult` · collect_app · data class · used-by 3
+- [ ] `org.odk.collect.android.instancemanagement.InstanceEditResult.EditBlockedByNewerExistingEdit` · collect_app · data class · used-by 1
+- [ ] `org.odk.collect.android.instancemanagement.InstanceEditResult.EditCompleted` · collect_app · data class · used-by 1
+- [ ] `org.odk.collect.android.instancemanagement.autosend.FormAutoSendMode` · collect_app · enum class · used-by 2
+- [ ] `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel.Data` · collect_app · data class · used-by 1
+- [ ] `org.odk.collect.android.itemsets.FastExternalItemsetsRepository` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.android.javarosawrapper.FailedValidationResult` · collect_app · data class · used-by 6
+- [ ] `org.odk.collect.android.javarosawrapper.FormDesignException` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.javarosawrapper.FormIndexUtils` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException` · collect_app · class · used-by 7
+- [ ] `org.odk.collect.android.javarosawrapper.SuccessValidationResult` · collect_app · object · used-by 2
+- [ ] `org.odk.collect.android.javarosawrapper.ValidationResult` · collect_app · sealed class · used-by 6
+- [ ] `org.odk.collect.android.listeners.AdvanceToNextListener` · collect_app · interface · used-by 5
+- [ ] `org.odk.collect.android.listeners.DeleteInstancesListener` · collect_app · interface · used-by 0
+- [ ] `org.odk.collect.android.listeners.InstanceUploaderListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.listeners.Result` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.listeners.SelectItemClickListener` · collect_app · interface · used-by 5
+- [ ] `org.odk.collect.android.listeners.ThousandsSeparatorTextWatcher` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.logic.FileReference` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.logic.ImmutableDisplayableQuestion` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.mainmenu.MainMenuViewModel.SavedForm` · collect_app · data class · used-by 1
+- [ ] `org.odk.collect.android.mainmenu.MinSdkDeprecationBanner.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.notifications.NotificationManagerNotifier.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.ProjectPreferencesViewModel.State` · collect_app · enum class · used-by 1
+- [ ] `org.odk.collect.android.preferences.ServerPreferencesAdder` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog.DeleteProjectViewModel.ProjectData` · collect_app · data class · used-by 1
+- [ ] `org.odk.collect.android.preferences.dialogs.ResetDialogPreference` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.filters.ControlCharacterFilter` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.preferences.screens.AccessControlPreferencesFragment.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.screens.ProjectManagementPreferencesFragment.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.screens.ProjectPreferencesFragment.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.source.SharedPreferencesSettingsProvider.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.preferences.utilities.PreferencesUtils` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.projects.DeleteProjectResult.DeletedSuccessfullyCurrentProject` · collect_app · data class · used-by 1
+- [ ] `org.odk.collect.android.projects.DeleteProjectResult.DeletedSuccessfullyInactiveProject` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.projects.DeleteProjectResult.DeletedSuccessfullyLastProject` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.projects.DuplicateProjectConfirmationDialog.DuplicateProjectConfirmationListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.projects.DuplicateProjectConfirmationKeys` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.projects.ProjectResetter.ResetAction` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.savepoints.SavepointListener` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.savepoints.SavepointTask.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.state.DataKeys` · collect_app · object · used-by 3
+- [ ] `org.odk.collect.android.storage.StoragePaths` · collect_app · data class · used-by 7
+- [ ] `org.odk.collect.android.storage.StorageSubdirectory` · collect_app · enum · used-by 13
+- [ ] `org.odk.collect.android.tasks.InstanceUploaderTask.Outcome` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.tasks.ProgressNotifier` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.tasks.SaveFormIndexTask.SaveFormIndexListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.upload.FormUploadAuthRequestedException` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.upload.FormUploadException` · collect_app · class · used-by 8
+- [ ] `org.odk.collect.android.utilities.ActionRegister` · collect_app · object · used-by 3
+- [ ] `org.odk.collect.android.utilities.ApplicationConstants` · collect_app · class · used-by 13
+- [ ] `org.odk.collect.android.utilities.ApplicationConstants.BundleKeys` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.utilities.ApplicationConstants.Namespaces` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.utilities.ApplicationConstants.RequestCodes` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.ApplicationConstants.SortingOrder` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.utilities.ArrayUtils` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.AuthDialogUtility.AuthDialogUtilityResultListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.utilities.CSVUtils` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.utilities.ChangeLocks` · collect_app · data class · used-by 3
+- [ ] `org.odk.collect.android.utilities.CollectStrictMode` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.utilities.ControllableLifecyleOwner` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.DialogUtils` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.FileProvider` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.android.utilities.FormNameUtils` · collect_app · class · used-by 3
+- [ ] `org.odk.collect.android.utilities.MyanmarDateUtils` · collect_app · class · used-by 2
+- [ ] `org.odk.collect.android.utilities.ReplaceCallback.Callback` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.utilities.ResponseMessageParser` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.SelectOneWidgetUtils` · collect_app · class · used-by 4
+- [ ] `org.odk.collect.android.utilities.SoftKeyboardController` · collect_app · object · used-by 7
+- [ ] `org.odk.collect.android.utilities.UnderlyingValuesConcat` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.utilities.ViewUtils` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.utilities.ZipUtils` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.version.VersionDescriptionProvider` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.views.ChoicesRecyclerView.FlexItemDecoration` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.views.CustomWebView` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.views.DecoratedBarcodeView` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.views.DecoratedBarcodeView.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.views.SlidingTabLayout.InternalViewPagerListener` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.views.SlidingTabLayout.TabClickListener` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.views.SlidingTabLayout.TabColorizer` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.views.TrackingTouchSlider` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.views.TransparentProgressScreen` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.views.TwoItemMultipleChoiceView` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget.ExternalImageCaptureHandler` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget.ImageClickHandler` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.android.widgets.CounterWidget.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.widgets.WidgetAnswerView` · collect_app · class · used-by 0
+- [ ] `org.odk.collect.android.widgets.datetime.DatePickerDetails.DatePickerMode` · collect_app · enum · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.DatePickerDetails.DatePickerType` · collect_app · enum · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.DateTimeUtils` · collect_app · class · used-by 11
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.BuddhistDatePickerDialog.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog.DateChangeListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CustomTimePickerDialog.TimeChangeListener` · collect_app · interface · used-by 1
+- [ ] `org.odk.collect.android.widgets.interfaces.Widget` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver` · collect_app · interface · used-by 21
+- [ ] `org.odk.collect.android.widgets.items.SelectOneFromMapDialogFragment.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.widgets.range.RangePickerWidgetUtils` · collect_app · object · used-by 2
+- [ ] `org.odk.collect.android.widgets.range.RangeSliderState` · collect_app · data class · used-by 3
+- [ ] `org.odk.collect.android.widgets.utilities.ActivityGeoDataRequester.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.widgets.utilities.AdditionalAttributes` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.widgets.utilities.AudioFileRequester` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.widgets.utilities.BindAttributes` · collect_app · object · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.BindAttributes.Quality` · collect_app · enum class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.FileRequester` · collect_app · interface · used-by 6
+- [ ] `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils.FontSize` · collect_app · enum class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.RecordingRequester` · collect_app · interface · used-by 5
+- [ ] `org.odk.collect.android.widgets.utilities.RecordingStatusHandler` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.widgets.utilities.SearchQueryViewModel` · collect_app · class · used-by 1
+- [ ] `org.odk.collect.android.widgets.utilities.StringRequester` · collect_app · interface · used-by 5
+- [ ] `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry` · collect_app · interface · used-by 34
+- [ ] `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment.Companion` · collect_app · object · used-by 0
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.UnderlyingValuesChecker` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.WarningRenderer` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.WarningTextCreator` · collect_app · interface · used-by 2
+- [ ] `org.odk.collect.utilities.Result` · collect_app · class · used-by 3
+- [ ] `org.odk.collect.utilities.UserAgentProvider` · collect_app · interface · used-by 3
+- [ ] `org.odk.collect.crashhandler.CrashView` · crash-handler · class · used-by 2
+- [ ] `org.odk.collect.db.sqlite.AltDatabasePathContext` · db · class · used-by 3
+- [ ] `org.odk.collect.db.sqlite.CursorExt` · db · object · used-by 0
+- [ ] `org.odk.collect.db.sqlite.DatabaseConnection.Companion` · db · object · used-by 0
+- [ ] `org.odk.collect.db.sqlite.DatabaseMigrator` · db · interface · used-by 6
+- [ ] `org.odk.collect.db.sqlite.SQLiteColumns` · db · object · used-by 0
+- [ ] `org.odk.collect.db.sqlite.SQLiteDatabaseExt` · db · object · used-by 1
+- [ ] `org.odk.collect.db.sqlite.SqlQuery` · db · data class · used-by 0
+- [ ] `org.odk.collect.draw.QuitDrawingDialog` · draw · object · used-by 1
+- [ ] `org.odk.collect.entities.browser.ListViewHolder` · entities · class · used-by 1
+- [ ] `org.odk.collect.entities.javarosa.filter.PullDataFunctionHandler.Companion` · entities · object · used-by 0
+- [ ] `org.odk.collect.entities.javarosa.finalization.EntitiesExtra` · entities · data class · used-by 4
+- [ ] `org.odk.collect.entities.javarosa.finalization.FormEntity` · entities · data class · used-by 1
+- [ ] `org.odk.collect.entities.javarosa.parse.EntityFormParseProcessor.Companion.VERSIONS` · entities · object · used-by 0
+- [ ] `org.odk.collect.entities.javarosa.parse.EntitySchema` · entities · object · used-by 5
+- [ ] `org.odk.collect.entities.javarosa.parse.SaveTo` · entities · class · used-by 3
+- [ ] `org.odk.collect.entities.javarosa.spec.EntityAction` · entities · enum class · used-by 3
+- [ ] `org.odk.collect.entities.javarosa.spec.FormEntityElement` · entities · object · used-by 0
+- [ ] `org.odk.collect.entities.javarosa.spec.UnrecognizedEntityVersionException` · entities · class · used-by 2
+- [ ] `org.odk.collect.entities.server.EntitySource` · entities · interface · used-by 5
+- [ ] `org.odk.collect.entities.storage.Entity.New` · entities · data class · used-by 1
+- [ ] `org.odk.collect.entities.storage.Entity.Saved` · entities · data class · used-by 0
+- [ ] `org.odk.collect.entities.storage.Entity.State` · entities · enum class · used-by 1
+- [ ] `org.odk.collect.entities.storage.EntityList` · entities · data class · used-by 3
+- [ ] `org.odk.collect.entities.storage.QueryException` · entities · class · used-by 4
+- [ ] `org.odk.collect.errors.ErrorActivity.Companion` · errors · object · used-by 0
+- [ ] `org.odk.collect.errors.ErrorAdapter.ViewHolder` · errors · class · used-by 1
+- [ ] `org.odk.collect.errors.ErrorItem` · errors · data class · used-by 6
+- [ ] `org.odk.collect.externalapp.ExternalAppUtils` · external-app · object · used-by 5
+- [ ] `org.odk.collect.forms.Form.Builder` · forms · class · used-by 1 `[C12]`
+  - needs ↓: `org.odk.collect.forms.Form`
+- [ ] `org.odk.collect.forms.Form` · forms · class · used-by 26 `[C12]`
+  - needs ↓: `org.odk.collect.forms.Form.Builder`
+- [ ] `org.odk.collect.forms.FormListItem` · forms · data class · used-by 4
+- [ ] `org.odk.collect.forms.FormSourceException` · forms · sealed class · used-by 16
+- [ ] `org.odk.collect.forms.FormSourceException.AuthRequired` · forms · class · used-by 2
+- [ ] `org.odk.collect.forms.FormSourceException.FetchError` · forms · class · used-by 1
+- [ ] `org.odk.collect.forms.FormSourceException.ParseError` · forms · class · used-by 0
+- [ ] `org.odk.collect.forms.FormSourceException.SecurityError` · forms · class · used-by 1
+- [ ] `org.odk.collect.forms.FormSourceException.ServerError` · forms · class · used-by 0
+- [ ] `org.odk.collect.forms.FormSourceException.ServerNotOpenRosaError` · forms · class · used-by 1
+- [ ] `org.odk.collect.forms.FormSourceException.Unreachable` · forms · sealed class · used-by 0
+- [ ] `org.odk.collect.forms.ManifestFile` · forms · data class · used-by 4
+- [ ] `org.odk.collect.forms.MediaFile.Type` · forms · enum class · used-by 2
+- [ ] `org.odk.collect.forms.instances.Instance.Builder` · forms · class · used-by 1 `[C13]`
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.forms.instances.Instance` · forms · class · used-by 50 `[C13]`
+  - needs ↓: `org.odk.collect.forms.instances.Instance.Builder`
+- [ ] `org.odk.collect.forms.instances.InstancesRepository.IntegrityException` · forms · class · used-by 0
+- [ ] `org.odk.collect.forms.savepoints.Savepoint` · forms · data class · used-by 10
+- [ ] `org.odk.collect.geo.Constants` · geo · object · used-by 0
+- [ ] `org.odk.collect.geo.analytics.AnalyticsEvents` · geo · object · used-by 2
+- [ ] `org.odk.collect.geo.geopoint.GeoPointActivity.Companion` · geo · object · used-by 0
+- [ ] `org.odk.collect.geo.geopoint.GeoPointDialogFragment.Listener` · geo · interface · used-by 1
+- [ ] `org.odk.collect.geo.geopoint.GeoPointViewModelFactory` · geo · interface · used-by 3
+- [ ] `org.odk.collect.geo.geopoint.LocationAccuracy` · geo · sealed class · used-by 5
+- [ ] `org.odk.collect.geo.geopoint.LocationAccuracy.Improving` · geo · data class · used-by 1
+- [ ] `org.odk.collect.geo.geopoint.LocationAccuracy.Poor` · geo · data class · used-by 0
+- [ ] `org.odk.collect.geo.geopoint.LocationAccuracy.Unacceptable` · geo · data class · used-by 1
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyFragment.Companion` · geo · object · used-by 0
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyFragment.OutputMode` · geo · enum class · used-by 3
+- [ ] `org.odk.collect.geo.geopoly.GeoPolySettingsDialogFragment.SettingsDialogCallback` · geo · interface · used-by 2
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyViewModel.RecordingMode` · geo · enum class · used-by 1
+- [ ] `org.odk.collect.geo.geopoly.InfoDialog.InfoItem` · geo · data class · used-by 0
+- [ ] `org.odk.collect.geo.selection.IconifiedText` · geo · data class · used-by 3
+- [ ] `org.odk.collect.geo.selection.MappableSelectItem.MappableSelectLine` · geo · data class · used-by 0
+- [ ] `org.odk.collect.geo.selection.MappableSelectItem.MappableSelectPoint` · geo · data class · used-by 0
+- [ ] `org.odk.collect.geo.selection.MappableSelectItem.MappableSelectPolygon` · geo · data class · used-by 0
+- [ ] `org.odk.collect.geo.selection.SelectionMapFragment.Companion` · geo · object · used-by 0
+- [ ] `org.odk.collect.geo.selection.SelectionSummarySheet.Listener` · geo · interface · used-by 1
+- [ ] `org.odk.collect.geo.selection.Status` · geo · enum class · used-by 3
+- [ ] `org.odk.collect.googlemaps.GoogleMapConfigurator.GoogleMapTypeOption` · google-maps · class · used-by 3
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.CameraListener` · google-maps · class · used-by 1
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.MapFeature` · google-maps · interface · used-by 3
+- [ ] `org.odk.collect.googlemaps.GoogleMapsMapBoxOfflineTileProvider` · google-maps · class · used-by 1
+- [ ] `org.odk.collect.googlemaps.scaleview.MapScaleView.ScaleType` · google-maps · enum · used-by 1
+- [ ] `org.odk.collect.googlemaps.scaleview.Scale` · google-maps · class · used-by 4
+- [ ] `org.odk.collect.imageloader.GlideImageLoader.ImageLoaderCallback` · image-loader · interface · used-by 2
+- [ ] `org.odk.collect.imageloader.svg.SvgDecoder` · image-loader · class · used-by 1
+- [ ] `org.odk.collect.imageloader.svg.SvgDrawableTranscoder` · image-loader · class · used-by 1
+- [ ] `org.odk.collect.imageloader.svg.SvgSoftwareLayerSetter` · image-loader · class · used-by 1
+- [ ] `org.odk.collect.lists.EmptyListView` · lists · class · used-by 2
+- [ ] `org.odk.collect.lists.RecyclerViewUtils` · lists · object · used-by 5
+- [ ] `org.odk.collect.lists.selects.MultiSelectAdapter.ViewHolder` · lists · data class · used-by 1
+- [ ] `org.odk.collect.lists.selects.MultiSelectControlsFragment.Companion` · lists · object · used-by 0
+- [ ] `org.odk.collect.lists.selects.MultiSelectControlsView.Listener` · lists · interface · used-by 2
+- [ ] `org.odk.collect.lists.selects.SelectItem` · lists · data class · used-by 7
+- [ ] `org.odk.collect.location.FusedLocationProviderClientWrapper` · location · class · used-by 1
+- [ ] `org.odk.collect.location.GoogleFusedLocationClient.Companion` · location · object · used-by 0
+- [ ] `org.odk.collect.location.Location` · location · data class · used-by 5
+- [ ] `org.odk.collect.location.LocationClient.LocationClientListener` · location · interface · used-by 4
+- [ ] `org.odk.collect.location.LocationClient.Priority` · location · enum · used-by 1
+- [ ] `org.odk.collect.location.LocationUtils` · location · object · used-by 1
+- [ ] `org.odk.collect.location.tracker.LocationTrackerService.Companion` · location · object · used-by 0
+- [ ] `org.odk.collect.mapbox.DynamicPolyLineFeature.ClickListener` · mapbox · class · used-by 1
+- [ ] `org.odk.collect.mapbox.DynamicPolygonFeature.ClickListener` · mapbox · class · used-by 1
+- [ ] `org.odk.collect.mapbox.MapBoxInitializationFragment.Companion` · mapbox · object · used-by 0
+- [ ] `org.odk.collect.mapbox.MapFeature` · mapbox · interface · used-by 3
+- [ ] `org.odk.collect.mapbox.MapboxMapConfigurator.MapboxUrlOption` · mapbox · class · used-by 1
+- [ ] `org.odk.collect.mapbox.MapboxMapFragment.Companion` · mapbox · object · used-by 0
+- [ ] `org.odk.collect.mapbox.MarkerFeature.ClickListener` · mapbox · class · used-by 1
+- [ ] `org.odk.collect.mapbox.TileHttpServer.Response` · mapbox · class · used-by 1
+- [ ] `org.odk.collect.maps.AnalyticsEvents` · maps · object · used-by 1
+- [ ] `org.odk.collect.maps.MapConsts` · maps · object · used-by 3
+- [ ] `org.odk.collect.maps.MapFragment.Companion.IconAnchor` · maps · annotation class · used-by 0
+- [ ] `org.odk.collect.maps.MapFragment.ErrorListener` · maps · fun interface · used-by 2
+- [ ] `org.odk.collect.maps.MapFragment.FeatureListener` · maps · fun interface · used-by 2
+- [ ] `org.odk.collect.maps.MapPoint` · maps · data class · used-by 42
+- [ ] `org.odk.collect.maps.MapViewModel.Companion` · maps · object · used-by 0
+- [ ] `org.odk.collect.maps.Zoom.Point` · maps · data class · used-by 1
+- [ ] `org.odk.collect.maps.layers.CheckableReferenceLayer` · maps · data class · used-by 3
+- [ ] `org.odk.collect.maps.layers.MbtilesFile.LayerType` · maps · enum · used-by 2
+- [ ] `org.odk.collect.maps.layers.MbtilesFile.MbtilesException` · maps · class · used-by 4
+- [ ] `org.odk.collect.maps.layers.MbtilesFile.VectorLayer` · maps · class · used-by 1
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersImporterAdapter.ViewHolder` · maps · class · used-by 1
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersPickerAdapter.ViewHolder` · maps · class · used-by 1
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersViewModel.LayersToImport` · maps · data class · used-by 1
+- [ ] `org.odk.collect.maps.layers.ReferenceLayer` · maps · data class · used-by 5
+- [ ] `org.odk.collect.maps.layers.TileSource` · maps · interface · used-by 3
+- [ ] `org.odk.collect.maps.markers.MarkerDescription` · maps · data class · used-by 13
+- [ ] `org.odk.collect.maps.markers.MarkerIconDescription` · maps · interface · used-by 12
+- [ ] `org.odk.collect.maps.markers.MarkerIconDescription.TracePoint` · maps · data class · used-by 0
+- [ ] `org.odk.collect.material.BottomSheetBehavior` · material · class · used-by 2
+- [ ] `org.odk.collect.material.MaterialFullScreenDialogFragment` · material · class · used-by 7
+- [ ] `org.odk.collect.material.MaterialPill` · material · class · used-by 1
+- [ ] `org.odk.collect.material.MaterialProgressDialogFragment.OnCancelCallback` · material · interface · used-by 1
+- [ ] `org.odk.collect.metadata.InstallIDProvider` · metadata · interface · used-by 3
+- [ ] `org.odk.collect.metadata.PropertyManager.Companion` · metadata · object · used-by 0
+- [ ] `org.odk.collect.mobiledevicemanagement.MDMConfigHandler` · mobile-device-management · interface · used-by 3
+- [ ] `org.odk.collect.openrosa.forms.DocumentFetchResult` · open-rosa · class · used-by 1
+- [ ] `org.odk.collect.openrosa.forms.EntityIntegrity` · open-rosa · data class · used-by 2
+- [ ] `org.odk.collect.openrosa.http.CaseInsensitiveHeaders` · open-rosa · interface · used-by 5
+- [ ] `org.odk.collect.openrosa.http.CollectThenSystemContentTypeMapper.CollectContentTypeMappings` · open-rosa · enum · used-by 1
+- [ ] `org.odk.collect.openrosa.http.HttpCredentialsInterface` · open-rosa · interface · used-by 8
+- [ ] `org.odk.collect.openrosa.http.HttpPostResult` · open-rosa · class · used-by 3
+- [ ] `org.odk.collect.openrosa.http.OpenRosaConstants` · open-rosa · object · used-by 5
+- [ ] `org.odk.collect.openrosa.http.OpenRosaHttpInterface.FileToContentTypeMapper` · open-rosa · interface · used-by 0
+- [ ] `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClient` · open-rosa · interface · used-by 4
+- [ ] `org.odk.collect.osmdroid.OsmDroidInitializer` · osmdroid · object · used-by 1
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.MapEventsReceiver` · osmdroid · class · used-by 1
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.MapFeature` · osmdroid · interface · used-by 3
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.RegisterReceiver` · osmdroid · class · used-by 1
+- [ ] `org.odk.collect.osmdroid.OsmMBTileModuleProvider.TileLoader` · osmdroid · class · used-by 1
+- [ ] `org.odk.collect.osmdroid.OsmMBTileSource` · osmdroid · class · used-by 2
+- [ ] `org.odk.collect.osmdroid.WebMapService` · osmdroid · class · used-by 4
+- [ ] `org.odk.collect.permissions.LocationAccessibilityChecker` · permissions · interface · used-by 2
+- [ ] `org.odk.collect.permissions.PermissionListener` · permissions · interface · used-by 17
+- [ ] `org.odk.collect.permissions.PermissionsChecker` · permissions · interface · used-by 16
+- [ ] `org.odk.collect.printer.HtmlPrinter` · printer · class · used-by 4
+- [ ] `org.odk.collect.projects.JsonProject` · projects · data class · used-by 1
+- [ ] `org.odk.collect.projects.Project` · projects · sealed class · used-by 18
+- [ ] `org.odk.collect.projects.Project.New` · projects · data class · used-by 1
+- [ ] `org.odk.collect.projects.ProjectConfigurationResult` · projects · enum class · used-by 7
+- [ ] `org.odk.collect.projects.ProjectDependencyFactory` · projects · fun interface · used-by 17
+- [ ] `org.odk.collect.projects.ProjectsDependencyComponent` · projects · interface · used-by 2
+- [ ] `org.odk.collect.projects.SettingsConnectionMatcher` · projects · interface · used-by 5
+- [ ] `org.odk.collect.qrcode.BarcodeCandidate` · qr-code · class · used-by 2
+- [ ] `org.odk.collect.qrcode.BarcodeFormat` · qr-code · enum class · used-by 5
+- [ ] `org.odk.collect.qrcode.BarcodeScannerView.TorchListener` · qr-code · interface · used-by 1
+- [ ] `org.odk.collect.qrcode.DetectedState.Full` · qr-code · data class · used-by 0
+- [ ] `org.odk.collect.qrcode.DetectedState.None` · qr-code · object · used-by 0
+- [ ] `org.odk.collect.qrcode.DetectedState.Potential` · qr-code · object · used-by 0
+- [ ] `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerViewFactory.Companion` · qr-code · object · used-by 0
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeCreator.MaximumCharactersLimitException` · qr-code · data class · used-by 2
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeCreatorImpl.Companion` · qr-code · object · used-by 0
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeDecoder.QRCodeInvalidException` · qr-code · class · used-by 2
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeDecoder.QRCodeNotFoundException` · qr-code · class · used-by 2
+- [ ] `org.odk.collect.selfiecamera.Camera.State` · selfie-camera · enum class · used-by 1
+- [ ] `org.odk.collect.selfiecamera.CaptureSelfieActivity.Companion` · selfie-camera · object · used-by 0
+- [ ] `org.odk.collect.settings.enums.StringIdEnum` · settings · interface · used-by 4
+- [ ] `org.odk.collect.settings.importing.SettingsChangeHandler` · settings · interface · used-by 5
+- [ ] `org.odk.collect.settings.importing.SettingsValidator` · settings · interface · used-by 2
+- [ ] `org.odk.collect.settings.keys.AppConfigurationKeys` · settings · object · used-by 4
+- [ ] `org.odk.collect.settings.keys.MetaKeys` · settings · object · used-by 10
+- [ ] `org.odk.collect.settings.keys.ProjectKeys` · settings · object · used-by 49
+- [ ] `org.odk.collect.settings.keys.ProtectedProjectKeys` · settings · object · used-by 15
+- [ ] `org.odk.collect.settings.migration.KeyValuePair` · settings · class · used-by 3
+- [ ] `org.odk.collect.shared.PathUtils` · shared · object · used-by 5
+- [ ] `org.odk.collect.shared.Query` · shared · sealed class · used-by 8
+- [ ] `org.odk.collect.shared.Query.And` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.Query.NumericEq` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.Query.NumericNotEq` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.Query.Or` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.Query.StringEq` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.Query.StringNotEq` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.TimeInMs` · shared · object · used-by 1
+- [ ] `org.odk.collect.shared.collections.CollectionExtensions` · shared · object · used-by 0
+- [ ] `org.odk.collect.shared.files.FileExt` · shared · object · used-by 4
+- [ ] `org.odk.collect.shared.geometry.LineSegment` · shared · data class · used-by 0
+- [ ] `org.odk.collect.shared.geometry.Orientation` · shared · enum class · used-by 0
+- [ ] `org.odk.collect.shared.geometry.Point` · shared · data class · used-by 1
+- [ ] `org.odk.collect.shared.injection.ObjectProvider` · shared · interface · used-by 3
+- [ ] `org.odk.collect.shared.locks.ChangeLock` · shared · interface · used-by 3
+- [ ] `org.odk.collect.shared.locks.ChangeLock.Companion` · shared · object · used-by 0
+- [ ] `org.odk.collect.shared.result.Result` · shared · sealed class · used-by 0
+- [ ] `org.odk.collect.shared.result.Result.Error` · shared · data class · used-by 1
+- [ ] `org.odk.collect.shared.result.Result.Success` · shared · data class · used-by 1
+- [ ] `org.odk.collect.shared.settings.Settings.OnSettingChangeListener` · shared · interface · used-by 2
+- [ ] `org.odk.collect.shared.strings.Md5` · shared · object · used-by 9
+- [ ] `org.odk.collect.shared.strings.RandomString` · shared · class · used-by 2
+- [ ] `org.odk.collect.shared.strings.StringUtils` · shared · object · used-by 6
+- [ ] `org.odk.collect.shared.strings.UUIDGenerator` · shared · class · used-by 6
+- [ ] `org.odk.collect.strings.localization.LocalizedApplication` · strings · interface · used-by 2
+- [ ] `org.odk.collect.timedgrid.ButtonFinalState` · timedgrid · enum class · used-by 1
+- [ ] `org.odk.collect.timedgrid.FinishType` · timedgrid · enum class · used-by 5
+- [ ] `org.odk.collect.timedgrid.FormAnswerRefresher` · timedgrid · fun interface · used-by 3
+- [ ] `org.odk.collect.timedgrid.FormControllerFacade` · timedgrid · interface · used-by 3
+- [ ] `org.odk.collect.timedgrid.GridItem` · timedgrid · data class · used-by 4
+- [ ] `org.odk.collect.timedgrid.NavigationWarning` · timedgrid · data class · used-by 5
+- [ ] `org.odk.collect.timedgrid.PausableCountDownTimer` · timedgrid · class · used-by 1
+- [ ] `org.odk.collect.timedgrid.TimedGridState` · timedgrid · enum class · used-by 4
+- [ ] `org.odk.collect.timedgrid.TimedGridSummary` · timedgrid · data class · used-by 3
+- [ ] `org.odk.collect.timedgrid.TimedGridSummaryAnswerCreator.Companion` · timedgrid · object · used-by 0
+- [ ] `org.odk.collect.timedgrid.TimedGridViewModel.TimedGridTimerState` · timedgrid · data class · used-by 1
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetConfiguration.Companion.Keys` · timedgrid · object · used-by 1
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetLayout.Companion` · timedgrid · object · used-by 0
+- [ ] `org.odk.collect.upgrade.InstallDetector` · upgrade · interface · used-by 3
+- [ ] `org.odk.collect.upgrade.LaunchState` · upgrade · interface · used-by 2
+- [ ] `org.odk.collect.upgrade.Upgrade` · upgrade · interface · used-by 7
+- [ ] `org.odk.collect.webpage.WebPageService` · web-page · interface · used-by 15
+
+### Level 1 — 196 classes
+
+- [ ] `org.odk.collect.analytics.BlockableFirebaseAnalytics` · analytics · class · used-by 1
+  - needs ↓: `org.odk.collect.analytics.Analytics`
+- [ ] `org.odk.collect.analytics.NoopAnalytics` · analytics · class · used-by 2
+  - needs ↓: `org.odk.collect.analytics.Analytics`
+- [ ] `org.odk.collect.androidshared.ColorPickerDialog` · androidshared · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.ColorPickerViewModel`
+- [ ] `org.odk.collect.androidshared.bitmap.ImageCompressor` · androidshared · object · used-by 2
+  - needs ↓: `org.odk.collect.androidshared.bitmap.ImageFileUtils`
+- [ ] `org.odk.collect.androidshared.data.StateStore` · androidshared · fun interface · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.data.AppState`
+- [ ] `org.odk.collect.androidshared.data.Updatable.Data` · androidshared · value class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.androidshared.data.Updatable`
+- [ ] `org.odk.collect.androidshared.data.Updatable.QualifiedData` · androidshared · sealed class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.androidshared.data.Updatable`
+- [ ] `org.odk.collect.androidshared.livedata.LiveDataUtils` · androidshared · class · used-by 8
+  - needs ↓: `org.odk.collect.androidshared.livedata.LiveDataUtils.CombinedLiveData`, `org.odk.collect.androidshared.livedata.LiveDataUtils.Quad`, `org.odk.collect.async.Cancellable`
+- [ ] `org.odk.collect.androidshared.livedata.MutableNonNullLiveData` · androidshared · class · used-by 10
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`
+- [ ] `org.odk.collect.androidshared.system.BroadcastReceiverRegisterImpl` · androidshared · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.system.BroadcastReceiverRegister`
+- [ ] `org.odk.collect.androidshared.system.IntentLauncherImpl` · androidshared · object · used-by 2
+  - needs ↓: `org.odk.collect.androidshared.system.IntentLauncher`
+- [ ] `org.odk.collect.androidshared.system.ProcessRestoreDetector` · androidshared · object · used-by 1
+  - needs ↓: `org.odk.collect.shared.strings.UUIDGenerator`
+- [ ] `org.odk.collect.androidshared.ui.Animations` · androidshared · object · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.DisableableAnimatorWrapper`
+- [ ] `org.odk.collect.androidshared.ui.ComposeThemeProvider.Companion` · androidshared · object · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.ComposeThemeProvider`
+- [ ] `org.odk.collect.androidshared.ui.DisplayString` · androidshared · sealed class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.ui.DisplayString.Raw`, `org.odk.collect.androidshared.ui.DisplayString.Resource`
+- [ ] `org.odk.collect.androidshared.ui.OneSignTextWatcher` · androidshared · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.strings.StringUtils`
+- [ ] `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarPresenterObserver` · androidshared · class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarDetails`
+- [ ] `org.odk.collect.androidshared.ui.ToastUtils` · androidshared · object · used-by 31
+  - needs ↓: `org.odk.collect.androidshared.ui.AlertStore`
+- [ ] `org.odk.collect.androidshared.ui.multiclicksafe.DoubleClickSafeMaterialButton` · androidshared · class · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeOnClickListener` · androidshared · class · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.androidshared.utils.InMemUniqueIdGenerator` · androidshared · class · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.utils.UniqueIdGenerator`
+- [ ] `org.odk.collect.async.Scheduler` · async · interface · used-by 83
+  - needs ↓: `org.odk.collect.async.Cancellable`, `org.odk.collect.async.NotificationInfo`, `org.odk.collect.async.Scheduler.NetworkType`, `org.odk.collect.async.TaskSpec`
+- [ ] `org.odk.collect.async.ScopeCancellable` · async · class · used-by 1
+  - needs ↓: `org.odk.collect.async.Cancellable`
+- [ ] `org.odk.collect.audioclips.AudioClipViewModel.CurrentlyPlaying` · audio-clips · class · used-by 1
+  - needs ↓: `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.audioclips.AudioPlayer` · audio-clips · interface · used-by 16
+  - needs ↓: `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.audiorecorder.mediarecorder.MediaRecorderRecordingResource` · audio-recorder · class · used-by 2
+  - needs ↓: `org.odk.collect.audiorecorder.recorder.RecordingResource`
+- [ ] `org.odk.collect.audiorecorder.recorder.Recorder` · audio-recorder · interface · used-by 3
+  - needs ↓: `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recording.MicInUseException`, `org.odk.collect.audiorecorder.recording.SetupException`
+- [ ] `org.odk.collect.audiorecorder.recording.AudioRecorder` · audio-recorder · class · used-by 17
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recording.RecordingSession`
+- [ ] `org.odk.collect.audiorecorder.recording.internal.RecordingRepository` · audio-recorder · class · used-by 4
+  - needs ↓: `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.audiorecorder.recording.RecordingSession`
+- [ ] `org.odk.collect.android.adapters.AboutListAdapter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.adapters.AboutItemClickListener`, `org.odk.collect.android.adapters.AboutListAdapter.ViewHolder`
+- [ ] `org.odk.collect.android.application.CollectComposeThemeProvider` · collect_app · interface · used-by 5
+  - needs ↓: `org.odk.collect.androidshared.ui.ComposeThemeProvider`
+- [ ] `org.odk.collect.android.application.initialization.CrashReportingTree` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.analytics.Analytics`
+- [ ] `org.odk.collect.android.audio.AMRAppender` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.audio.AudioFileAppender`
+- [ ] `org.odk.collect.android.audio.AudioButton` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.audio.AudioButton.Listener`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeMaterialButton`
+- [ ] `org.odk.collect.android.audio.AudioControllerView.SwipeListener` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.audio.AudioControllerView.SwipableParent`
+- [ ] `org.odk.collect.android.audio.M4AAppender` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.audio.AudioFileAppender`
+- [ ] `org.odk.collect.android.database.DatabaseObjectMapper` · collect_app · object · used-by 2
+  - needs ↓: `org.odk.collect.android.database.forms.DatabaseFormColumns`, `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.external.FormInspectionResult` · collect_app · sealed class · used-by 2
+  - needs ↓: `org.odk.collect.forms.savepoints.Savepoint`
+- [ ] `org.odk.collect.android.external.FormInspectionResult.Savepoint` · collect_app · data class · used-by 0
+  - needs ↓: `org.odk.collect.forms.savepoints.Savepoint`
+- [ ] `org.odk.collect.android.formentry.FormAnimation` · collect_app · object · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.FormAnimationType`
+- [ ] `org.odk.collect.android.formentry.FormIndexAnimationHandler.Listener` · collect_app · interface · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.FormIndexAnimationHandler.Direction`
+- [ ] `org.odk.collect.android.formentry.SwipeHandler.GestureListener` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.utilities.ActionRegister`, `org.odk.collect.androidshared.utils.ScreenUtils`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.formentry.audit.AuditEvent` · collect_app · class · used-by 13
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEvent.AuditEventType`
+- [ ] `org.odk.collect.android.formentry.repeats.AddRepeatDialog` · collect_app · object · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.repeats.AddRepeatDialog.Listener`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeMaterialButton`
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveResult` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveRequest`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveResult.State`
+- [ ] `org.odk.collect.android.formhierarchy.HierarchyListAdapter.OnElementClickListener` · collect_app · interface · used-by 2
+  - needs ↓: `org.odk.collect.android.formhierarchy.HierarchyItem`
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListItemView` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`
+- [ ] `org.odk.collect.android.formlists.savedformlist.SavedFormListItemView` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.formlists.sorting.FormListSortingAdapter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formlists.sorting.FormListSortingAdapter.ViewHolder`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`
+- [ ] `org.odk.collect.android.formmanagement.FormSourceExceptionMapper` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.forms.FormSourceException`
+- [ ] `org.odk.collect.android.formmanagement.ServerFormDetails` · collect_app · data class · used-by 18
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails.Type`, `org.odk.collect.forms.ManifestFile`
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadException` · collect_app · sealed class · used-by 14
+  - needs ↓: `org.odk.collect.forms.FormSourceException`
+- [ ] `org.odk.collect.android.formmanagement.download.ServerFormDownloader.FormResult` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.forms.Form`
+- [ ] `org.odk.collect.android.formmanagement.download.ServerFormDownloader.ProgressReporterAndSupplierStateListener` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.async.OngoingWorkListener`
+- [ ] `org.odk.collect.android.formmanagement.finalization.EditedFormFinalizationProcessor` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.formmanagement.metadata.FormMetadataParser` · collect_app · object · used-by 2
+  - needs ↓: `org.odk.collect.android.formmanagement.metadata.FormMetadata`
+- [ ] `org.odk.collect.android.fragments.dialogs.MovingBackwardsDialog` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.fragments.dialogs.MovingBackwardsDialog.MovingBackwardsDialogListener`
+- [ ] `org.odk.collect.android.fragments.dialogs.NumberPickerDialog` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.fragments.dialogs.NumberPickerDialog.NumberPickerListener`
+- [ ] `org.odk.collect.android.fragments.dialogs.ResetSettingsResultDialog` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.fragments.dialogs.ResetSettingsResultDialog.ResetSettingsResultDialogListener`
+- [ ] `org.odk.collect.android.fragments.viewmodels.RankingViewModel.Factory` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.fragments.viewmodels.RankingViewModel`
+- [ ] `org.odk.collect.android.instancemanagement.InstanceEditResult` · collect_app · sealed class · used-by 4
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.logic.FileReferenceFactory` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.logic.FileReference`
+- [ ] `org.odk.collect.android.mainmenu.MainMenuButton` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.mainmenu.MinSdkDeprecationBanner` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.webpage.WebPageService`
+- [ ] `org.odk.collect.android.mainmenu.StartNewFormButton` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.projects.DeleteProjectResult` · collect_app · sealed class · used-by 3
+  - needs ↓: `org.odk.collect.projects.Project`
+- [ ] `org.odk.collect.android.projects.DuplicateProjectConfirmationDialog` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.projects.DuplicateProjectConfirmationDialog.DuplicateProjectConfirmationListener`
+- [ ] `org.odk.collect.android.projects.ProjectIconView` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.projects.Project`
+- [ ] `org.odk.collect.android.tasks.FormLoaderTask.FormEntryControllerFactory` · collect_app · interface · used-by 2
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.tasks.SaveToDiskResult` · collect_app · class · used-by 6
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.utilities.AndroidUserAgent` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.utilities.UserAgentProvider`
+- [ ] `org.odk.collect.android.utilities.AnimationUtils` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.listeners.Result`
+- [ ] `org.odk.collect.android.utilities.FormsUploadResultInterpreter` · collect_app · object · used-by 2
+  - needs ↓: `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.errors.ErrorItem`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.utilities.QuestionMediaManager` · collect_app · interface · used-by 21
+  - needs ↓: `org.odk.collect.utilities.Result`
+- [ ] `org.odk.collect.android.utilities.ReplaceCallback` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.utilities.ReplaceCallback.Callback`
+- [ ] `org.odk.collect.android.version.VersionInformation` · collect_app · class · used-by 9
+  - needs ↓: `org.odk.collect.android.version.VersionDescriptionProvider`
+- [ ] `org.odk.collect.android.views.SlidingTabStrip.SimpleTabColorizer` · collect_app · class · used-by 1 `[C8]`
+  - needs ↓: `org.odk.collect.android.views.SlidingTabLayout`
+- [ ] `org.odk.collect.android.views.SlidingTabStrip` · collect_app · class · used-by 1 `[C8]`
+  - needs ↓: `org.odk.collect.android.views.SlidingTabLayout`, `org.odk.collect.android.views.SlidingTabStrip.SimpleTabColorizer`
+- [ ] `org.odk.collect.android.views.SlidingTabLayout` · collect_app · class · used-by 2 `[C8]`
+  - needs ↓: `org.odk.collect.android.views.SlidingTabLayout.InternalViewPagerListener`, `org.odk.collect.android.views.SlidingTabLayout.TabClickListener`, `org.odk.collect.android.views.SlidingTabLayout.TabColorizer`, `org.odk.collect.android.views.SlidingTabStrip`
+- [ ] `org.odk.collect.android.views.WidgetAnswerText` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.listeners.ThousandsSeparatorTextWatcher`, `org.odk.collect.android.utilities.SoftKeyboardController`
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget.ImageCaptureHandler` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.widgets.BaseImageWidget.ExternalImageCaptureHandler`
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget.ViewImageClickHandler` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.widgets.BaseImageWidget.ImageClickHandler`
+- [ ] `org.odk.collect.android.widgets.datetime.DatePickerDetails` · collect_app · class · used-by 6
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DatePickerDetails.DatePickerMode`, `org.odk.collect.android.widgets.datetime.DatePickerDetails.DatePickerType`
+- [ ] `org.odk.collect.android.widgets.interfaces.FileWidget` · collect_app · interface · used-by 8
+  - needs ↓: `org.odk.collect.android.widgets.interfaces.Widget`
+- [ ] `org.odk.collect.android.widgets.interfaces.GeoDataRequester` · collect_app · interface · used-by 5
+  - needs ↓: `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.interfaces.MultiChoiceWidget` · collect_app · interface · used-by 4
+  - needs ↓: `org.odk.collect.android.widgets.interfaces.Widget`
+- [ ] `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader` · collect_app · interface · used-by 18
+  - needs ↓: `org.odk.collect.android.exception.ExternalDataException`
+- [ ] `org.odk.collect.android.widgets.items.SelectChoicesMapData.PropertyNames` · collect_app · object · used-by 0
+  - needs ↓: `org.odk.collect.entities.javarosa.parse.EntitySchema`
+- [ ] `org.odk.collect.android.widgets.utilities.GeoWidgetUtils` · collect_app · object · used-by 5
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.android.widgets.utilities.GetContentAudioFileRequester` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.widgets.utilities.AudioFileRequester`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.system.IntentLauncher`
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.SpacesInUnderlyingValues` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.UnderlyingValuesChecker`
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.SpacesInUnderlyingValuesTextCreator` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.utilities.UnderlyingValuesConcat`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.WarningTextCreator`
+- [ ] `org.odk.collect.crashhandler.MockCrashView` · crash-handler · class · used-by 1
+  - needs ↓: `org.odk.collect.crashhandler.CrashView`
+- [ ] `org.odk.collect.db.sqlite.CustomSQLiteQueryBuilder` · db · class · used-by 3
+  - needs ↓: `org.odk.collect.shared.strings.StringUtils`
+- [ ] `org.odk.collect.db.sqlite.DatabaseMigratorSQLiteOpenHelper` · db · class · used-by 1
+  - needs ↓: `org.odk.collect.db.sqlite.DatabaseMigrator`
+- [ ] `org.odk.collect.db.sqlite.MigrationListDatabaseMigrator` · db · class · used-by 2
+  - needs ↓: `org.odk.collect.db.sqlite.DatabaseMigrator`
+- [ ] `org.odk.collect.entities.browser.ListsAdapter` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.browser.ListViewHolder`
+- [ ] `org.odk.collect.entities.javarosa.parse.EntityFormExtra` · entities · class · used-by 2
+  - needs ↓: `org.odk.collect.entities.javarosa.parse.SaveTo`
+- [ ] `org.odk.collect.entities.javarosa.parse.XPathExpressionExt` · entities · object · used-by 0
+  - needs ↓: `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.entities.javarosa.spec.EntityFormParser` · entities · object · used-by 3
+  - needs ↓: `org.odk.collect.entities.javarosa.spec.EntityAction`
+- [ ] `org.odk.collect.entities.storage.Entity` · entities · interface · used-by 10
+  - needs ↓: `org.odk.collect.entities.storage.Entity.New`, `org.odk.collect.entities.storage.Entity.State`
+- [ ] `org.odk.collect.errors.ErrorAdapter` · errors · class · used-by 1
+  - needs ↓: `org.odk.collect.errors.ErrorAdapter.ViewHolder`, `org.odk.collect.errors.ErrorItem`
+- [ ] `org.odk.collect.forms.FormSource` · forms · interface · used-by 7
+  - needs ↓: `org.odk.collect.forms.FormListItem`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.ManifestFile`
+- [ ] `org.odk.collect.forms.FormsRepository` · forms · interface · used-by 25
+  - needs ↓: `org.odk.collect.forms.Form`
+- [ ] `org.odk.collect.forms.MediaFile` · forms · data class · used-by 4
+  - needs ↓: `org.odk.collect.forms.MediaFile.Type`
+- [ ] `org.odk.collect.forms.instances.InstancesRepository` · forms · interface · used-by 32
+  - needs ↓: `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.forms.savepoints.SavepointsRepository` · forms · interface · used-by 11
+  - needs ↓: `org.odk.collect.forms.savepoints.Savepoint`
+- [ ] `org.odk.collect.geo.GeoUtils` · geo · object · used-by 4
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.geo.geopoint.AccuracyProgressView` · geo · class · used-by 0
+  - needs ↓: `org.odk.collect.geo.geopoint.LocationAccuracy`
+- [ ] `org.odk.collect.geo.geopoint.GeoPointViewModel` · geo · class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.geo.geopoint.LocationAccuracy`, `org.odk.collect.location.Location`
+- [ ] `org.odk.collect.geo.geopoly.GeoPolySettingsDialogFragment` · geo · class · used-by 1
+  - needs ↓: `org.odk.collect.geo.geopoly.GeoPolySettingsDialogFragment.SettingsDialogCallback`
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyUtils` · geo · object · used-by 0
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.geo.selection.MappableSelectItem` · geo · sealed class · used-by 6
+  - needs ↓: `org.odk.collect.geo.selection.IconifiedText`, `org.odk.collect.geo.selection.Status`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.LineFeature` · google-maps · interface · used-by 5
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment.MapFeature`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.MarkerFeature` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment.MapFeature`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.markers.MarkerDescription`, `org.odk.collect.maps.markers.MarkerIconDescription`
+- [ ] `org.odk.collect.googlemaps.scaleview.MapScaleModel` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.scaleview.Scale`
+- [ ] `org.odk.collect.googlemaps.scaleview.Scales` · google-maps · class · used-by 2
+  - needs ↓: `org.odk.collect.googlemaps.scaleview.Scale`
+- [ ] `org.odk.collect.imageloader.ImageLoader` · image-loader · fun interface · used-by 5 `[C14]`
+  - needs ↓: `org.odk.collect.imageloader.GlideImageLoader`, `org.odk.collect.imageloader.GlideImageLoader.ImageLoaderCallback`
+- [ ] `org.odk.collect.imageloader.GlideImageLoader` · image-loader · class · used-by 6 `[C14]`
+  - needs ↓: `org.odk.collect.imageloader.GlideImageLoader.ImageLoaderCallback`, `org.odk.collect.imageloader.ImageLoader`, `org.odk.collect.imageloader.svg.SvgSoftwareLayerSetter`
+- [ ] `org.odk.collect.imageloader.svg.SvgModule` · image-loader · class · used-by 0
+  - needs ↓: `org.odk.collect.imageloader.svg.SvgDecoder`, `org.odk.collect.imageloader.svg.SvgDrawableTranscoder`
+- [ ] `org.odk.collect.lists.selects.MultiSelectControlsView` · lists · class · used-by 1
+  - needs ↓: `org.odk.collect.lists.selects.MultiSelectControlsView.Listener`
+- [ ] `org.odk.collect.location.LocationClient` · location · interface · used-by 22
+  - needs ↓: `org.odk.collect.location.LocationClient.LocationClientListener`, `org.odk.collect.location.LocationClient.Priority`
+- [ ] `org.odk.collect.location.LocationDependencyModule` · location · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.utils.UniqueIdGenerator`
+- [ ] `org.odk.collect.location.satellites.GnssStatusSatellitesLiveData` · location · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`
+- [ ] `org.odk.collect.location.satellites.GpsStatusSatellitesLiveData` · location · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`
+- [ ] `org.odk.collect.location.satellites.SatelliteInfoClient` · location · interface · used-by 5
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`
+- [ ] `org.odk.collect.location.tracker.LocationTracker` · location · interface · used-by 7
+  - needs ↓: `org.odk.collect.location.Location`
+- [ ] `org.odk.collect.mapbox.LineFeature` · mapbox · interface · used-by 5
+  - needs ↓: `org.odk.collect.mapbox.MapFeature`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.mapbox.TileHttpServer.ResponseThread` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.TileHttpServer.Response`, `org.odk.collect.maps.layers.TileSource`
+- [ ] `org.odk.collect.maps.MapFragment.Companion` · maps · object · used-by 0
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.maps.MapFragment.PointListener` · maps · fun interface · used-by 2
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.maps.TraceDescription` · maps · interface · used-by 3
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.maps.Zoom` · maps · sealed class · used-by 6
+  - needs ↓: `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.maps.layers.MbtilesFile.NotFileException` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.layers.MbtilesFile.MbtilesException`
+- [ ] `org.odk.collect.maps.layers.MbtilesFile.UnsupportedFilenameException` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.layers.MbtilesFile.MbtilesException`
+- [ ] `org.odk.collect.maps.layers.MbtilesFile.UnsupportedFormatException` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.layers.MbtilesFile.MbtilesException`
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersImporterAdapter` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.layers.OfflineMapLayersImporterAdapter.ViewHolder`, `org.odk.collect.maps.layers.ReferenceLayer`
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersPickerAdapter.OfflineMapLayersPickerAdapterInterface` · maps · interface · used-by 1
+  - needs ↓: `org.odk.collect.maps.layers.CheckableReferenceLayer`
+- [ ] `org.odk.collect.maps.layers.ReferenceLayerRepository` · maps · interface · used-by 21
+  - needs ↓: `org.odk.collect.maps.layers.ReferenceLayer`
+- [ ] `org.odk.collect.maps.markers.MarkerIconCreator` · maps · object · used-by 3
+  - needs ↓: `org.odk.collect.maps.markers.MarkerIconDescription`
+- [ ] `org.odk.collect.maps.markers.MarkerIconDescription.DrawableResource` · maps · data class · used-by 0
+  - needs ↓: `org.odk.collect.maps.markers.MarkerIconDescription`, `org.odk.collect.shared.strings.StringUtils`
+- [ ] `org.odk.collect.material.BottomSheetBehavior.Companion` · material · object · used-by 0
+  - needs ↓: `org.odk.collect.material.BottomSheetBehavior`
+- [ ] `org.odk.collect.material.ErrorsPill` · material · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.system.ContextUtils`, `org.odk.collect.material.MaterialPill`
+- [ ] `org.odk.collect.material.MaterialProgressDialogFragment` · material · class · used-by 12
+  - needs ↓: `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.material.MaterialProgressDialogFragment.OnCancelCallback`
+- [ ] `org.odk.collect.openrosa.forms.OpenRosaXmlFetcher.WebCredentialsProvider` · open-rosa · interface · used-by 2
+  - needs ↓: `org.odk.collect.openrosa.http.HttpCredentialsInterface`
+- [ ] `org.odk.collect.openrosa.http.CaseInsensitiveEmptyHeaders` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.CaseInsensitiveHeaders`
+- [ ] `org.odk.collect.openrosa.http.HttpCredentials` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.HttpCredentialsInterface`
+- [ ] `org.odk.collect.openrosa.http.HttpGetResult` · open-rosa · class · used-by 3
+  - needs ↓: `org.odk.collect.openrosa.http.OpenRosaConstants`
+- [ ] `org.odk.collect.openrosa.http.HttpHeadResult` · open-rosa · class · used-by 3
+  - needs ↓: `org.odk.collect.openrosa.http.CaseInsensitiveHeaders`
+- [ ] `org.odk.collect.openrosa.http.okhttp.OkHttpCaseInsensitiveHeaders` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.CaseInsensitiveHeaders`
+- [ ] `org.odk.collect.openrosa.http.okhttp.OkHttpOpenRosaServerClientProvider.OkHttpOpenRosaServerClient` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClient`
+- [ ] `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClientProvider` · open-rosa · interface · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.HttpCredentialsInterface`, `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClient`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapConfigurator.WmsOption` · osmdroid · class · used-by 2
+  - needs ↓: `org.odk.collect.osmdroid.WebMapService`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.AttributionOverlay` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.system.ContextUtils`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.LineFeature` · osmdroid · interface · used-by 5
+  - needs ↓: `org.odk.collect.maps.MapPoint`, `org.odk.collect.osmdroid.OsmDroidMapFragment.MapFeature`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.MarkerFeature` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.markers.MarkerDescription`, `org.odk.collect.maps.markers.MarkerIconDescription`, `org.odk.collect.osmdroid.OsmDroidMapFragment.MapFeature`
+- [ ] `org.odk.collect.osmdroid.OsmMBTileModuleProvider` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.osmdroid.OsmMBTileModuleProvider.TileLoader`, `org.odk.collect.osmdroid.OsmMBTileSource`
+- [ ] `org.odk.collect.permissions.ContextCompatPermissionChecker` · permissions · class · used-by 2
+  - needs ↓: `org.odk.collect.permissions.PermissionsChecker`
+- [ ] `org.odk.collect.permissions.LocationAccessibilityCheckerImpl` · permissions · object · used-by 1
+  - needs ↓: `org.odk.collect.permissions.LocationAccessibilityChecker`
+- [ ] `org.odk.collect.permissions.PermissionsDialogCreator` · permissions · interface · used-by 2
+  - needs ↓: `org.odk.collect.permissions.PermissionListener`
+- [ ] `org.odk.collect.permissions.RequestPermissionsAPI` · permissions · interface · used-by 2
+  - needs ↓: `org.odk.collect.permissions.PermissionListener`
+- [ ] `org.odk.collect.projects.Project.Saved` · projects · data class · used-by 2
+  - needs ↓: `org.odk.collect.projects.Project`, `org.odk.collect.projects.Project.New`
+- [ ] `org.odk.collect.projects.ProjectCreator` · projects · interface · used-by 6
+  - needs ↓: `org.odk.collect.projects.ProjectConfigurationResult`
+- [ ] `org.odk.collect.projects.ProjectsDependencyComponentProvider` · projects · interface · used-by 1
+  - needs ↓: `org.odk.collect.projects.ProjectsDependencyComponent`
+- [ ] `org.odk.collect.projects.ProjectsRepository` · projects · interface · used-by 33
+  - needs ↓: `org.odk.collect.projects.Project`
+- [ ] `org.odk.collect.qrcode.BarcodeScannerView` · qr-code · class · used-by 9
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView.TorchListener`
+- [ ] `org.odk.collect.qrcode.DetectedBarcode` · qr-code · sealed class · used-by 5
+  - needs ↓: `org.odk.collect.qrcode.BarcodeFormat`
+- [ ] `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerView.Companion` · qr-code · object · used-by 0
+  - needs ↓: `org.odk.collect.qrcode.BarcodeCandidate`, `org.odk.collect.qrcode.BarcodeFormat`
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeCreator` · qr-code · interface · used-by 4
+  - needs ↓: `org.odk.collect.qrcode.zxing.QRCodeCreator.MaximumCharactersLimitException`
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeDecoder` · qr-code · interface · used-by 6
+  - needs ↓: `org.odk.collect.qrcode.zxing.QRCodeDecoder.QRCodeInvalidException`, `org.odk.collect.qrcode.zxing.QRCodeDecoder.QRCodeNotFoundException`
+- [ ] `org.odk.collect.selfiecamera.Camera` · selfie-camera · interface · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.selfiecamera.Camera.State`
+- [ ] `org.odk.collect.settings.enums.AutoSend` · settings · enum class · used-by 5
+  - needs ↓: `org.odk.collect.settings.enums.StringIdEnum`
+- [ ] `org.odk.collect.settings.enums.FormUpdateMode` · settings · enum · used-by 5
+  - needs ↓: `org.odk.collect.settings.enums.StringIdEnum`
+- [ ] `org.odk.collect.settings.enums.GuidanceHintMode` · settings · enum class · used-by 2
+  - needs ↓: `org.odk.collect.settings.enums.StringIdEnum`
+- [ ] `org.odk.collect.settings.importing.ProjectDetailsCreator` · settings · interface · used-by 3
+  - needs ↓: `org.odk.collect.projects.Project`
+- [ ] `org.odk.collect.settings.validation.JsonSchemaSettingsValidator` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.importing.SettingsValidator`
+- [ ] `org.odk.collect.shared.TempFiles` · shared · object · used-by 1
+  - needs ↓: `org.odk.collect.shared.strings.RandomString`
+- [ ] `org.odk.collect.shared.geometry.Trace` · shared · data class · used-by 1
+  - needs ↓: `org.odk.collect.shared.geometry.Point`
+- [ ] `org.odk.collect.shared.injection.ObjectProviderHost` · shared · fun interface · used-by 3
+  - needs ↓: `org.odk.collect.shared.injection.ObjectProvider`
+- [ ] `org.odk.collect.shared.injection.SupplierObjectProvider` · shared · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.injection.ObjectProvider`
+- [ ] `org.odk.collect.shared.locks.BooleanChangeLock` · shared · class · used-by 0
+  - needs ↓: `org.odk.collect.shared.locks.ChangeLock`
+- [ ] `org.odk.collect.shared.locks.ThreadSafeBooleanChangeLock` · shared · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.locks.ChangeLock`
+- [ ] `org.odk.collect.shared.result.Result.Companion` · shared · object · used-by 0
+  - needs ↓: `org.odk.collect.shared.result.Result.Error`, `org.odk.collect.shared.result.Result.Success`
+- [ ] `org.odk.collect.shared.settings.Settings` · shared · interface · used-by 59
+  - needs ↓: `org.odk.collect.shared.settings.Settings.OnSettingChangeListener`
+- [ ] `org.odk.collect.strings.localization.LocalizedActivity` · strings · class · used-by 23
+  - needs ↓: `org.odk.collect.strings.localization.LocalizedApplication`
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetConfiguration` · timedgrid · data class · used-by 5 `[C3]`
+  - needs ↓: `org.odk.collect.timedgrid.AssessmentType`, `org.odk.collect.timedgrid.FinishType`
+- [ ] `org.odk.collect.timedgrid.TimedGridRenderer` · timedgrid · interface · used-by 2 `[C3]`
+  - needs ↓: `org.odk.collect.timedgrid.GridItem`, `org.odk.collect.timedgrid.TimedGridState`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration`
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetLayout` · timedgrid · class · used-by 1 `[C3]`
+  - needs ↓: `org.odk.collect.timedgrid.AssessmentType`, `org.odk.collect.timedgrid.ButtonFinalState`, `org.odk.collect.timedgrid.GridItem`
+- [ ] `org.odk.collect.timedgrid.CommonTimedGridRenderer` · timedgrid · class · used-by 1 `[C3]`
+  - needs ↓: `org.odk.collect.timedgrid.GridItem`, `org.odk.collect.timedgrid.TimedGridRenderer`, `org.odk.collect.timedgrid.TimedGridState`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration`, `org.odk.collect.timedgrid.TimedGridWidgetLayout`
+- [ ] `org.odk.collect.timedgrid.AssessmentType` · timedgrid · enum class · used-by 4 `[C3]`
+  - needs ↓: `org.odk.collect.timedgrid.CommonTimedGridRenderer`, `org.odk.collect.timedgrid.TimedGridRenderer`
+- [ ] `org.odk.collect.timedgrid.FinishType.Companion` · timedgrid · object · used-by 0
+  - needs ↓: `org.odk.collect.timedgrid.FinishType`
+- [ ] `org.odk.collect.timedgrid.NavigationAwareWidget` · timedgrid · interface · used-by 2
+  - needs ↓: `org.odk.collect.timedgrid.NavigationWarning`
+- [ ] `org.odk.collect.timedgrid.TimedGridSummary.Builder` · timedgrid · data class · used-by 0
+  - needs ↓: `org.odk.collect.timedgrid.TimedGridSummary`
+- [ ] `org.odk.collect.timedgrid.TimedGridSummaryAnswerCreator` · timedgrid · class · used-by 1
+  - needs ↓: `org.odk.collect.timedgrid.FormAnswerRefresher`, `org.odk.collect.timedgrid.FormControllerFacade`, `org.odk.collect.timedgrid.TimedGridSummary`
+- [ ] `org.odk.collect.timedgrid.TimedGridViewModel` · timedgrid · class · used-by 1
+  - needs ↓: `org.odk.collect.timedgrid.TimedGridState`, `org.odk.collect.timedgrid.TimedGridViewModel.TimedGridTimerState`
+- [ ] `org.odk.collect.webpage.CustomTabsWebPageService` · web-page · object · used-by 2
+  - needs ↓: `org.odk.collect.webpage.WebPageService`
+
+### Level 2 — 131 classes
+
+- [ ] `org.odk.collect.analytics.Analytics.Companion` · analytics · object · used-by 0
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.analytics.NoopAnalytics`
+- [ ] `org.odk.collect.androidshared.async.TrackableWorker` · androidshared · class · used-by 6
+  - needs ↓: `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.androidshared.data.DataService.DataDelegate` · androidshared · data class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.data.Updatable.Data`
+- [ ] `org.odk.collect.androidshared.data.DataService.QualifiedDataDelegate` · androidshared · data class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.data.Updatable.QualifiedData`
+- [ ] `org.odk.collect.androidshared.data.DataService.Updater` · androidshared · data class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.data.Updatable`, `org.odk.collect.androidshared.data.Updatable.Data`, `org.odk.collect.androidshared.data.Updatable.QualifiedData`
+- [ ] `org.odk.collect.androidshared.livedata.LiveDataExt` · androidshared · object · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.livedata.LiveDataUtils`
+- [ ] `org.odk.collect.androidshared.ui.PrefUtils` · androidshared · object · used-by 3
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.androidshared.ui.SnackbarUtils` · androidshared · object · used-by 6
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.androidshared.ui.AlertStore`, `org.odk.collect.androidshared.ui.SnackbarUtils.Action`, `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarDetails`, `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarPresenterObserver`
+- [ ] `org.odk.collect.androidshared.utils.SettingsUniqueIdGenerator` · androidshared · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.async.CoroutineScheduler` · async · class · used-by 2
+  - needs ↓: `org.odk.collect.async.Cancellable`, `org.odk.collect.async.NotificationInfo`, `org.odk.collect.async.Scheduler`, `org.odk.collect.async.ScopeCancellable`, `org.odk.collect.async.TaskSpec`
+- [ ] `org.odk.collect.async.SchedulerAsyncTaskMimic` · async · class · used-by 2
+  - needs ↓: `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.async.network.NetworkStateProvider` · async · interface · used-by 10
+  - needs ↓: `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.audioclips.AudioClipViewModel` · audio-clips · class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.async.Cancellable`, `org.odk.collect.async.Scheduler`, `org.odk.collect.audioclips.AudioClipViewModel.CurrentlyPlaying`, `org.odk.collect.audioclips.Clip`, `org.odk.collect.audioclips.PlaybackFailedException`, `org.odk.collect.audioclips.ThreadSafeMediaPlayerWrapper`
+- [ ] `org.odk.collect.audioclips.AudioPlayerFactory` · audio-clips · interface · used-by 4
+  - needs ↓: `org.odk.collect.audioclips.AudioPlayer`
+- [ ] `org.odk.collect.audiorecorder.mediarecorder.AACRecordingResource` · audio-recorder · class · used-by 1
+  - needs ↓: `org.odk.collect.audiorecorder.mediarecorder.MediaRecorderRecordingResource`
+- [ ] `org.odk.collect.audiorecorder.mediarecorder.AMRRecordingResource` · audio-recorder · class · used-by 1
+  - needs ↓: `org.odk.collect.audiorecorder.mediarecorder.MediaRecorderRecordingResource`
+- [ ] `org.odk.collect.audiorecorder.recorder.RecordingResourceRecorder` · audio-recorder · class · used-by 1
+  - needs ↓: `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recorder.Recorder`, `org.odk.collect.audiorecorder.recorder.RecordingResource`, `org.odk.collect.audiorecorder.recording.MicInUseException`, `org.odk.collect.audiorecorder.recording.SetupException`
+- [ ] `org.odk.collect.audiorecorder.recording.internal.RecordingForegroundServiceNotification` · audio-recorder · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.ui.ReturnToAppActivity`, `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.audiorecorder.recording.RecordingSession`, `org.odk.collect.audiorecorder.recording.internal.RecordingRepository`
+- [ ] `org.odk.collect.audiorecorder.testsupport.StubAudioRecorder` · audio-recorder · class · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.RecordingSession`
+- [ ] `org.odk.collect.android.activities.ScannerWithFlashlightActivity` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.application.CollectComposeThemeProvider`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.android.activities.viewmodels.FormDownloadListViewModel` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`
+- [ ] `org.odk.collect.android.adapters.FormDownloadListAdapter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.adapters.FormDownloadListAdapter.ViewHolder`, `org.odk.collect.android.formmanagement.ServerFormDetails`
+- [ ] `org.odk.collect.android.application.initialization.ScheduledWorkUpgrade` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.backgroundwork.FormUpdateScheduler`, `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler`, `org.odk.collect.async.Scheduler`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.upgrade.Upgrade`
+- [ ] `org.odk.collect.android.audio.AudioControllerView` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.audio.AudioControllerView.Listener`, `org.odk.collect.android.audio.AudioControllerView.SwipeListener`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeMaterialButton`
+- [ ] `org.odk.collect.android.database.entities.EntitiesDatabaseMigrator` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.database.entities.ListsTable`, `org.odk.collect.db.sqlite.MigrationListDatabaseMigrator`
+- [ ] `org.odk.collect.android.database.savepoints.SavepointsDatabaseMigrator` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.db.sqlite.MigrationListDatabaseMigrator`
+- [ ] `org.odk.collect.android.formentry.FormIndexAnimationHandler` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.FormIndexAnimationHandler.Direction`, `org.odk.collect.android.formentry.FormIndexAnimationHandler.Listener`
+- [ ] `org.odk.collect.android.formentry.FormLoadingDialogFragment` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.FormLoadingDialogFragment.FormLoadingDialogFragmentListener`, `org.odk.collect.material.MaterialProgressDialogFragment`
+- [ ] `org.odk.collect.android.formentry.RefreshFormListDialogFragment` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.RefreshFormListDialogFragment.RefreshFormListDialogFragmentListener`, `org.odk.collect.material.MaterialProgressDialogFragment`
+- [ ] `org.odk.collect.android.formentry.SwipeHandler` · collect_app · class · used-by 4
+  - needs ↓: `org.odk.collect.android.formentry.SwipeHandler.GestureListener`, `org.odk.collect.android.formentry.SwipeHandler.OnSwipeListener`, `org.odk.collect.android.formentry.SwipeHandler.View`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.formentry.audit.AuditConfig` · collect_app · class · used-by 6
+  - needs ↓: `org.odk.collect.location.LocationClient`
+- [ ] `org.odk.collect.android.formentry.audit.AuditEventCSVLine` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.shared.strings.StringUtils`
+- [ ] `org.odk.collect.android.formentry.audit.AuditEventLogger.AuditEventWriter` · collect_app · interface · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEvent`
+- [ ] `org.odk.collect.android.formentry.audit.AuditEventSaveTask` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEvent`
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveTask.Listener` · collect_app · interface · used-by 2
+  - needs ↓: `org.odk.collect.android.tasks.SaveToDiskResult`
+- [ ] `org.odk.collect.android.formentry.saving.SaveAnswerFileProgressDialogFragment` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.material.MaterialProgressDialogFragment`
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListAdapter.BlankFormListItemWithMapViewHolder` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`, `org.odk.collect.android.formlists.blankformlist.BlankFormListItemView`
+- [ ] `org.odk.collect.android.formlists.sorting.FormListSortingBottomSheetDialog` · collect_app · class · used-by 4
+  - needs ↓: `org.odk.collect.android.formlists.sorting.FormListSortingAdapter`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`
+- [ ] `org.odk.collect.android.formmanagement.LoggingFilterStrategy` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloadExceptionMapper` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formmanagement.FormSourceExceptionMapper`, `org.odk.collect.android.formmanagement.download.FormDownloadException`
+- [ ] `org.odk.collect.android.formmanagement.download.FormDownloader` · collect_app · interface · used-by 3
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.formmanagement.download.FormDownloader.ProgressReporter`
+- [ ] `org.odk.collect.android.formmanagement.matchexactly.ServerFormsSynchronizer.ServerFormsDetailsFetcher` · collect_app · interface · used-by 1
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.forms.FormSource`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.FormsRepository`
+- [ ] `org.odk.collect.android.fragments.dialogs.NumberPickerDialog.Companion` · collect_app · object · used-by 0
+  - needs ↓: `org.odk.collect.android.fragments.dialogs.NumberPickerDialog`
+- [ ] `org.odk.collect.android.instancemanagement.FinalizeAllSnackbarPresenter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.instancemanagement.FinalizeAllResult`, `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarDetails`, `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarPresenterObserver`
+- [ ] `org.odk.collect.android.instancemanagement.InstanceDeleter` · collect_app · class · used-by 5
+  - needs ↓: `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.instancemanagement.autosend.InstanceAutoSendFetcher` · collect_app · object · used-by 1
+  - needs ↓: `org.odk.collect.android.instancemanagement.autosend.FormAutoSendMode`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel` · collect_app · class · used-by 4
+  - needs ↓: `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel.Data`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.listeners.DownloadFormsTaskListener` · collect_app · interface · used-by 2
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`
+- [ ] `org.odk.collect.android.listeners.FormListDownloaderListener` · collect_app · interface · used-by 2
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.forms.FormSourceException`
+- [ ] `org.odk.collect.android.location.client.MaxAccuracyWithinTimeoutLocationClientWrapper` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.location.LocationClient`
+- [ ] `org.odk.collect.android.notifications.Notifier` · collect_app · interface · used-by 5
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.preferences.SettingsExt` · collect_app · object · used-by 0
+  - needs ↓: `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.preferences.dialogs.ResetProgressDialog` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.material.MaterialProgressDialogFragment`
+- [ ] `org.odk.collect.android.preferences.source.SettingsStore` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.preferences.source.SharedPreferencesSettings` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.projects.ProjectListItemView` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.projects.ProjectIconView`, `org.odk.collect.projects.Project`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.upload.InstanceUploader` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.utilities.AdminPasswordProvider` · collect_app · class · used-by 5
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.utilities.ChangeLockProvider` · collect_app · class · used-by 7
+  - needs ↓: `org.odk.collect.android.utilities.ChangeLocks`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.shared.locks.ChangeLock`, `org.odk.collect.shared.locks.ThreadSafeBooleanChangeLock`
+- [ ] `org.odk.collect.android.utilities.HtmlUtils` · collect_app · class · used-by 16
+  - needs ↓: `org.odk.collect.android.utilities.ReplaceCallback`
+- [ ] `org.odk.collect.android.utilities.InstanceAutoDeleteChecker` · collect_app · object · used-by 2
+  - needs ↓: `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.widgets.QuestionWidget.Dependencies` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.audioclips.AudioPlayer`
+- [ ] `org.odk.collect.android.widgets.arbitraryfile.ArbitraryFileWidgetDelegate` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.utilities.QuestionMediaManager`
+- [ ] `org.odk.collect.android.widgets.interfaces.Printer` · collect_app · interface · used-by 2
+  - needs ↓: `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.androidshared.livedata.NonNullLiveData`
+- [ ] `org.odk.collect.android.widgets.utilities.RangeWidgetUtils` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.fragments.dialogs.NumberPickerDialog`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.widgets.viewmodels.DateTimeViewModel` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DatePickerDetails`, `org.odk.collect.android.widgets.datetime.DateTimeUtils`
+- [ ] `org.odk.collect.crashhandler.CrashHandler` · crash-handler · class · used-by 4
+  - needs ↓: `org.odk.collect.crashhandler.CrashView`, `org.odk.collect.crashhandler.MockCrashView`
+- [ ] `org.odk.collect.db.sqlite.CustomSQLiteQueryExecutor` · db · class · used-by 2
+  - needs ↓: `org.odk.collect.db.sqlite.CustomSQLiteQueryBuilder`
+- [ ] `org.odk.collect.db.sqlite.DatabaseConnection` · db · class · used-by 5
+  - needs ↓: `org.odk.collect.db.sqlite.AltDatabasePathContext`, `org.odk.collect.db.sqlite.DatabaseMigrator`, `org.odk.collect.db.sqlite.DatabaseMigratorSQLiteOpenHelper`
+- [ ] `org.odk.collect.draw.PenColorPickerViewModel` · draw · class · used-by 2
+  - needs ↓: `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.entities.ServerEntity` · entities · data class · used-by 1
+  - needs ↓: `org.odk.collect.entities.storage.Entity`
+- [ ] `org.odk.collect.entities.browser.EntityItemView` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.storage.Entity`
+- [ ] `org.odk.collect.entities.javarosa.finalization.EntityFormFinalizationProcessor` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.finalization.EntitiesExtra`, `org.odk.collect.entities.javarosa.finalization.FormEntity`, `org.odk.collect.entities.javarosa.parse.EntityFormExtra`, `org.odk.collect.entities.javarosa.parse.SaveTo`, `org.odk.collect.entities.javarosa.spec.EntityAction`, `org.odk.collect.entities.javarosa.spec.EntityFormParser`
+- [ ] `org.odk.collect.entities.javarosa.parse.EntityFormParseProcessor` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.parse.EntityFormExtra`, `org.odk.collect.entities.javarosa.parse.SaveTo`, `org.odk.collect.entities.javarosa.spec.EntityFormParser`, `org.odk.collect.entities.javarosa.spec.UnrecognizedEntityVersionException`
+- [ ] `org.odk.collect.entities.javarosa.parse.EntityFormParseProcessor.Companion` · entities · object · used-by 0
+  - needs ↓: `org.odk.collect.entities.javarosa.spec.EntityFormParser`
+- [ ] `org.odk.collect.entities.storage.EntitiesRepository` · entities · interface · used-by 25
+  - needs ↓: `org.odk.collect.entities.storage.Entity`, `org.odk.collect.entities.storage.EntityList`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.errors.ErrorActivity` · errors · class · used-by 2
+  - needs ↓: `org.odk.collect.errors.ErrorAdapter`, `org.odk.collect.errors.ErrorItem`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.geo.GeoActivityUtils` · geo · object · used-by 0
+  - needs ↓: `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.permissions.ContextCompatPermissionChecker`
+- [ ] `org.odk.collect.geo.geopoint.AccuracyStatusView` · geo · class · used-by 1
+  - needs ↓: `org.odk.collect.geo.GeoUtils`, `org.odk.collect.geo.geopoint.LocationAccuracy`
+- [ ] `org.odk.collect.geo.geopoint.LocationTrackerGeoPointViewModel` · geo · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.analytics.AnalyticsEvents`, `org.odk.collect.geo.geopoint.GeoPointViewModel`, `org.odk.collect.geo.geopoint.LocationAccuracy`, `org.odk.collect.location.Location`, `org.odk.collect.location.satellites.SatelliteInfoClient`, `org.odk.collect.location.tracker.LocationTracker`
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyViewModel` · geo · class · used-by 2
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.androidshared.ui.DisplayString`, `org.odk.collect.async.Cancellable`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.geopoly.GeoPolyFragment.OutputMode`, `org.odk.collect.geo.geopoly.GeoPolyViewModel.RecordingMode`, `org.odk.collect.location.tracker.LocationTracker`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.geo.javarosa.IntersectsFunctionHandler` · geo · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.geometry.Trace`
+- [ ] `org.odk.collect.geo.selection.SelectedItemViewModel` · geo · class · used-by 1
+  - needs ↓: `org.odk.collect.geo.selection.MappableSelectItem`
+- [ ] `org.odk.collect.geo.selection.SelectionMapData` · geo · interface · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.geo.selection.MappableSelectItem`
+- [ ] `org.odk.collect.geo.selection.SelectionSummarySheet` · geo · class · used-by 1
+  - needs ↓: `org.odk.collect.geo.selection.MappableSelectItem`, `org.odk.collect.geo.selection.SelectionSummarySheet.Listener`, `org.odk.collect.geo.selection.Status`
+- [ ] `org.odk.collect.googlemaps.BitmapDescriptorCache` · google-maps · object · used-by 1
+  - needs ↓: `org.odk.collect.maps.markers.MarkerIconCreator`, `org.odk.collect.maps.markers.MarkerIconDescription`
+- [ ] `org.odk.collect.googlemaps.scaleview.Drawer` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.scaleview.Scale`, `org.odk.collect.googlemaps.scaleview.Scales`
+- [ ] `org.odk.collect.lists.selects.MultiSelectViewModel` · lists · class · used-by 8
+  - needs ↓: `org.odk.collect.androidshared.livedata.LiveDataUtils`, `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.lists.selects.SelectItem`
+- [ ] `org.odk.collect.lists.selects.SingleSelectViewModel` · lists · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.LiveDataUtils`, `org.odk.collect.lists.selects.SelectItem`
+- [ ] `org.odk.collect.location.BaseLocationClient` · location · class · used-by 2
+  - needs ↓: `org.odk.collect.location.LocationClient`, `org.odk.collect.location.LocationClient.LocationClientListener`
+- [ ] `org.odk.collect.location.satellites.GpsStatusSatelliteInfoClient` · location · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.location.satellites.GnssStatusSatellitesLiveData`, `org.odk.collect.location.satellites.GpsStatusSatellitesLiveData`, `org.odk.collect.location.satellites.SatelliteInfoClient`
+- [ ] `org.odk.collect.mapbox.TileHttpServer.ServerThread` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.TileHttpServer.ResponseThread`
+- [ ] `org.odk.collect.maps.LineDescription` · maps · data class · used-by 12
+  - needs ↓: `org.odk.collect.maps.MapConsts`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.TraceDescription`
+- [ ] `org.odk.collect.maps.MapConfigurator` · maps · interface · used-by 13
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.maps.PolygonDescription` · maps · data class · used-by 12
+  - needs ↓: `org.odk.collect.maps.MapConsts`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.TraceDescription`
+- [ ] `org.odk.collect.maps.Zoom.Box` · maps · data class · used-by 1
+  - needs ↓: `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.Zoom`
+- [ ] `org.odk.collect.maps.ZoomObserver` · maps · class · used-by 3
+  - needs ↓: `org.odk.collect.maps.Zoom`
+- [ ] `org.odk.collect.maps.layers.MbtilesFile` · maps · class · used-by 5
+  - needs ↓: `org.odk.collect.maps.layers.MbtilesFile.LayerType`, `org.odk.collect.maps.layers.MbtilesFile.MbtilesException`, `org.odk.collect.maps.layers.MbtilesFile.NotFileException`, `org.odk.collect.maps.layers.MbtilesFile.UnsupportedFilenameException`, `org.odk.collect.maps.layers.MbtilesFile.UnsupportedFormatException`, `org.odk.collect.maps.layers.MbtilesFile.VectorLayer`, `org.odk.collect.maps.layers.TileSource`
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersPickerAdapter` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.layers.CheckableReferenceLayer`, `org.odk.collect.maps.layers.OfflineMapLayersPickerAdapter.OfflineMapLayersPickerAdapterInterface`, `org.odk.collect.maps.layers.OfflineMapLayersPickerAdapter.ViewHolder`
+- [ ] `org.odk.collect.metadata.SettingsInstallIDProvider` · metadata · class · used-by 1
+  - needs ↓: `org.odk.collect.metadata.InstallIDProvider`, `org.odk.collect.shared.settings.Settings`, `org.odk.collect.shared.strings.RandomString`
+- [ ] `org.odk.collect.mobiledevicemanagement.MDMConfigObserver` · mobile-device-management · class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.system.BroadcastReceiverRegister`, `org.odk.collect.async.Scheduler`, `org.odk.collect.mobiledevicemanagement.MDMConfigHandler`
+- [ ] `org.odk.collect.openrosa.http.OpenRosaHttpInterface` · open-rosa · interface · used-by 10
+  - needs ↓: `org.odk.collect.openrosa.http.HttpCredentialsInterface`, `org.odk.collect.openrosa.http.HttpGetResult`, `org.odk.collect.openrosa.http.HttpHeadResult`, `org.odk.collect.openrosa.http.HttpPostResult`
+- [ ] `org.odk.collect.openrosa.http.okhttp.OkHttpOpenRosaServerClientProvider` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.HttpCredentialsInterface`, `org.odk.collect.openrosa.http.OpenRosaConstants`, `org.odk.collect.openrosa.http.okhttp.OkHttpOpenRosaServerClientProvider.OkHttpOpenRosaServerClient`, `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClient`, `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClientProvider`
+- [ ] `org.odk.collect.openrosa.parse.OpenRosaResponseParser` · open-rosa · interface · used-by 2
+  - needs ↓: `org.odk.collect.forms.FormListItem`, `org.odk.collect.forms.MediaFile`, `org.odk.collect.openrosa.forms.EntityIntegrity`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.OsmLocationClientWrapper` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.location.LocationClient`
+- [ ] `org.odk.collect.osmdroid.OsmMBTileProvider` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.osmdroid.OsmMBTileModuleProvider`, `org.odk.collect.osmdroid.OsmMBTileSource`
+- [ ] `org.odk.collect.permissions.DexterRequestPermissionsAPI` · permissions · object · used-by 1
+  - needs ↓: `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.RequestPermissionsAPI`
+- [ ] `org.odk.collect.permissions.PermissionsDialogCreatorImpl` · permissions · object · used-by 1
+  - needs ↓: `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.PermissionsDialogCreator`
+- [ ] `org.odk.collect.projects.InMemProjectsRepository` · projects · class · used-by 1
+  - needs ↓: `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.shared.strings.UUIDGenerator`
+- [ ] `org.odk.collect.projects.Project.Companion` · projects · object · used-by 0
+  - needs ↓: `org.odk.collect.projects.Project.Saved`
+- [ ] `org.odk.collect.projects.SharedPreferencesProjectsRepository` · projects · class · used-by 1
+  - needs ↓: `org.odk.collect.projects.JsonProject`, `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.shared.settings.Settings`, `org.odk.collect.shared.strings.UUIDGenerator`
+- [ ] `org.odk.collect.qrcode.BarcodeScannerViewContainer.Factory` · qr-code · interface · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView`
+- [ ] `org.odk.collect.qrcode.DetectedBarcode.Bytes` · qr-code · data class · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeFormat`, `org.odk.collect.qrcode.DetectedBarcode`
+- [ ] `org.odk.collect.qrcode.DetectedBarcode.Utf8` · qr-code · data class · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeFormat`, `org.odk.collect.qrcode.DetectedBarcode`
+- [ ] `org.odk.collect.qrcode.DetectedState` · qr-code · sealed class · used-by 2
+  - needs ↓: `org.odk.collect.qrcode.DetectedBarcode`
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeCreatorImpl` · qr-code · class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.utils.CompressionUtils`, `org.odk.collect.qrcode.zxing.QRCodeCreator`, `org.odk.collect.qrcode.zxing.QRCodeCreator.MaximumCharactersLimitException`
+- [ ] `org.odk.collect.qrcode.zxing.QRCodeDecoderImpl` · qr-code · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.utils.CompressionUtils`, `org.odk.collect.qrcode.zxing.QRCodeDecoder`, `org.odk.collect.qrcode.zxing.QRCodeDecoder.QRCodeInvalidException`, `org.odk.collect.qrcode.zxing.QRCodeDecoder.QRCodeNotFoundException`
+- [ ] `org.odk.collect.qrcode.zxing.ZxingBarcodeScannerView` · qr-code · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.system.CameraUtils`, `org.odk.collect.qrcode.BarcodeScannerView`
+- [ ] `org.odk.collect.selfiecamera.CameraXCamera` · selfie-camera · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.selfiecamera.Camera`
+- [ ] `org.odk.collect.selfiecamera.SelfieCameraDependencyComponent` · selfie-camera · interface · used-by 2 `[C9]`
+  - needs ↓: `org.odk.collect.selfiecamera.CaptureSelfieActivity`
+- [ ] `org.odk.collect.selfiecamera.SelfieCameraDependencyComponentProvider` · selfie-camera · interface · used-by 2 `[C9]`
+  - needs ↓: `org.odk.collect.selfiecamera.SelfieCameraDependencyComponent`
+- [ ] `org.odk.collect.selfiecamera.CaptureSelfieActivity` · selfie-camera · class · used-by 2 `[C9]`
+  - needs ↓: `org.odk.collect.externalapp.ExternalAppUtils`, `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.selfiecamera.Camera`, `org.odk.collect.selfiecamera.SelfieCameraDependencyComponentProvider`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.settings.SettingsProvider` · settings · interface · used-by 87
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.enums.StringIdEnumUtils` · settings · object · used-by 2
+  - needs ↓: `org.odk.collect.settings.enums.AutoSend`, `org.odk.collect.settings.enums.FormUpdateMode`, `org.odk.collect.settings.enums.GuidanceHintMode`, `org.odk.collect.settings.enums.StringIdEnum`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.importing.ProjectDetailsCreatorImpl` · settings · class · used-by 2
+  - needs ↓: `org.odk.collect.projects.Project`, `org.odk.collect.settings.importing.ProjectDetailsCreator`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.strings.StringUtils`
+- [ ] `org.odk.collect.settings.importing.SettingsMigrator` · settings · fun interface · used-by 2
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.Migration` · settings · interface · used-by 9
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.shared.settings.InMemSettings` · shared · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetConfiguration.Builder` · timedgrid · class · used-by 1
+  - needs ↓: `org.odk.collect.timedgrid.AssessmentType`, `org.odk.collect.timedgrid.FinishType`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration`
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetDelegate` · timedgrid · class · used-by 1
+  - needs ↓: `org.odk.collect.timedgrid.FinishType`, `org.odk.collect.timedgrid.FormAnswerRefresher`, `org.odk.collect.timedgrid.FormControllerFacade`, `org.odk.collect.timedgrid.GridItem`, `org.odk.collect.timedgrid.NavigationWarning`, `org.odk.collect.timedgrid.PausableCountDownTimer`, `org.odk.collect.timedgrid.TimedGridState`, `org.odk.collect.timedgrid.TimedGridSummary`, `org.odk.collect.timedgrid.TimedGridSummaryAnswerCreator`, `org.odk.collect.timedgrid.TimedGridViewModel`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration`
+- [ ] `org.odk.collect.upgrade.VersionCodeLaunchState` · upgrade · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.settings.Settings`, `org.odk.collect.upgrade.InstallDetector`, `org.odk.collect.upgrade.LaunchState`
+
+### Level 3 — 85 classes
+
+- [ ] `org.odk.collect.androidshared.data.DataService` · androidshared · value class · used-by 3
+  - needs ↓: `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.androidshared.data.DataService.DataDelegate`, `org.odk.collect.androidshared.data.DataService.QualifiedDataDelegate`, `org.odk.collect.androidshared.data.DataService.Updater`, `org.odk.collect.androidshared.data.Updatable.Data`, `org.odk.collect.androidshared.data.Updatable.QualifiedData`
+- [ ] `org.odk.collect.async.network.ConnectivityProvider` · async · class · used-by 2
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.async.network.NetworkStateProvider`
+- [ ] `org.odk.collect.audioclips.AudioClipViewModel.Factory` · audio-clips · class · used-by 0
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.audioclips.AudioClipViewModel`
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyModule` · audio-recorder · class · used-by 2
+  - needs ↓: `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.async.CoroutineScheduler`, `org.odk.collect.async.Scheduler`, `org.odk.collect.audiorecorder.mediarecorder.AACRecordingResource`, `org.odk.collect.audiorecorder.mediarecorder.AMRRecordingResource`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recorder.Recorder`, `org.odk.collect.audiorecorder.recorder.RecordingResourceRecorder`
+- [ ] `org.odk.collect.android.activities.FormFillingActivity.EmptyView` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.SwipeHandler`
+- [ ] `org.odk.collect.android.activities.viewmodels.FormDownloadListViewModel.Factory` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.activities.viewmodels.FormDownloadListViewModel`
+- [ ] `org.odk.collect.android.application.initialization.AnalyticsInitializer` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.database.savepoints.DatabaseSavepointsRepository` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.database.savepoints.DatabaseSavepointsColumns`, `org.odk.collect.android.database.savepoints.SavepointsDatabaseMigrator`, `org.odk.collect.db.sqlite.DatabaseConnection`, `org.odk.collect.forms.savepoints.Savepoint`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.shared.PathUtils`
+- [ ] `org.odk.collect.android.formentry.PrinterWidgetViewModel` · collect_app · class · used-by 4
+  - needs ↓: `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.interfaces.Printer`, `org.odk.collect.androidshared.async.TrackableWorker`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Scheduler`, `org.odk.collect.printer.HtmlPrinter`, `org.odk.collect.qrcode.zxing.QRCodeCreator`
+- [ ] `org.odk.collect.android.formentry.audit.AuditConfig.Builder` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditConfig`
+- [ ] `org.odk.collect.android.formhierarchy.HierarchyListItemView` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.formhierarchy.HierarchyItem`, `org.odk.collect.android.formhierarchy.HierarchyItemType`, `org.odk.collect.android.utilities.HtmlUtils`
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListAdapter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListAdapter.BlankFormListItemWithMapViewHolder`, `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`, `org.odk.collect.android.formlists.blankformlist.OnFormItemClickListener`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.formmanagement.formmap.FormMapViewModel` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.geo.selection.IconifiedText`, `org.odk.collect.geo.selection.MappableSelectItem`, `org.odk.collect.geo.selection.SelectionMapData`, `org.odk.collect.geo.selection.Status`, `org.odk.collect.maps.MapPoint` _(+2 more)_
+- [ ] `org.odk.collect.android.geo.MapConfiguratorProvider.SourceOption` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.MapConfigurator`
+- [ ] `org.odk.collect.android.instancemanagement.autosend.AutoSendSettingsProvider` · collect_app · class · used-by 7
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.async.network.NetworkStateProvider`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.enums.AutoSend`
+- [ ] `org.odk.collect.android.instancemanagement.send.ReadyToSendBanner` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel`, `org.odk.collect.shared.TimeInMs`
+- [ ] `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel.Factory` · collect_app · value class · used-by 0
+  - needs ↓: `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.javarosawrapper.InstanceMetadata` · collect_app · data class · used-by 5
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditConfig`, `org.odk.collect.android.utilities.FormNameUtils`
+- [ ] `org.odk.collect.android.mainmenu.RequestPermissionsViewModel` · collect_app · class · used-by 4
+  - needs ↓: `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.MetaKeys`
+- [ ] `org.odk.collect.android.notifications.NotificationUtils` · collect_app · object · used-by 4
+  - needs ↓: `org.odk.collect.errors.ErrorActivity`, `org.odk.collect.errors.ErrorItem`
+- [ ] `org.odk.collect.android.preferences.ProjectPreferencesViewModel` · collect_app · data class · used-by 7
+  - needs ↓: `org.odk.collect.android.preferences.ProjectPreferencesViewModel.State`, `org.odk.collect.android.utilities.AdminPasswordProvider`, `org.odk.collect.androidshared.data.Consumable`
+- [ ] `org.odk.collect.android.projects.ProjectDependencyModule` · collect_app · data class · used-by 6
+  - needs ↓: `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.android.utilities.ChangeLocks`, `org.odk.collect.entities.server.EntitySource`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.FormSource`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.utilities.FormEntryPromptUtils` · collect_app · class · used-by 10
+  - needs ↓: `org.odk.collect.android.utilities.HtmlUtils`
+- [ ] `org.odk.collect.android.utilities.FormsDownloadResultInterpreter` · collect_app · object · used-by 2
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.formmanagement.download.FormDownloadExceptionMapper`, `org.odk.collect.errors.ErrorItem`
+- [ ] `org.odk.collect.android.widgets.items.SelectChoicesMapData` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.widgets.utilities.GeoWidgetUtils`, `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.selection.IconifiedText`, `org.odk.collect.geo.selection.MappableSelectItem`, `org.odk.collect.geo.selection.SelectionMapData`
+- [ ] `org.odk.collect.android.widgets.utilities.ViewModelAudioPlayer` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.audioclips.AudioClipViewModel`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.crashhandler.CrashHandler.Companion` · crash-handler · object · used-by 0
+  - needs ↓: `org.odk.collect.crashhandler.CrashHandler`
+- [ ] `org.odk.collect.db.sqlite.SQLiteUtils` · db · class · used-by 3
+  - needs ↓: `org.odk.collect.db.sqlite.CustomSQLiteQueryBuilder`, `org.odk.collect.db.sqlite.CustomSQLiteQueryExecutor`
+- [ ] `org.odk.collect.db.sqlite.SynchronizedDatabaseConnection` · db · class · used-by 2
+  - needs ↓: `org.odk.collect.db.sqlite.DatabaseConnection`, `org.odk.collect.db.sqlite.DatabaseMigrator`
+- [ ] `org.odk.collect.draw.DrawDependencyModule` · draw · class · used-by 2
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.draw.PenColorPickerDialog` · draw · class · used-by 1
+  - needs ↓: `org.odk.collect.draw.PenColorPickerViewModel`
+- [ ] `org.odk.collect.entities.EntitiesDependencyModule` · entities · class · used-by 2
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.entities.storage.EntitiesRepository`
+- [ ] `org.odk.collect.entities.LocalEntityUseCases` · entities · object · used-by 2
+  - needs ↓: `org.odk.collect.entities.ServerEntity`, `org.odk.collect.entities.javarosa.finalization.EntitiesExtra`, `org.odk.collect.entities.javarosa.parse.EntitySchema`, `org.odk.collect.entities.javarosa.spec.EntityAction`, `org.odk.collect.entities.server.EntitySource`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.Entity`, `org.odk.collect.forms.MediaFile`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.entities.browser.EntitiesViewModel` · entities · class · used-by 3
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.Entity`
+- [ ] `org.odk.collect.entities.browser.EntityViewHolder` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.browser.EntityItemView`, `org.odk.collect.entities.storage.Entity`
+- [ ] `org.odk.collect.entities.javarosa.intance.LocalEntitiesInstanceAdapter` · entities · class · used-by 3
+  - needs ↓: `org.odk.collect.entities.javarosa.parse.EntitySchema`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.Entity`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.entities.javarosa.parse.EntityXFormParserFactory` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.parse.EntityFormParseProcessor`
+- [ ] `org.odk.collect.entities.storage.InMemEntitiesRepository` · entities · class · used-by 0
+  - needs ↓: `org.odk.collect.entities.javarosa.parse.EntitySchema`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.Entity`, `org.odk.collect.entities.storage.EntityList`, `org.odk.collect.entities.storage.QueryException`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.geo.geopoly.InfoDialog` · geo · object · used-by 1
+  - needs ↓: `org.odk.collect.geo.geopoly.GeoPolyViewModel`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.DynamicPolyLineFeature` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment.LineFeature`, `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.markers.MarkerDescription`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.DynamicPolygonFeature` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment.LineFeature`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`, `org.odk.collect.maps.markers.MarkerDescription`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.StaticPolyLineFeature` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment.LineFeature`, `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment.StaticPolygonFeature` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment.LineFeature`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`
+- [ ] `org.odk.collect.googlemaps.GoogleMapsDependencyModule` · google-maps · class · used-by 1
+  - needs ↓: `org.odk.collect.location.LocationClient`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.googlemaps.scaleview.ViewConfig` · google-maps · class · used-by 1 `[C16]`
+  - needs ↓: `org.odk.collect.googlemaps.scaleview.MapScaleView`
+- [ ] `org.odk.collect.googlemaps.scaleview.MapScaleView` · google-maps · class · used-by 2 `[C16]`
+  - needs ↓: `org.odk.collect.googlemaps.scaleview.Drawer`, `org.odk.collect.googlemaps.scaleview.MapScaleModel`, `org.odk.collect.googlemaps.scaleview.MapScaleView.ScaleType`, `org.odk.collect.googlemaps.scaleview.Scale`, `org.odk.collect.googlemaps.scaleview.Scales`, `org.odk.collect.googlemaps.scaleview.ViewConfig`
+- [ ] `org.odk.collect.lists.selects.MultiSelectAdapter` · lists · class · used-by 3
+  - needs ↓: `org.odk.collect.lists.selects.MultiSelectAdapter.ViewHolder`, `org.odk.collect.lists.selects.MultiSelectViewModel`, `org.odk.collect.lists.selects.SelectItem`
+- [ ] `org.odk.collect.lists.selects.MultiSelectControlsFragment` · lists · class · used-by 3
+  - needs ↓: `org.odk.collect.lists.selects.MultiSelectControlsView`, `org.odk.collect.lists.selects.MultiSelectControlsView.Listener`, `org.odk.collect.lists.selects.MultiSelectViewModel`
+- [ ] `org.odk.collect.lists.selects.MultiSelectViewModel.Factory` · lists · value class · used-by 0
+  - needs ↓: `org.odk.collect.lists.selects.MultiSelectViewModel`, `org.odk.collect.lists.selects.SelectItem`
+- [ ] `org.odk.collect.location.AndroidLocationClient` · location · class · used-by 1
+  - needs ↓: `org.odk.collect.location.BaseLocationClient`, `org.odk.collect.location.LocationUtils`
+- [ ] `org.odk.collect.location.GoogleFusedLocationClient` · location · class · used-by 3
+  - needs ↓: `org.odk.collect.location.BaseLocationClient`, `org.odk.collect.location.FusedLocationProviderClientWrapper`, `org.odk.collect.location.LocationClient.LocationClientListener`
+- [ ] `org.odk.collect.mapbox.MapBoxInitializationFragment` · mapbox · class · used-by 0
+  - needs ↓: `org.odk.collect.async.network.NetworkStateProvider`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.MetaKeys`, `org.odk.collect.shared.injection.ObjectProviderHost`
+- [ ] `org.odk.collect.mapbox.TileHttpServer` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.TileHttpServer.ServerThread`, `org.odk.collect.maps.layers.TileSource`
+- [ ] `org.odk.collect.maps.MapFragment.ReadyListener` · maps · fun interface · used-by 2 `[C15]`
+  - needs ↓: `org.odk.collect.maps.MapFragment`
+- [ ] `org.odk.collect.maps.MapFragment` · maps · interface · used-by 18 `[C15]`
+  - needs ↓: `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapFragment.ErrorListener`, `org.odk.collect.maps.MapFragment.FeatureListener`, `org.odk.collect.maps.MapFragment.PointListener`, `org.odk.collect.maps.MapFragment.ReadyListener`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`, `org.odk.collect.maps.markers.MarkerDescription`, `org.odk.collect.maps.markers.MarkerIconDescription`
+- [ ] `org.odk.collect.maps.MapViewModel` · maps · class · used-by 4
+  - needs ↓: `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.Zoom`, `org.odk.collect.maps.Zoom.Box`, `org.odk.collect.maps.Zoom.Point`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.maps.layers.DirectoryReferenceLayerRepository` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.ReferenceLayer`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.shared.PathUtils`
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersViewModel` · maps · class · used-by 2
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.androidshared.async.TrackableWorker`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.async.Scheduler`, `org.odk.collect.maps.AnalyticsEvents`, `org.odk.collect.maps.layers.MbtilesFile`, `org.odk.collect.maps.layers.OfflineMapLayersViewModel.LayersToImport`, `org.odk.collect.maps.layers.ReferenceLayer`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.TempFiles`
+- [ ] `org.odk.collect.metadata.PropertyManager` · metadata · class · used-by 14
+  - needs ↓: `org.odk.collect.metadata.InstallIDProvider`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.openrosa.forms.OpenRosaXmlFetcher` · open-rosa · class · used-by 2
+  - needs ↓: `org.odk.collect.openrosa.forms.DocumentFetchResult`, `org.odk.collect.openrosa.forms.OpenRosaXmlFetcher.WebCredentialsProvider`, `org.odk.collect.openrosa.http.HttpGetResult`, `org.odk.collect.openrosa.http.OpenRosaHttpInterface`
+- [ ] `org.odk.collect.openrosa.http.CollectThenSystemContentTypeMapper` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.CollectThenSystemContentTypeMapper.CollectContentTypeMappings`, `org.odk.collect.openrosa.http.OpenRosaHttpInterface`
+- [ ] `org.odk.collect.openrosa.http.okhttp.OkHttpConnection` · open-rosa · class · used-by 1
+  - needs ↓: `org.odk.collect.openrosa.http.CaseInsensitiveEmptyHeaders`, `org.odk.collect.openrosa.http.CaseInsensitiveHeaders`, `org.odk.collect.openrosa.http.HttpCredentialsInterface`, `org.odk.collect.openrosa.http.HttpGetResult`, `org.odk.collect.openrosa.http.HttpHeadResult`, `org.odk.collect.openrosa.http.HttpPostResult`, `org.odk.collect.openrosa.http.OpenRosaHttpInterface`, `org.odk.collect.openrosa.http.okhttp.OkHttpCaseInsensitiveHeaders`, `org.odk.collect.openrosa.http.okhttp.OkHttpOpenRosaServerClientProvider`, `org.odk.collect.openrosa.http.okhttp.OpenRosaServerClient`, `org.odk.collect.shared.strings.Md5`
+- [ ] `org.odk.collect.openrosa.parse.Kxml2OpenRosaResponseParser` · open-rosa · object · used-by 1
+  - needs ↓: `org.odk.collect.forms.FormListItem`, `org.odk.collect.forms.MediaFile`, `org.odk.collect.forms.MediaFile.Type`, `org.odk.collect.openrosa.forms.EntityIntegrity`, `org.odk.collect.openrosa.parse.OpenRosaResponseParser`
+- [ ] `org.odk.collect.osmdroid.OsmDroidDependencyModule` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.location.LocationClient`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.DynamicPolyLineFeature` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.markers.MarkerDescription`, `org.odk.collect.osmdroid.OsmDroidMapFragment.LineFeature`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.DynamicPolygonFeature` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`, `org.odk.collect.maps.markers.MarkerDescription`, `org.odk.collect.osmdroid.OsmDroidMapFragment.LineFeature`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.StaticPolyLineFeature` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.osmdroid.OsmDroidMapFragment.LineFeature`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment.StaticPolygonFeature` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`, `org.odk.collect.osmdroid.OsmDroidMapFragment.LineFeature`
+- [ ] `org.odk.collect.permissions.PermissionsProvider` · permissions · class · used-by 18
+  - needs ↓: `org.odk.collect.permissions.DexterRequestPermissionsAPI`, `org.odk.collect.permissions.LocationAccessibilityChecker`, `org.odk.collect.permissions.LocationAccessibilityCheckerImpl`, `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.permissions.PermissionsDialogCreator`, `org.odk.collect.permissions.PermissionsDialogCreatorImpl`, `org.odk.collect.permissions.RequestPermissionsAPI`
+- [ ] `org.odk.collect.projects.ProjectsDependencyModule` · projects · class · used-by 1
+  - needs ↓: `org.odk.collect.projects.InMemProjectsRepository`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.shared.strings.UUIDGenerator`
+- [ ] `org.odk.collect.qrcode.BarcodeFilter` · qr-code · class · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeCandidate`, `org.odk.collect.qrcode.DetectedBarcode`, `org.odk.collect.qrcode.DetectedBarcode.Bytes`, `org.odk.collect.qrcode.DetectedBarcode.Utf8`, `org.odk.collect.qrcode.DetectedState`
+- [ ] `org.odk.collect.qrcode.BarcodeScannerViewContainer` · qr-code · class · used-by 7
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.BarcodeScannerViewContainer.Factory`
+- [ ] `org.odk.collect.selfiecamera.SelfieCameraDependencyModule` · selfie-camera · class · used-by 1
+  - needs ↓: `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.selfiecamera.Camera`, `org.odk.collect.selfiecamera.CameraXCamera`
+- [ ] `org.odk.collect.settings.InMemSettingsProvider` · settings · class · used-by 0
+  - needs ↓: `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.shared.settings.InMemSettings`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.ODKAppSettingsMigrator` · settings · class · used-by 3
+  - needs ↓: `org.odk.collect.settings.importing.SettingsMigrator`, `org.odk.collect.settings.keys.ProtectedProjectKeys`, `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.importing.SettingsImporter` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectConfigurationResult`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.importing.ProjectDetailsCreator`, `org.odk.collect.settings.importing.SettingsChangeHandler`, `org.odk.collect.settings.importing.SettingsMigrator`, `org.odk.collect.settings.importing.SettingsValidator`, `org.odk.collect.settings.keys.AppConfigurationKeys`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.KeyCombiner` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.KeyValuePair`, `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.KeyExtractor` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.KeyMover` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.KeyRenamer` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.KeyTranslator` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.KeyUpdater` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.KeyValuePair`, `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.settings.migration.ValueTranslator` · settings · class · used-by 1
+  - needs ↓: `org.odk.collect.settings.migration.Migration`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.timedgrid.TimedGridWidgetConfiguration.Companion` · timedgrid · object · used-by 0
+  - needs ↓: `org.odk.collect.timedgrid.AssessmentType`, `org.odk.collect.timedgrid.FinishType`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration.Builder`, `org.odk.collect.timedgrid.TimedGridWidgetConfiguration.Companion.Keys`
+- [ ] `org.odk.collect.upgrade.AppUpgrader` · upgrade · class · used-by 1
+  - needs ↓: `org.odk.collect.shared.settings.Settings`, `org.odk.collect.upgrade.InstallDetector`, `org.odk.collect.upgrade.LaunchState`, `org.odk.collect.upgrade.Upgrade`, `org.odk.collect.upgrade.VersionCodeLaunchState`
+
+### Level 4 — 48 classes
+
+- [ ] `org.odk.collect.async.TaskSpecWorker` · async · class · used-by 1
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.async.Scheduler`, `org.odk.collect.async.TaskSpec`, `org.odk.collect.async.network.ConnectivityProvider`
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyComponentProvider` · audio-recorder · interface · used-by 2 `[C5]`
+  - needs ↓: `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent`
+- [ ] `org.odk.collect.audiorecorder.recording.AudioRecorderService` · audio-recorder · class · used-by 2 `[C5]`
+  - needs ↓: `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.async.Cancellable`, `org.odk.collect.async.Scheduler`, `org.odk.collect.audiorecorder.AudioRecorderDependencyComponentProvider`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recorder.Recorder`, `org.odk.collect.audiorecorder.recording.internal.RecordingForegroundServiceNotification`, `org.odk.collect.audiorecorder.recording.internal.RecordingRepository`
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent.Builder` · audio-recorder · interface · used-by 1 `[C5]`
+  - needs ↓: `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent`, `org.odk.collect.audiorecorder.AudioRecorderDependencyModule`
+- [ ] `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent` · audio-recorder · interface · used-by 3 `[C5]`
+  - needs ↓: `org.odk.collect.audiorecorder.AudioRecorderDependencyComponent.Builder`, `org.odk.collect.audiorecorder.recording.AudioRecorderService`
+- [ ] `org.odk.collect.android.application.MapboxClassInstanceCreator` · collect_app · object · used-by 4
+  - needs ↓: `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.MapFragment`
+- [ ] `org.odk.collect.android.application.initialization.CachedFormsCleaner` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.projects.ProjectDependencyModule`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.upgrade.Upgrade`
+- [ ] `org.odk.collect.android.application.initialization.ExistingSettingsMigrator` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.ODKAppSettingsMigrator`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.upgrade.Upgrade`
+- [ ] `org.odk.collect.android.application.initialization.SavepointsImporter` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.projects.ProjectDependencyModule`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.forms.savepoints.Savepoint`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.keys.MetaKeys`, `org.odk.collect.upgrade.Upgrade`
+- [ ] `org.odk.collect.android.database.entities.DatabaseEntitiesRepository` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.database.entities.EntitiesDatabaseMigrator`, `org.odk.collect.android.database.entities.EntitiesTable`, `org.odk.collect.android.database.entities.ListsTable`, `org.odk.collect.db.sqlite.SynchronizedDatabaseConnection`, `org.odk.collect.entities.javarosa.parse.EntitySchema`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.Entity`, `org.odk.collect.entities.storage.EntityList`, `org.odk.collect.entities.storage.QueryException`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.android.database.forms.FormDatabaseMigrator` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.db.sqlite.DatabaseMigrator`, `org.odk.collect.db.sqlite.SQLiteUtils`
+- [ ] `org.odk.collect.android.database.instances.InstanceDatabaseMigrator` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.db.sqlite.DatabaseMigrator`, `org.odk.collect.db.sqlite.SQLiteDatabaseExt`, `org.odk.collect.db.sqlite.SQLiteUtils`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.javarosawrapper.FormController` · collect_app · interface · used-by 41 `[C17]`
+  - needs ↓: `org.odk.collect.android.exception.JavaRosaException`, `org.odk.collect.android.formentry.audit.AuditEventLogger`, `org.odk.collect.android.javarosawrapper.InstanceMetadata`, `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException`, `org.odk.collect.android.javarosawrapper.ValidationResult`, `org.odk.collect.entities.javarosa.finalization.EntitiesExtra`
+- [ ] `org.odk.collect.android.formentry.audit.AuditEventLogger` · collect_app · class · used-by 6 `[C17]`
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditConfig`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.audit.AuditEventLogger.AuditEventWriter`, `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.formhierarchy.HierarchyListAdapter.ViewHolder` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formhierarchy.HierarchyItem`, `org.odk.collect.android.formhierarchy.HierarchyListAdapter.OnElementClickListener`, `org.odk.collect.android.formhierarchy.HierarchyListItemView`
+- [ ] `org.odk.collect.android.formlists.blankformlist.SelectableBlankFormListItemViewHolder` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`, `org.odk.collect.android.formlists.blankformlist.BlankFormListItemView`, `org.odk.collect.lists.selects.MultiSelectAdapter`
+- [ ] `org.odk.collect.android.formlists.savedformlist.SelectableSavedFormListItemViewHolder` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.formlists.savedformlist.SavedFormListItemView`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.lists.selects.MultiSelectAdapter`
+- [ ] `org.odk.collect.android.mainmenu.PermissionsDialogFragment` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.mainmenu.RequestPermissionsViewModel`, `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.PermissionsProvider`
+- [ ] `org.odk.collect.android.preferences.PreferenceVisibilityHandler` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.preferences.ProjectPreferencesViewModel`, `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.preferences.ProjectPreferencesViewModel.Factory` · collect_app · value class · used-by 0
+  - needs ↓: `org.odk.collect.android.preferences.ProjectPreferencesViewModel`, `org.odk.collect.android.utilities.AdminPasswordProvider`
+- [ ] `org.odk.collect.android.preferences.screens.FormMetadataPreferencesFragment.PropertyManagerPropertySummaryProvider` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.metadata.PropertyManager`
+- [ ] `org.odk.collect.android.utilities.WebCredentialsUtils` · collect_app · class · used-by 9
+  - needs ↓: `org.odk.collect.metadata.PropertyManager`, `org.odk.collect.openrosa.forms.OpenRosaXmlFetcher`, `org.odk.collect.openrosa.http.HttpCredentials`, `org.odk.collect.openrosa.http.HttpCredentialsInterface`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.widgets.utilities.ExternalAppRecordingRequester` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.widgets.utilities.RecordingRequester`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.system.IntentLauncher`, `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.PermissionsProvider`
+- [ ] `org.odk.collect.android.widgets.utilities.InternalRecordingRequester` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.android.widgets.utilities.BindAttributes`, `org.odk.collect.android.widgets.utilities.RecordingRequester`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.permissions.PermissionsProvider`
+- [ ] `org.odk.collect.android.widgets.utilities.ViewModelAudioPlayerFactory` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.widgets.utilities.ViewModelAudioPlayer`, `org.odk.collect.async.Scheduler`, `org.odk.collect.audioclips.AudioClipViewModel`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.AudioPlayerFactory`
+- [ ] `org.odk.collect.db.sqlite.RowNumbers` · db · object · used-by 0
+  - needs ↓: `org.odk.collect.db.sqlite.SynchronizedDatabaseConnection`
+- [ ] `org.odk.collect.draw.DrawDependencyComponent` · draw · interface · used-by 3 `[C4]`
+  - needs ↓: `org.odk.collect.draw.DrawActivity`, `org.odk.collect.draw.DrawView`
+- [ ] `org.odk.collect.draw.DrawDependencyComponentProvider` · draw · interface · used-by 4 `[C4]`
+  - needs ↓: `org.odk.collect.draw.DrawDependencyComponent`
+- [ ] `org.odk.collect.draw.DrawView` · draw · class · used-by 3 `[C4]`
+  - needs ↓: `org.odk.collect.androidshared.bitmap.ImageFileUtils`, `org.odk.collect.draw.DrawDependencyComponentProvider`
+- [ ] `org.odk.collect.draw.DrawViewModel` · draw · class · used-by 1 `[C4]`
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.draw.DrawView`
+- [ ] `org.odk.collect.draw.DrawActivity` · draw · class · used-by 6 `[C4]`
+  - needs ↓: `org.odk.collect.androidshared.bitmap.ImageFileUtils`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.async.Scheduler`, `org.odk.collect.draw.DrawDependencyComponentProvider`, `org.odk.collect.draw.DrawView`, `org.odk.collect.draw.DrawViewModel`, `org.odk.collect.draw.PenColorPickerDialog`, `org.odk.collect.draw.PenColorPickerViewModel`, `org.odk.collect.draw.QuitDrawingDialog`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.MetaKeys` _(+1 more)_
+- [ ] `org.odk.collect.entities.browser.EntitiesAdapter` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.browser.EntityViewHolder`, `org.odk.collect.entities.storage.Entity`
+- [ ] `org.odk.collect.entities.browser.EntityListsFragment` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.browser.EntitiesViewModel`, `org.odk.collect.entities.browser.ListsAdapter`, `org.odk.collect.lists.RecyclerViewUtils`
+- [ ] `org.odk.collect.entities.javarosa.filter.LocalEntitiesFilterStrategy` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.intance.LocalEntitiesInstanceAdapter`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.QueryException`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.entities.javarosa.filter.PullDataFunctionHandler` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.intance.LocalEntitiesInstanceAdapter`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.entities.storage.QueryException`, `org.odk.collect.shared.Query`
+- [ ] `org.odk.collect.entities.javarosa.intance.LocalEntitiesInstanceProvider` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.intance.LocalEntitiesInstanceAdapter`, `org.odk.collect.entities.storage.EntitiesRepository`
+- [ ] `org.odk.collect.lists.selects.MultiSelectListFragment` · lists · class · used-by 2
+  - needs ↓: `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.lists.selects.MultiSelectAdapter`, `org.odk.collect.lists.selects.MultiSelectControlsFragment`, `org.odk.collect.lists.selects.MultiSelectViewModel`
+- [ ] `org.odk.collect.location.LocationClientProvider` · location · object · used-by 2
+  - needs ↓: `org.odk.collect.location.AndroidLocationClient`, `org.odk.collect.location.GoogleFusedLocationClient`, `org.odk.collect.location.LocationClient`
+- [ ] `org.odk.collect.mapbox.MapUtils` · mapbox · object · used-by 8
+  - needs ↓: `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.TraceDescription`, `org.odk.collect.maps.markers.MarkerDescription`
+- [ ] `org.odk.collect.maps.MapFragmentFactory` · maps · interface · used-by 8
+  - needs ↓: `org.odk.collect.maps.MapFragment`
+- [ ] `org.odk.collect.maps.MapViewModelMapFragment` · maps · class · used-by 3
+  - needs ↓: `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.MapViewModel`
+- [ ] `org.odk.collect.maps.layers.MapFragmentReferenceLayerUtils` · maps · object · used-by 2
+  - needs ↓: `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.layers.ReferenceLayerRepository`
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersImporterDialogFragment` · maps · class · used-by 1
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.maps.layers.OfflineMapLayersImporterAdapter`, `org.odk.collect.maps.layers.OfflineMapLayersViewModel`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.material.MaterialFullScreenDialogFragment`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.openrosa.forms.OpenRosaClient` · open-rosa · class · used-by 2
+  - needs ↓: `org.odk.collect.entities.server.EntitySource`, `org.odk.collect.forms.FormListItem`, `org.odk.collect.forms.FormSource`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.FormSourceException.AuthRequired`, `org.odk.collect.forms.FormSourceException.FetchError`, `org.odk.collect.forms.FormSourceException.SecurityError`, `org.odk.collect.forms.FormSourceException.ServerNotOpenRosaError`, `org.odk.collect.forms.ManifestFile`, `org.odk.collect.openrosa.forms.OpenRosaXmlFetcher`, `org.odk.collect.openrosa.forms.OpenRosaXmlFetcher.WebCredentialsProvider`, `org.odk.collect.openrosa.http.OpenRosaConstants` _(+2 more)_
+- [ ] `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerView` · qr-code · class · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeFilter`, `org.odk.collect.qrcode.BarcodeFormat`, `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.DetectedBarcode`, `org.odk.collect.qrcode.DetectedState`
+- [ ] `org.odk.collect.qrcode.zxing.ZxingBarcodeScannerViewFactory` · qr-code · class · used-by 2
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.BarcodeScannerViewContainer`, `org.odk.collect.qrcode.zxing.ZxingBarcodeScannerView`
+- [ ] `org.odk.collect.settings.ODKAppSettingsImporter` · settings · class · used-by 8
+  - needs ↓: `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectConfigurationResult`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.ODKAppSettingsMigrator`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.importing.ProjectDetailsCreatorImpl`, `org.odk.collect.settings.importing.SettingsChangeHandler`, `org.odk.collect.settings.importing.SettingsImporter`, `org.odk.collect.settings.validation.JsonSchemaSettingsValidator`
+- [ ] `org.odk.collect.settings.migration.MigrationUtils` · settings · class · used-by 0
+  - needs ↓: `org.odk.collect.settings.migration.KeyCombiner`, `org.odk.collect.settings.migration.KeyExtractor`, `org.odk.collect.settings.migration.KeyMover`, `org.odk.collect.settings.migration.KeyRenamer`, `org.odk.collect.settings.migration.KeyTranslator`, `org.odk.collect.settings.migration.KeyUpdater`, `org.odk.collect.settings.migration.KeyValuePair`, `org.odk.collect.settings.migration.Migration`, `org.odk.collect.settings.migration.ValueTranslator`, `org.odk.collect.shared.settings.Settings`
+
+### Level 5 — 40 classes
+
+- [ ] `org.odk.collect.async.CoroutineAndWorkManagerScheduler` · async · class · used-by 1
+  - needs ↓: `org.odk.collect.async.CoroutineScheduler`, `org.odk.collect.async.NotificationInfo`, `org.odk.collect.async.Scheduler`, `org.odk.collect.async.TaskSpec`, `org.odk.collect.async.TaskSpecWorker`
+- [ ] `org.odk.collect.audiorecorder.recording.internal.ForegroundServiceAudioRecorder` · audio-recorder · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.AudioRecorderService`, `org.odk.collect.audiorecorder.recording.RecordingSession`, `org.odk.collect.audiorecorder.recording.internal.RecordingRepository`
+- [ ] `org.odk.collect.android.analytics.AnalyticsUtils` · collect_app · object · used-by 4
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.database.instances.DatabaseInstancesRepository` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.database.DatabaseConstants`, `org.odk.collect.android.database.instances.InstanceDatabaseMigrator`, `org.odk.collect.db.sqlite.DatabaseConnection`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.shared.files.FileExt`
+- [ ] `org.odk.collect.android.entities.EntitiesRepositoryProvider` · collect_app · class · used-by 8
+  - needs ↓: `org.odk.collect.android.database.entities.DatabaseEntitiesRepository`, `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.projects.ProjectDependencyFactory`
+- [ ] `org.odk.collect.android.formentry.BackgroundAudioViewModel` · collect_app · class · used-by 5
+  - needs ↓: `org.odk.collect.android.formentry.BackgroundAudioViewModel.RecordAudioActionRegistry`, `org.odk.collect.android.formentry.FormSession`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.audit.AuditEventLogger`, `org.odk.collect.androidshared.livedata.LiveDataUtils`, `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Cancellable`, `org.odk.collect.audiorecorder.recorder.Output`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.RecordingSession`, `org.odk.collect.permissions.PermissionsChecker` _(+1 more)_
+- [ ] `org.odk.collect.android.formentry.FormSessionRepository` · collect_app · interface · used-by 9
+  - needs ↓: `org.odk.collect.android.formentry.FormSession`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.formentry.RecordingHandler` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.audio.AudioFileAppender`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.RecordingSession`, `org.odk.collect.utilities.Result`
+- [ ] `org.odk.collect.android.formentry.audit.AsyncTaskAuditEventWriter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.audit.AuditEventLogger`, `org.odk.collect.android.formentry.audit.AuditEventSaveTask`
+- [ ] `org.odk.collect.android.formentry.audit.AuditUtils` · collect_app · object · used-by 2
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.audit.AuditEventLogger`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException`
+- [ ] `org.odk.collect.android.formentry.audit.IdentityPromptViewModel` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditEventLogger`, `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.formhierarchy.HierarchyListAdapter` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formhierarchy.HierarchyItem`, `org.odk.collect.android.formhierarchy.HierarchyListAdapter.OnElementClickListener`, `org.odk.collect.android.formhierarchy.HierarchyListAdapter.ViewHolder`, `org.odk.collect.android.formhierarchy.HierarchyListItemView`
+- [ ] `org.odk.collect.android.formmanagement.OpenRosaClientProvider` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.utilities.WebCredentialsUtils`, `org.odk.collect.openrosa.forms.OpenRosaClient`, `org.odk.collect.openrosa.http.OpenRosaHttpInterface`, `org.odk.collect.openrosa.parse.Kxml2OpenRosaResponseParser`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.javarosawrapper.FormControllerExt` · collect_app · object · used-by 1
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException`
+- [ ] `org.odk.collect.android.savepoints.SavepointTask` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.savepoints.SavepointListener`, `org.odk.collect.async.Scheduler`, `org.odk.collect.async.SchedulerAsyncTaskMimic`, `org.odk.collect.forms.savepoints.Savepoint`, `org.odk.collect.forms.savepoints.SavepointsRepository`
+- [ ] `org.odk.collect.android.tasks.FormLoaderTask.FECWrapper` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget.DrawImageClickHandler` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.widgets.BaseImageWidget.ImageClickHandler`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`, `org.odk.collect.draw.DrawActivity`
+- [ ] `org.odk.collect.android.widgets.utilities.FormControllerWaitingForDataRegistry` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.utilities.RecordingRequesterProvider` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.android.widgets.utilities.BindAttributes.Quality`, `org.odk.collect.android.widgets.utilities.ExternalAppRecordingRequester`, `org.odk.collect.android.widgets.utilities.InternalRecordingRequester`, `org.odk.collect.android.widgets.utilities.RecordingRequester`
+- [ ] `org.odk.collect.draw.RobolectricApplication` · draw · class · used-by 0
+  - needs ↓: `org.odk.collect.draw.DrawDependencyComponent`, `org.odk.collect.draw.DrawDependencyComponentProvider`, `org.odk.collect.draw.DrawDependencyModule`
+- [ ] `org.odk.collect.entities.browser.EntitiesFragment` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.browser.EntitiesAdapter`, `org.odk.collect.entities.browser.EntitiesViewModel`, `org.odk.collect.lists.RecyclerViewUtils`
+- [ ] `org.odk.collect.entities.javarosa.intance.LocalEntitiesExternalInstanceParserFactory` · entities · class · used-by 1
+  - needs ↓: `org.odk.collect.entities.javarosa.intance.LocalEntitiesInstanceProvider`, `org.odk.collect.entities.storage.EntitiesRepository`
+- [ ] `org.odk.collect.googlemaps.GoogleMapsDependencyComponent` · google-maps · interface · used-by 3 `[C6]`
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapFragment`
+- [ ] `org.odk.collect.googlemaps.GoogleMapsDependencyComponentProvider` · google-maps · interface · used-by 2 `[C6]`
+  - needs ↓: `org.odk.collect.googlemaps.GoogleMapsDependencyComponent`
+- [ ] `org.odk.collect.googlemaps.GoogleMapFragment` · google-maps · class · used-by 4 `[C6]`
+  - needs ↓: `org.odk.collect.androidshared.system.ContextUtils`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.googlemaps.BitmapDescriptorCache`, `org.odk.collect.googlemaps.GoogleMapConfigurator`, `org.odk.collect.googlemaps.GoogleMapConfigurator.GoogleMapTypeOption`, `org.odk.collect.googlemaps.GoogleMapFragment.CameraListener`, `org.odk.collect.googlemaps.GoogleMapFragment.DynamicPolyLineFeature`, `org.odk.collect.googlemaps.GoogleMapFragment.DynamicPolygonFeature`, `org.odk.collect.googlemaps.GoogleMapFragment.LineFeature`, `org.odk.collect.googlemaps.GoogleMapFragment.MapFeature`, `org.odk.collect.googlemaps.GoogleMapFragment.MarkerFeature`, `org.odk.collect.googlemaps.GoogleMapFragment.StaticPolyLineFeature` _(+21 more)_
+- [ ] `org.odk.collect.googlemaps.GoogleMapConfigurator` · google-maps · class · used-by 2 `[C6]`
+  - needs ↓: `org.odk.collect.androidshared.system.OpenGLVersionChecker`, `org.odk.collect.androidshared.system.PlayServicesChecker`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.googlemaps.GoogleMapConfigurator.GoogleMapTypeOption`, `org.odk.collect.googlemaps.GoogleMapFragment`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.MbtilesFile`, `org.odk.collect.maps.layers.MbtilesFile.LayerType`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.location.LocationDependencyComponentProvider` · location · interface · used-by 2 `[C11]`
+  - needs ↓: `org.odk.collect.location.LocationDependencyComponent`
+- [ ] `org.odk.collect.location.tracker.LocationTrackerService` · location · class · used-by 2 `[C11]`
+  - needs ↓: `org.odk.collect.androidshared.ui.ReturnToAppActivity`, `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.location.Location`, `org.odk.collect.location.LocationClient`, `org.odk.collect.location.LocationClientProvider`, `org.odk.collect.location.LocationDependencyComponentProvider`
+- [ ] `org.odk.collect.location.LocationDependencyComponent` · location · interface · used-by 2 `[C11]`
+  - needs ↓: `org.odk.collect.location.tracker.LocationTrackerService`
+- [ ] `org.odk.collect.mapbox.DynamicPolyLineFeature.DragListener` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.MapUtils`
+- [ ] `org.odk.collect.mapbox.DynamicPolygonFeature.DragListener` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.MapUtils`
+- [ ] `org.odk.collect.mapbox.MarkerFeature.DragListener` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.MapUtils`
+- [ ] `org.odk.collect.mapbox.StaticPolyLineFeature` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.LineFeature`, `org.odk.collect.mapbox.MapUtils`, `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.mapbox.StaticPolygonFeature` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.LineFeature`, `org.odk.collect.mapbox.MapUtils`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`
+- [ ] `org.odk.collect.maps.layers.OfflineMapLayersPickerBottomSheetDialogFragment` · maps · class · used-by 4
+  - needs ↓: `org.odk.collect.androidshared.livedata.LiveDataUtils`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.async.Scheduler`, `org.odk.collect.lists.selects.MultiSelectViewModel`, `org.odk.collect.lists.selects.SelectItem`, `org.odk.collect.lists.selects.SingleSelectViewModel`, `org.odk.collect.maps.layers.CheckableReferenceLayer`, `org.odk.collect.maps.layers.OfflineMapLayersImporterDialogFragment`, `org.odk.collect.maps.layers.OfflineMapLayersPickerAdapter`, `org.odk.collect.maps.layers.OfflineMapLayersViewModel`, `org.odk.collect.maps.layers.ReferenceLayer` _(+4 more)_
+- [ ] `org.odk.collect.mobiledevicemanagement.MDMConfigHandlerImpl` · mobile-device-management · class · used-by 1
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.mobiledevicemanagement.MDMConfigHandler`, `org.odk.collect.projects.ProjectCreator`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.projects.SettingsConnectionMatcher`, `org.odk.collect.settings.ODKAppSettingsImporter`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.osmdroid.OsmDroidDependencyComponentProvider` · osmdroid · interface · used-by 2 `[C10]`
+  - needs ↓: `org.odk.collect.osmdroid.OsmDroidDependencyComponent`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapFragment` · osmdroid · class · used-by 3 `[C10]`
+  - needs ↓: `org.odk.collect.location.LocationClient`, `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.MapViewModel`, `org.odk.collect.maps.MapViewModelMapFragment`, `org.odk.collect.maps.PolygonDescription`, `org.odk.collect.maps.Zoom`, `org.odk.collect.maps.ZoomObserver`, `org.odk.collect.maps.layers.MapFragmentReferenceLayerUtils`, `org.odk.collect.maps.layers.ReferenceLayerRepository` _(+19 more)_
+- [ ] `org.odk.collect.osmdroid.OsmDroidDependencyComponent` · osmdroid · interface · used-by 3 `[C10]`
+  - needs ↓: `org.odk.collect.osmdroid.OsmDroidMapFragment`
+- [ ] `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerViewFactory` · qr-code · class · used-by 2
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.BarcodeScannerViewContainer`, `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerView`
+
+### Level 6 — 25 classes
+
+- [ ] `org.odk.collect.audiorecorder.recording.AudioRecorderFactory` · audio-recorder · class · used-by 1
+  - needs ↓: `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.internal.ForegroundServiceAudioRecorder`, `org.odk.collect.audiorecorder.recording.internal.RecordingRepository`
+- [ ] `org.odk.collect.android.formentry.AppStateFormSessionRepository` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.FormSession`, `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.shared.strings.UUIDGenerator`
+- [ ] `org.odk.collect.android.formentry.FormEndViewModel` · collect_app · class · used-by 3
+  - needs ↓: `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.instancemanagement.autosend.AutoSendSettingsProvider`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.formentry.audit.IdentifyUserPromptDialogFragment` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.audit.IdentityPromptViewModel`, `org.odk.collect.material.MaterialFullScreenDialogFragment`
+- [ ] `org.odk.collect.android.geo.MapFragmentFactoryImpl` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.application.MapboxClassInstanceCreator`, `org.odk.collect.googlemaps.GoogleMapFragment`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapFragmentFactory`, `org.odk.collect.osmdroid.OsmDroidMapFragment`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.widgets.viewmodels.QuestionViewModel` · collect_app · class · used-by 2
+  - needs ↓: `org.odk.collect.android.formentry.FormSession`, `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.ValidationResult`, `org.odk.collect.androidshared.livedata.LiveDataUtils`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.entities.EntitiesDependencyComponentProvider` · entities · interface · used-by 2 `[C7]`
+  - needs ↓: `org.odk.collect.entities.EntitiesDependencyComponent`
+- [ ] `org.odk.collect.entities.browser.EntityBrowserActivity` · entities · class · used-by 2 `[C7]`
+  - needs ↓: `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.async.Scheduler`, `org.odk.collect.entities.EntitiesDependencyComponentProvider`, `org.odk.collect.entities.browser.EntitiesFragment`, `org.odk.collect.entities.browser.EntitiesViewModel`, `org.odk.collect.entities.browser.EntityListsFragment`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.entities.EntitiesDependencyComponent.Builder` · entities · interface · used-by 1 `[C7]`
+  - needs ↓: `org.odk.collect.entities.EntitiesDependencyComponent`, `org.odk.collect.entities.EntitiesDependencyModule`
+- [ ] `org.odk.collect.entities.EntitiesDependencyComponent` · entities · interface · used-by 3 `[C7]`
+  - needs ↓: `org.odk.collect.entities.EntitiesDependencyComponent.Builder`, `org.odk.collect.entities.browser.EntityBrowserActivity`
+- [ ] `org.odk.collect.geo.GeoDependencyComponentProvider` · geo · interface · used-by 7 `[C2]`
+  - needs ↓: `org.odk.collect.geo.GeoDependencyComponent`
+- [ ] `org.odk.collect.geo.selection.SelectionMapFragment` · geo · class · used-by 3 `[C2]`
+  - needs ↓: `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.GeoDependencyComponentProvider`, `org.odk.collect.geo.selection.MappableSelectItem`, `org.odk.collect.geo.selection.SelectedItemViewModel`, `org.odk.collect.geo.selection.SelectionMapData`, `org.odk.collect.geo.selection.SelectionSummarySheet`, `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapFragmentFactory` _(+11 more)_
+- [ ] `org.odk.collect.geo.geopoly.GeoPolyFragment` · geo · class · used-by 2 `[C2]`
+  - needs ↓: `org.odk.collect.androidshared.ui.DisplayString`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.androidshared.ui.SnackbarUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.GeoDependencyComponentProvider`, `org.odk.collect.geo.GeoUtils`, `org.odk.collect.geo.geopoint.LocationAccuracy.Improving`, `org.odk.collect.geo.geopoint.LocationAccuracy.Unacceptable`, `org.odk.collect.geo.geopoly.GeoPolyFragment.OutputMode`, `org.odk.collect.geo.geopoly.GeoPolySettingsDialogFragment`, `org.odk.collect.geo.geopoly.GeoPolySettingsDialogFragment.SettingsDialogCallback`, `org.odk.collect.geo.geopoly.GeoPolyViewModel` _(+12 more)_
+- [ ] `org.odk.collect.geo.geopoint.GeoPointMapActivity` · geo · class · used-by 2 `[C2]`
+  - needs ↓: `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.externalapp.ExternalAppUtils`, `org.odk.collect.geo.GeoDependencyComponentProvider`, `org.odk.collect.geo.geopoint.AccuracyStatusView`, `org.odk.collect.geo.geopoint.LocationAccuracy`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapFragmentFactory`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.layers.OfflineMapLayersPickerBottomSheetDialogFragment` _(+6 more)_
+- [ ] `org.odk.collect.geo.geopoint.GeoPointDialogFragment` · geo · class · used-by 2 `[C2]`
+  - needs ↓: `org.odk.collect.geo.GeoDependencyComponentProvider`, `org.odk.collect.geo.geopoint.GeoPointDialogFragment.Listener`, `org.odk.collect.geo.geopoint.GeoPointViewModel`, `org.odk.collect.geo.geopoint.GeoPointViewModelFactory`
+- [ ] `org.odk.collect.geo.geopoint.GeoPointActivity` · geo · class · used-by 2 `[C2]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.externalapp.ExternalAppUtils`, `org.odk.collect.geo.GeoDependencyComponentProvider`, `org.odk.collect.geo.GeoUtils`, `org.odk.collect.geo.analytics.AnalyticsEvents`, `org.odk.collect.geo.geopoint.GeoPointDialogFragment`, `org.odk.collect.geo.geopoint.GeoPointViewModel`, `org.odk.collect.geo.geopoint.GeoPointViewModelFactory`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.geo.GeoDependencyModule` · geo · class · used-by 2 `[C2]`
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.GeoDependencyComponentProvider`, `org.odk.collect.geo.geopoint.GeoPointViewModelFactory`, `org.odk.collect.geo.geopoint.LocationTrackerGeoPointViewModel`, `org.odk.collect.location.LocationClient`, `org.odk.collect.location.satellites.SatelliteInfoClient`, `org.odk.collect.location.tracker.LocationTracker`, `org.odk.collect.maps.MapFragmentFactory`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.webpage.WebPageService`
+- [ ] `org.odk.collect.geo.GeoDependencyComponent.Builder` · geo · interface · used-by 1 `[C2]`
+  - needs ↓: `org.odk.collect.geo.GeoDependencyComponent`, `org.odk.collect.geo.GeoDependencyModule`
+- [ ] `org.odk.collect.geo.GeoDependencyComponent` · geo · interface · used-by 3 `[C2]`
+  - needs ↓: `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.GeoDependencyComponent.Builder`, `org.odk.collect.geo.geopoint.GeoPointActivity`, `org.odk.collect.geo.geopoint.GeoPointDialogFragment`, `org.odk.collect.geo.geopoint.GeoPointMapActivity`, `org.odk.collect.geo.geopoly.GeoPolyFragment`, `org.odk.collect.geo.selection.SelectionMapFragment`, `org.odk.collect.location.satellites.SatelliteInfoClient`, `org.odk.collect.location.tracker.LocationTracker`
+- [ ] `org.odk.collect.location.tracker.ForegroundServiceLocationTracker` · location · class · used-by 1
+  - needs ↓: `org.odk.collect.location.Location`, `org.odk.collect.location.tracker.LocationTracker`, `org.odk.collect.location.tracker.LocationTrackerService`
+- [ ] `org.odk.collect.mapbox.DynamicPolyLineFeature` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.DynamicPolyLineFeature.ClickListener`, `org.odk.collect.mapbox.DynamicPolyLineFeature.DragListener`, `org.odk.collect.mapbox.LineFeature`, `org.odk.collect.mapbox.MapUtils`, `org.odk.collect.maps.LineDescription`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`
+- [ ] `org.odk.collect.mapbox.DynamicPolygonFeature` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.DynamicPolygonFeature.ClickListener`, `org.odk.collect.mapbox.DynamicPolygonFeature.DragListener`, `org.odk.collect.mapbox.LineFeature`, `org.odk.collect.mapbox.MapUtils`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.PolygonDescription`
+- [ ] `org.odk.collect.mapbox.MarkerFeature` · mapbox · class · used-by 1
+  - needs ↓: `org.odk.collect.mapbox.MapFeature`, `org.odk.collect.mapbox.MarkerFeature.ClickListener`, `org.odk.collect.mapbox.MarkerFeature.DragListener`, `org.odk.collect.maps.MapFragment`, `org.odk.collect.maps.MapPoint`, `org.odk.collect.maps.markers.MarkerIconDescription`
+- [ ] `org.odk.collect.osmdroid.OsmDroidMapConfigurator` · osmdroid · class · used-by 1
+  - needs ↓: `org.odk.collect.androidshared.ui.PrefUtils`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.MbtilesFile`, `org.odk.collect.osmdroid.OsmDroidMapConfigurator.WmsOption`, `org.odk.collect.osmdroid.OsmDroidMapFragment`, `org.odk.collect.osmdroid.WebMapService`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.qrcode.mlkit.PlayServicesFallbackBarcodeScannerViewFactory` · qr-code · class · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.BarcodeScannerViewContainer`, `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerViewFactory`, `org.odk.collect.qrcode.zxing.ZxingBarcodeScannerViewFactory`
+
+### Level 7 — 4 classes
+
+- [ ] `org.odk.collect.android.configure.qr.SettingsBarcodeScannerViewFactory` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.BarcodeScannerViewContainer`, `org.odk.collect.qrcode.mlkit.PlayServicesFallbackBarcodeScannerViewFactory`, `org.odk.collect.qrcode.zxing.ZxingBarcodeScannerViewFactory`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.formentry.FormEndView` · collect_app · class · used-by 1
+  - needs ↓: `org.odk.collect.android.formentry.FormEndView.Listener`, `org.odk.collect.android.formentry.FormEndViewModel`, `org.odk.collect.android.formentry.SwipeHandler`
+- [ ] `org.odk.collect.mapbox.MapboxMapFragment` · mapbox · class · used-by 1 `[C18]`
+  - needs ↓: `org.odk.collect.androidshared.utils.ScreenUtils`, `org.odk.collect.location.LocationClient`, `org.odk.collect.location.LocationClient.LocationClientListener`, `org.odk.collect.mapbox.DynamicPolyLineFeature`, `org.odk.collect.mapbox.DynamicPolygonFeature`, `org.odk.collect.mapbox.LineFeature`, `org.odk.collect.mapbox.MapFeature`, `org.odk.collect.mapbox.MapUtils`, `org.odk.collect.mapbox.MapboxMapConfigurator`, `org.odk.collect.mapbox.MarkerFeature`, `org.odk.collect.mapbox.StaticPolyLineFeature`, `org.odk.collect.mapbox.StaticPolygonFeature` _(+20 more)_
+- [ ] `org.odk.collect.mapbox.MapboxMapConfigurator` · mapbox · class · used-by 1 `[C18]`
+  - needs ↓: `org.odk.collect.androidshared.system.OpenGLVersionChecker`, `org.odk.collect.androidshared.ui.PrefUtils`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.mapbox.MapboxMapConfigurator.MapboxUrlOption`, `org.odk.collect.mapbox.MapboxMapFragment`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.MbtilesFile`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+
+### Level 8 — 306 classes
+
+- [ ] `org.odk.collect.android.utilities.LocaleHelper` · collect_app · object · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`
+- [ ] `org.odk.collect.android.utilities.SavepointsRepositoryProvider` · collect_app · class · used-by 9 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.database.savepoints.DatabaseSavepointsRepository`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.projects.ProjectDependencyFactory`
+- [ ] `org.odk.collect.android.utilities.FileUtils` · collect_app · class · used-by 24 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.async.OngoingWorkListener`
+- [ ] `org.odk.collect.android.geo.MapConfiguratorProvider` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.application.MapboxClassInstanceCreator`, `org.odk.collect.android.geo.MapConfiguratorProvider.SourceOption`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.googlemaps.GoogleMapConfigurator`, `org.odk.collect.googlemaps.GoogleMapConfigurator.GoogleMapTypeOption`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.osmdroid.OsmDroidMapConfigurator`, `org.odk.collect.osmdroid.OsmDroidMapConfigurator.WmsOption`, `org.odk.collect.osmdroid.WebMapService`
+- [ ] `org.odk.collect.android.application.initialization.MapsInitializer` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.geo.MapConfiguratorProvider`, `org.odk.collect.osmdroid.OsmDroidInitializer`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.utilities.UserAgentProvider`
+- [ ] `org.odk.collect.android.projects.ProjectsDataService` · collect_app · class · used-by 38 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.initialization.AnalyticsInitializer`, `org.odk.collect.android.application.initialization.MapsInitializer`, `org.odk.collect.android.state.DataKeys`, `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.androidshared.data.DataService`, `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.MetaKeys`
+- [ ] `org.odk.collect.android.storage.StoragePathProvider` · collect_app · class · used-by 24 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.shared.PathUtils`
+- [ ] `org.odk.collect.android.database.forms.DatabaseFormsRepository` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.database.DatabaseConstants`, `org.odk.collect.android.database.forms.DatabaseFormColumns`, `org.odk.collect.android.database.forms.FormDatabaseMigrator`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.db.sqlite.DatabaseConnection`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.shared.files.FileExt`, `org.odk.collect.shared.strings.Md5`
+- [ ] `org.odk.collect.android.utilities.FormsRepositoryProvider` · collect_app · class · used-by 22 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.database.forms.DatabaseFormsRepository`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.android.utilities.SavepointsRepositoryProvider`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.projects.ProjectDependencyFactory`
+- [ ] `org.odk.collect.android.injection.config.CollectSelfieCameraDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.selfiecamera.SelfieCameraDependencyModule`
+- [ ] `org.odk.collect.android.injection.config.CollectProjectsDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.projects.ProjectsDependencyModule`, `org.odk.collect.projects.ProjectsRepository`
+- [ ] `org.odk.collect.android.injection.config.CollectOsmDroidDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.geo.MapConfiguratorProvider`, `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.location.LocationClient`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.osmdroid.OsmDroidDependencyModule`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.injection.config.CollectGoogleMapsDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.googlemaps.GoogleMapsDependencyModule`, `org.odk.collect.location.LocationClient`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.injection.config.CollectGeoDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.GeoDependencyModule`, `org.odk.collect.location.LocationClient`, `org.odk.collect.location.satellites.GpsStatusSatelliteInfoClient`, `org.odk.collect.location.satellites.SatelliteInfoClient`, `org.odk.collect.location.tracker.ForegroundServiceLocationTracker`, `org.odk.collect.location.tracker.LocationTracker`, `org.odk.collect.maps.MapFragmentFactory`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.settings.SettingsProvider` _(+1 more)_
+- [ ] `org.odk.collect.android.injection.config.CollectDrawDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.async.Scheduler`, `org.odk.collect.draw.DrawDependencyModule`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.application.Collect` · collect_app · class · used-by 41 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.android.injection.config.CollectDrawDependencyModule`, `org.odk.collect.android.injection.config.CollectGeoDependencyModule`, `org.odk.collect.android.injection.config.CollectGoogleMapsDependencyModule`, `org.odk.collect.android.injection.config.CollectOsmDroidDependencyModule`, `org.odk.collect.android.injection.config.CollectProjectsDependencyModule`, `org.odk.collect.android.injection.config.CollectSelfieCameraDependencyModule`, `org.odk.collect.android.utilities.CollectStrictMode`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.LocaleHelper` _(+41 more)_
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalDataReader`, `org.odk.collect.android.dynamicpreload.ExternalDataUtil`, `org.odk.collect.android.exception.ExternalDataException`, `org.odk.collect.db.sqlite.AltDatabasePathContext`, `org.odk.collect.db.sqlite.CustomSQLiteQueryBuilder`, `org.odk.collect.db.sqlite.CustomSQLiteQueryExecutor`, `org.odk.collect.db.sqlite.SQLiteUtils`, `org.odk.collect.shared.strings.Md5`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataManager` · collect_app · interface · used-by 9 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataHandler` · collect_app · interface · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataManager`
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerBase` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataHandler`, `org.odk.collect.android.dynamicpreload.ExternalDataManager`
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerSearch` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.dynamicpreload.ExternalDataUtil`, `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper`, `org.odk.collect.android.dynamicpreload.ExternalSelectChoice`, `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerBase`, `org.odk.collect.android.dynamicpreload.handler.ExternalDataSearchType`, `org.odk.collect.android.exception.ExternalDataException`, `org.odk.collect.shared.strings.StringUtils`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataUtil` · collect_app · class · used-by 8 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerSearch`, `org.odk.collect.android.exception.ExternalDataException`, `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.utilities.Appearances` · collect_app · object · used-by 30 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataUtil`, `org.odk.collect.androidshared.utils.ScreenUtils`
+- [ ] `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter.DatabaseHelper` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.db.sqlite.AltDatabasePathContext`
+- [ ] `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter.DatabaseHelper`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.shared.PathUtils`
+- [ ] `org.odk.collect.android.fastexternalitemset.ItemsetDao` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter`, `org.odk.collect.android.fastexternalitemset.XPathParseTool`, `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.formentry.questions.SelectChoiceUtils` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataUtil`, `org.odk.collect.android.exception.ExternalDataException`, `org.odk.collect.android.fastexternalitemset.ItemsetDao`, `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter`, `org.odk.collect.android.fastexternalitemset.XPathParseTool`, `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.formentry.FormEntryViewModel` · collect_app · class · used-by 13 `[C1]`
+  - needs ↓: `org.odk.collect.android.exception.ExternalDataException`, `org.odk.collect.android.exception.JavaRosaException`, `org.odk.collect.android.formentry.CurrentFormIndex`, `org.odk.collect.android.formentry.FormError`, `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.audit.AuditUtils`, `org.odk.collect.android.formentry.questions.SelectChoiceUtils`, `org.odk.collect.android.javarosawrapper.FailedValidationResult`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException`, `org.odk.collect.android.javarosawrapper.ValidationResult` _(+12 more)_
+- [ ] `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.widgets.viewmodels.QuestionViewModel`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.material.MaterialFullScreenDialogFragment`
+- [ ] `org.odk.collect.android.widgets.items.SelectOneFromMapDialogFragment` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.items.SelectChoicesMapData`, `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.selection.SelectionMapFragment`
+- [ ] `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils` · collect_app · object · used-by 20 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils.FontSize`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.widgets.items.SelectOneImageMapWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.listeners.AdvanceToNextListener`, `org.odk.collect.android.utilities.SelectOneWidgetUtils`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.SelectImageMapWidget`
+- [ ] `org.odk.collect.android.widgets.items.SelectImageMapWidget.JavaScriptInterface` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.items.SelectImageMapWidget`
+- [ ] `org.odk.collect.android.widgets.items.ItemsWidgetUtils` · collect_app · object · used-by 9 `[C1]`
+  - needs ↓: `org.odk.collect.android.exception.ExternalDataException`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`
+- [ ] `org.odk.collect.android.widgets.items.SelectImageMapWidget` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.items.SelectImageMapWidget.JavaScriptInterface`, `org.odk.collect.android.widgets.items.SelectOneImageMapWidget`
+- [ ] `org.odk.collect.android.utilities.ThemeUtils` · collect_app · class · used-by 11 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.utilities.ContentUriProvider` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`
+- [ ] `org.odk.collect.android.utilities.MediaUtils` · collect_app · class · used-by 17 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ContentUriProvider`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.androidshared.system.IntentLauncher`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.listeners.WidgetValueChangedListener` · collect_app · interface · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.QuestionWidget`
+- [ ] `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.audio.AudioButton`, `org.odk.collect.android.listeners.SelectItemClickListener`, `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.Clip`, `org.odk.collect.imageloader.ImageLoader`
+- [ ] `org.odk.collect.android.widgets.QuestionWidget` · collect_app · class · used-by 49 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.listeners.WidgetValueChangedListener`, `org.odk.collect.android.utilities.AnimationUtils`, `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.android.utilities.SoftKeyboardController`, `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.android.widgets.QuestionWidget.Dependencies`, `org.odk.collect.android.widgets.interfaces.Widget`, `org.odk.collect.android.widgets.items.SelectImageMapWidget` _(+9 more)_
+- [ ] `org.odk.collect.android.utilities.InstancesRepositoryProvider` · collect_app · class · used-by 22 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.database.instances.DatabaseInstancesRepository`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.projects.ProjectDependencyFactory`
+- [ ] `org.odk.collect.android.utilities.AuthDialogUtility` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.utilities.AuthDialogUtility.AuthDialogUtilityResultListener`, `org.odk.collect.android.utilities.WebCredentialsUtils`, `org.odk.collect.metadata.PropertyManager`
+- [ ] `org.odk.collect.android.widgets.BaseImageWidget` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.BaseImageWidget.ExternalImageCaptureHandler`, `org.odk.collect.android.widgets.BaseImageWidget.ImageClickHandler`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.imageloader.GlideImageLoader`
+- [ ] `org.odk.collect.android.utilities.ImageCompressionController` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.androidshared.bitmap.ImageCompressor`
+- [ ] `org.odk.collect.android.utilities.ContentUriHelper` · collect_app · object · used-by 11 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`
+- [ ] `org.odk.collect.android.widgets.utilities.GeoPolyDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FailedValidationResult`, `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment`, `org.odk.collect.androidshared.ui.DisplayString`, `org.odk.collect.geo.geopoly.GeoPolyFragment`, `org.odk.collect.geo.geopoly.GeoPolyFragment.OutputMode`
+- [ ] `org.odk.collect.android.widgets.range.RangePickerIntegerWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.range.RangePickerWidgetUtils`, `org.odk.collect.android.widgets.utilities.RangeWidgetUtils`
+- [ ] `org.odk.collect.android.widgets.range.RangePickerDecimalWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.range.RangePickerWidgetUtils`, `org.odk.collect.android.widgets.utilities.RangeWidgetUtils`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog` · collect_app · class · used-by 9 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DatePickerDetails`, `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog.DateChangeListener`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`, `org.odk.collect.android.widgets.viewmodels.DateTimeViewModel`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.PersianDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.MyanmarDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.MyanmarDateUtils`, `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.IslamicDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.FixedDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.android.widgets.datetime.DatePickerDetails`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`, `org.odk.collect.android.widgets.viewmodels.DateTimeViewModel`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.EthiopianDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CopticDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.BuddhistDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.BikramSambatDatePickerDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.datetime.pickers.CustomDatePickerDialog`
+- [ ] `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils` · collect_app · class · used-by 8 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.MyanmarDateUtils`, `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.android.widgets.datetime.DatePickerDetails`, `org.odk.collect.android.widgets.datetime.pickers.BikramSambatDatePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.BuddhistDatePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.CopticDatePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.CustomTimePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.EthiopianDatePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.FixedDatePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.IslamicDatePickerDialog`, `org.odk.collect.android.widgets.datetime.pickers.MyanmarDatePickerDialog` _(+2 more)_
+- [ ] `org.odk.collect.android.widgets.datetime.pickers.CustomTimePickerDialog` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.android.widgets.datetime.pickers.CustomTimePickerDialog.TimeChangeListener`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`, `org.odk.collect.android.widgets.viewmodels.DateTimeViewModel`
+- [ ] `org.odk.collect.android.widgets.datetime.DateTimeWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.datetime.DatePickerDetails`, `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.GeoTraceWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.GeoDataRequester`, `org.odk.collect.android.widgets.utilities.GeoWidgetUtils`, `org.odk.collect.maps.MapConfigurator`
+- [ ] `org.odk.collect.android.widgets.GeoShapeWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.GeoDataRequester`, `org.odk.collect.android.widgets.utilities.GeoWidgetUtils`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalAppsUtils` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.exception.ExternalParamsException`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.utilities.ExternalAppIntentProvider` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalAppsUtils`, `org.odk.collect.android.exception.ExternalParamsException`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.Appearances`
+- [ ] `org.odk.collect.android.utilities.EncryptionUtils` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.exception.EncryptionException`, `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.javarosawrapper.InstanceMetadata`, `org.odk.collect.android.utilities.ContentUriHelper`, `org.odk.collect.android.utilities.EncryptionUtils.EncryptedFormInformation`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.utilities.EncryptionUtils.EncryptedFormInformation` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.javarosawrapper.InstanceMetadata`, `org.odk.collect.android.utilities.EncryptionUtils`, `org.odk.collect.shared.strings.Md5`
+- [ ] `org.odk.collect.android.formentry.saving.FormSaver` · collect_app · interface · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaver.ProgressListener`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.tasks.SaveToDiskResult`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.utilities.FormUtils` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.logic.FileReferenceFactory`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.forms.Form`
+- [ ] `org.odk.collect.android.javarosawrapper.JavaRosaFormController` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataUtil`, `org.odk.collect.android.exception.JavaRosaException`, `org.odk.collect.android.formentry.audit.AsyncTaskAuditEventWriter`, `org.odk.collect.android.formentry.audit.AuditConfig`, `org.odk.collect.android.formentry.audit.AuditEventLogger`, `org.odk.collect.android.javarosawrapper.FailedValidationResult`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.FormControllerExt`, `org.odk.collect.android.javarosawrapper.InstanceMetadata`, `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException`, `org.odk.collect.android.javarosawrapper.SuccessValidationResult`, `org.odk.collect.android.javarosawrapper.ValidationResult` _(+3 more)_
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalAnswerResolver` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataUtil`
+- [ ] `org.odk.collect.android.formentry.FormEntryUseCases` · collect_app · object · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalAnswerResolver`, `org.odk.collect.android.formentry.FormDefCache`, `org.odk.collect.android.javarosawrapper.FailedValidationResult`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.JavaRosaFormController`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.FormUtils`, `org.odk.collect.entities.LocalEntityUseCases`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance` _(+1 more)_
+- [ ] `org.odk.collect.android.tasks.SaveFormToDisk` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.android.exception.EncryptionException`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.formentry.FormEntryUseCases`, `org.odk.collect.android.formentry.saving.FormSaver`, `org.odk.collect.android.javarosawrapper.FailedValidationResult`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.ValidationResult`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory` _(+13 more)_
+- [ ] `org.odk.collect.android.tasks.SaveFormIndexTask` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.tasks.SaveFormIndexTask.SaveFormIndexListener`, `org.odk.collect.android.tasks.SaveFormToDisk`
+- [ ] `org.odk.collect.android.utilities.ExternalizableFormDefCache` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormDefCache`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.shared.strings.Md5`
+- [ ] `org.odk.collect.android.listeners.FormLoaderListener` · collect_app · interface · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.tasks.FormLoaderTask`, `org.odk.collect.android.tasks.ProgressNotifier`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataReaderImpl` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataReader`, `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataUseCases` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.DynamicPreloadExtra`, `org.odk.collect.android.dynamicpreload.ExternalDataReader`, `org.odk.collect.android.dynamicpreload.ExternalDataReaderImpl`
+- [ ] `org.odk.collect.android.tasks.FormLoaderTask` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalAnswerResolver`, `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.dynamicpreload.ExternalDataUseCases`, `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.JavaRosaFormController`, `org.odk.collect.android.listeners.FormLoaderListener`, `org.odk.collect.android.tasks.FormLoaderTask.FECWrapper`, `org.odk.collect.android.tasks.FormLoaderTask.FormEntryControllerFactory` _(+14 more)_
+- [ ] `org.odk.collect.android.instancemanagement.LocalInstancesUseCases` · collect_app · object · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.instancemanagement.InstanceEditResult`, `org.odk.collect.android.instancemanagement.InstanceEditResult.EditBlockedByNewerExistingEdit`, `org.odk.collect.android.instancemanagement.InstanceEditResult.EditCompleted`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.FormNameUtils`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.upload.InstanceServerUploader` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.upload.FormUploadAuthRequestedException`, `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.android.upload.InstanceUploader`, `org.odk.collect.android.utilities.ResponseMessageParser`, `org.odk.collect.android.utilities.WebCredentialsUtils`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.openrosa.http.CaseInsensitiveHeaders`, `org.odk.collect.openrosa.http.HttpHeadResult`, `org.odk.collect.openrosa.http.HttpPostResult`, `org.odk.collect.openrosa.http.OpenRosaConstants` _(+3 more)_
+- [ ] `org.odk.collect.android.instancemanagement.InstanceSubmitter` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.instancemanagement.InstanceDeleter`, `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.android.upload.InstanceServerUploader`, `org.odk.collect.android.upload.InstanceUploader`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstanceAutoDeleteChecker`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.android.utilities.WebCredentialsUtils`, `org.odk.collect.forms.FormsRepository` _(+6 more)_
+- [ ] `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerPull` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.dynamicpreload.ExternalDataUtil`, `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper`, `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerBase`
+- [ ] `org.odk.collect.android.dynamicpreload.ExternalDataManagerImpl` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.dynamicpreload.ExternalSQLiteOpenHelper`, `org.odk.collect.android.exception.ExternalDataException`
+- [ ] `org.odk.collect.android.formmanagement.CollectFormEntryControllerFactory` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalDataManagerImpl`, `org.odk.collect.android.dynamicpreload.handler.ExternalDataHandlerPull`, `org.odk.collect.android.formmanagement.LoggingFilterStrategy`, `org.odk.collect.android.formmanagement.finalization.EditedFormFinalizationProcessor`, `org.odk.collect.android.tasks.FormLoaderTask.FormEntryControllerFactory`, `org.odk.collect.entities.javarosa.filter.LocalEntitiesFilterStrategy`, `org.odk.collect.entities.javarosa.filter.PullDataFunctionHandler`, `org.odk.collect.entities.javarosa.finalization.EntityFormFinalizationProcessor`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.geo.javarosa.IntersectsFunctionHandler` _(+2 more)_
+- [ ] `org.odk.collect.android.instancemanagement.InstancesDataService` · collect_app · class · used-by 21 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler`, `org.odk.collect.android.formentry.FormEntryUseCases`, `org.odk.collect.android.formmanagement.CollectFormEntryControllerFactory`, `org.odk.collect.android.instancemanagement.FinalizeAllResult`, `org.odk.collect.android.instancemanagement.InstanceDeleter`, `org.odk.collect.android.instancemanagement.InstanceEditResult`, `org.odk.collect.android.instancemanagement.InstanceSubmitter`, `org.odk.collect.android.instancemanagement.LocalInstancesUseCases`, `org.odk.collect.android.instancemanagement.autosend.FormAutoSendMode` _(+13 more)_
+- [ ] `org.odk.collect.android.formentry.questions.NoButtonsItem` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.imageloader.ImageLoader`
+- [ ] `org.odk.collect.android.adapters.AbstractSelectListAdapter.ViewHolder` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalSelectChoice`, `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel`, `org.odk.collect.android.formentry.questions.NoButtonsItem`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.imageloader.GlideImageLoader`
+- [ ] `org.odk.collect.android.adapters.AbstractSelectListAdapter` · collect_app · class · used-by 11 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter.ViewHolder`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.android.fragments.viewmodels.SelectMinimalViewModel` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog.SelectMinimalDialogListener`, `org.odk.collect.android.fragments.viewmodels.SelectMinimalViewModel`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.AudioPlayerFactory`, `org.odk.collect.material.MaterialFullScreenDialogFragment`
+- [ ] `org.odk.collect.android.adapters.RankingListAdapter.ItemViewHolder` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`
+- [ ] `org.odk.collect.android.adapters.RankingListAdapter` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.RankingListAdapter.ItemViewHolder`, `org.odk.collect.android.utilities.HtmlUtils`
+- [ ] `org.odk.collect.android.utilities.RankingItemTouchHelperCallback` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.RankingListAdapter`
+- [ ] `org.odk.collect.android.fragments.dialogs.RankingWidgetDialog` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.RankingListAdapter`, `org.odk.collect.android.fragments.dialogs.RankingWidgetDialog.RankingListener`, `org.odk.collect.android.fragments.viewmodels.RankingViewModel`, `org.odk.collect.android.utilities.RankingItemTouchHelperCallback`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`
+- [ ] `org.odk.collect.android.fragments.MediaLoadingFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.tasks.MediaLoadingTask`
+- [ ] `org.odk.collect.android.savepoints.SavepointUseCases` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.utilities.ContentUriHelper`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.forms.savepoints.Savepoint`, `org.odk.collect.forms.savepoints.SavepointsRepository`
+- [ ] `org.odk.collect.android.external.FormUriViewModel` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.external.FormInspectionResult`, `org.odk.collect.android.external.FormInspectionResult.Error`, `org.odk.collect.android.external.FormInspectionResult.Valid`, `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.formentry.FormOpeningMode`, `org.odk.collect.android.instancemanagement.InstanceDeleter`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.savepoints.SavepointUseCases`, `org.odk.collect.android.utilities.ChangeLockProvider` _(+8 more)_
+- [ ] `org.odk.collect.android.external.FormUriActivity` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.external.FormInspectionResult`, `org.odk.collect.android.external.FormInspectionResult.Error`, `org.odk.collect.android.external.FormInspectionResult.Valid`, `org.odk.collect.android.external.FormUriViewModel`, `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.ChangeLockProvider`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.android.utilities.SavepointsRepositoryProvider` _(+5 more)_
+- [ ] `org.odk.collect.android.formmanagement.FormFillingIntentFactory` · collect_app · object · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.external.FormUriActivity`, `org.odk.collect.android.external.InstancesContract`
+- [ ] `org.odk.collect.android.formhierarchy.QuestionAnswerProcessor` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.fastexternalitemset.ItemsetDao`, `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyViewModel` · collect_app · data class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.formhierarchy.HierarchyItem`, `org.odk.collect.android.instancemanagement.InstanceEditResult`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.androidshared.async.TrackableWorker`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragment.FormHiearchyMenuProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formhierarchy.FormHierarchyFragment.FormHiearchyMenuProvider.OnClickListener`, `org.odk.collect.android.formhierarchy.FormHierarchyViewModel`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.formentry.repeats.DeleteRepeatDialogFragment` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.javarosawrapper.FormController`
+- [ ] `org.odk.collect.android.widgets.utilities.StringRequesterImpl` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.ExternalAppIntentProvider`, `org.odk.collect.android.widgets.utilities.StringRequester`, `org.odk.collect.androidshared.system.IntentLauncher`
+- [ ] `org.odk.collect.android.widgets.utilities.FileRequesterImpl` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.ExternalAppIntentProvider`, `org.odk.collect.android.widgets.utilities.FileRequester`, `org.odk.collect.androidshared.system.IntentLauncher`
+- [ ] `org.odk.collect.android.widgets.MediaWidgetAnswerViewModel` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.android.widgets.video.VideoWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.ApplicationConstants.RequestCodes`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.MediaWidgetAnswerViewModel`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.widgets.video.ExVideoWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.MediaWidgetAnswerViewModel`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.FileRequester`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.utilities.AudioRecorderRecordingStatusHandler` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.widgets.utilities.RecordingStatusHandler`, `org.odk.collect.audiorecorder.recording.AudioRecorder`
+- [ ] `org.odk.collect.android.widgets.utilities.ActivityGeoDataRequester` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.android.widgets.interfaces.GeoDataRequester`, `org.odk.collect.android.widgets.utilities.GeoPolyDialogFragment`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.geo.geopoint.GeoPointActivity`, `org.odk.collect.geo.geopoint.GeoPointMapActivity`, `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.PermissionsProvider`
+- [ ] `org.odk.collect.android.widgets.range.RangeIntegerWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.range.RangeSliderState`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.widgets.range.RangeDecimalWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.range.RangeSliderState`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.widgets.items.BaseSelectListWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.listeners.SelectItemClickListener`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.MultiChoiceWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.SearchQueryViewModel`
+- [ ] `org.odk.collect.android.adapters.SelectOneListAdapter.ViewHolder` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel`, `org.odk.collect.android.formentry.questions.NoButtonsItem`
+- [ ] `org.odk.collect.android.adapters.SelectOneListAdapter` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.adapters.SelectOneListAdapter.ViewHolder`, `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel`, `org.odk.collect.android.formentry.questions.NoButtonsItem`, `org.odk.collect.android.listeners.SelectItemClickListener`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.imageloader.GlideImageLoader`
+- [ ] `org.odk.collect.android.widgets.items.SelectOneWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.adapters.SelectOneListAdapter`, `org.odk.collect.android.exception.JavaRosaException`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.listeners.AdvanceToNextListener`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.SelectOneWidgetUtils`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.BaseSelectListWidget`
+- [ ] `org.odk.collect.android.widgets.items.SelectMinimalWidget` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.MultiChoiceWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectOneMinimalDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.SelectOneListAdapter`, `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog`, `org.odk.collect.android.listeners.SelectItemClickListener`, `org.odk.collect.android.utilities.MediaUtils`
+- [ ] `org.odk.collect.android.widgets.items.SelectOneMinimalWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog`, `org.odk.collect.android.fragments.dialogs.SelectOneMinimalDialog`, `org.odk.collect.android.listeners.AdvanceToNextListener`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.utilities.SelectOneWidgetUtils`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.SelectMinimalWidget`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`
+- [ ] `org.odk.collect.android.widgets.items.SelectOneFromMapWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.items.SelectOneFromMapDialogFragment`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.permissions.PermissionListener`
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.RenderIntoQuestionWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.SpacesInUnderlyingValuesTextCreator`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.WarningRenderer`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.WarningTextCreator`
+- [ ] `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.RenderIntoQuestionWidget`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.SpacesInUnderlyingValues`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.UnderlyingValuesChecker`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning.WarningRenderer`
+- [ ] `org.odk.collect.android.adapters.SelectMultipleListAdapter.ViewHolder` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel`, `org.odk.collect.android.formentry.questions.NoButtonsItem`
+- [ ] `org.odk.collect.android.adapters.SelectMultipleListAdapter` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.adapters.SelectMultipleListAdapter.ViewHolder`, `org.odk.collect.android.formentry.questions.AudioVideoImageTextLabel`, `org.odk.collect.android.formentry.questions.NoButtonsItem`, `org.odk.collect.android.listeners.SelectItemClickListener`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.imageloader.GlideImageLoader`
+- [ ] `org.odk.collect.android.widgets.items.SelectMultiWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.adapters.SelectMultipleListAdapter`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.BaseSelectListWidget`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning`
+- [ ] `org.odk.collect.android.fragments.dialogs.SelectMultiMinimalDialog` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.SelectMultipleListAdapter`, `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog`, `org.odk.collect.android.utilities.MediaUtils`
+- [ ] `org.odk.collect.android.widgets.items.SelectMultiMinimalWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.fragments.dialogs.SelectMinimalDialog`, `org.odk.collect.android.fragments.dialogs.SelectMultiMinimalDialog`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.SelectMinimalWidget`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`
+- [ ] `org.odk.collect.android.widgets.items.SelectMultiImageMapWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.SelectImageMapWidget`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning`
+- [ ] `org.odk.collect.android.widgets.items.RankingWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.fragments.dialogs.RankingWidgetDialog`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning`
+- [ ] `org.odk.collect.android.widgets.items.ListWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalSelectChoice`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.listeners.AdvanceToNextListener`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.utilities.SelectOneWidgetUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.MultiChoiceWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.androidshared.bitmap.ImageFileUtils`
+- [ ] `org.odk.collect.android.widgets.items.ListMultiWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalSelectChoice`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.MultiChoiceWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning`, `org.odk.collect.androidshared.bitmap.ImageFileUtils`
+- [ ] `org.odk.collect.android.widgets.items.LikertWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalSelectChoice`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.androidshared.bitmap.ImageFileUtils`
+- [ ] `org.odk.collect.android.widgets.items.LabelWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalSelectChoice`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.HtmlUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.SelectChoiceLoader`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.warnings.SpacesInUnderlyingValuesWarning`, `org.odk.collect.androidshared.bitmap.ImageFileUtils`
+- [ ] `org.odk.collect.android.widgets.datetime.TimeWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.datetime.DateWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.datetime.DatePickerDetails`, `org.odk.collect.android.widgets.datetime.DateTimeUtils`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.DateTimeWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.barcode.BarcodeWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ScannerWithFlashlightActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.system.CameraUtils`, `org.odk.collect.permissions.PermissionListener`
+- [ ] `org.odk.collect.android.widgets.arbitraryfile.ExArbitraryFileWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.MediaWidgetAnswerViewModel`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.arbitraryfile.ArbitraryFileWidgetDelegate`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.FileRequester`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.arbitraryfile.ArbitraryFileWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.MediaWidgetAnswerViewModel`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.arbitraryfile.ArbitraryFileWidgetDelegate`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.UrlWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.webpage.WebPageService`
+- [ ] `org.odk.collect.android.widgets.TriggerWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`
+- [ ] `org.odk.collect.android.widgets.utilities.StringWidgetUtils` · collect_app · class · used-by 9 `[C1]`
+  - needs ↓: `org.odk.collect.android.listeners.ThousandsSeparatorTextWatcher`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.FormEntryPromptUtils`
+- [ ] `org.odk.collect.android.widgets.StringWidget` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.views.WidgetAnswerText`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`
+- [ ] `org.odk.collect.android.widgets.TimedGridWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.StringWidget`, `org.odk.collect.android.widgets.items.ItemsWidgetUtils`, `org.odk.collect.timedgrid.FormAnswerRefresher`, `org.odk.collect.timedgrid.FormControllerFacade`, `org.odk.collect.timedgrid.NavigationAwareWidget`, `org.odk.collect.timedgrid.NavigationWarning`, `org.odk.collect.timedgrid.TimedGridWidgetDelegate`
+- [ ] `org.odk.collect.android.widgets.StringNumberWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.StringWidget`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`
+- [ ] `org.odk.collect.android.widgets.SignatureWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.BaseImageWidget`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.draw.DrawActivity`
+- [ ] `org.odk.collect.android.widgets.RatingWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.ViewUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.androidshared.utils.ScreenUtils`
+- [ ] `org.odk.collect.android.widgets.PrinterWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.Printer`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeMaterialButton`
+- [ ] `org.odk.collect.android.widgets.OSMWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.system.IntentLauncher`
+- [ ] `org.odk.collect.android.widgets.IntegerWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.StringWidget`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`
+- [ ] `org.odk.collect.android.widgets.utilities.ImageCaptureIntentCreator` · collect_app · object · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ContentUriProvider`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.FormEntryPromptUtils`
+- [ ] `org.odk.collect.android.widgets.ImageWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.BaseImageWidget`, `org.odk.collect.android.widgets.utilities.ImageCaptureIntentCreator`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.system.CameraUtils`, `org.odk.collect.selfiecamera.CaptureSelfieActivity`
+- [ ] `org.odk.collect.android.widgets.GeoPointWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.GeoDataRequester`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.GeoWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.GeoPointMapWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.GeoDataRequester`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.GeoWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.ExStringWidget` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalAppsUtils`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.android.widgets.utilities.StringRequester`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.ExIntegerWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalAppsUtils`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.ExStringWidget`, `org.odk.collect.android.widgets.utilities.StringRequester`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.ExImageWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.FileRequester`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.widgets.ExDecimalWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.ExternalAppsUtils`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.ExStringWidget`, `org.odk.collect.android.widgets.utilities.StringRequester`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`
+- [ ] `org.odk.collect.android.widgets.ExAudioWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.audio.AudioControllerView`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.FileRequester`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.audioclips.AudioPlayer` _(+1 more)_
+- [ ] `org.odk.collect.android.widgets.DrawWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.BaseImageWidget`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.draw.DrawActivity`
+- [ ] `org.odk.collect.android.widgets.DecimalWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.StringWidget`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`
+- [ ] `org.odk.collect.android.widgets.CounterWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`
+- [ ] `org.odk.collect.android.views.DayNightProgressDialog` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.ThemeUtils`
+- [ ] `org.odk.collect.android.activities.BearingActivity` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.views.DayNightProgressDialog`, `org.odk.collect.externalapp.ExternalAppUtils`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.android.widgets.BearingWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.BearingActivity`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.StringWidgetUtils`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.widgets.AudioWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.audio.AudioControllerView`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.android.widgets.interfaces.FileWidget`, `org.odk.collect.android.widgets.interfaces.WidgetDataReceiver`, `org.odk.collect.android.widgets.utilities.AudioFileRequester`, `org.odk.collect.android.widgets.utilities.RecordingRequester`, `org.odk.collect.android.widgets.utilities.RecordingStatusHandler`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.android.widgets.AnnotateWidget` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.BaseImageWidget`, `org.odk.collect.android.widgets.utilities.ImageCaptureIntentCreator`, `org.odk.collect.android.widgets.utilities.WaitingForDataRegistry`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.draw.DrawActivity`
+- [ ] `org.odk.collect.android.widgets.WidgetFactory` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.PrinterWidgetViewModel`, `org.odk.collect.android.formentry.questions.QuestionDetails`, `org.odk.collect.android.geo.MapConfiguratorProvider`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.QuestionMediaManager`, `org.odk.collect.android.widgets.AnnotateWidget`, `org.odk.collect.android.widgets.AudioWidget`, `org.odk.collect.android.widgets.BearingWidget`, `org.odk.collect.android.widgets.CounterWidget` _(+62 more)_
+- [ ] `org.odk.collect.android.formentry.media.PromptAutoplayer` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.utilities.FormEntryPromptUtils`, `org.odk.collect.audioclips.AudioPlayer`, `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.android.formentry.ODKView` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalAppsUtils`, `org.odk.collect.android.exception.ExternalParamsException`, `org.odk.collect.android.exception.JavaRosaException`, `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.PrinterWidgetViewModel`, `org.odk.collect.android.formentry.SwipeHandler`, `org.odk.collect.android.formentry.media.PromptAutoplayer`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.javarosawrapper.RepeatsInFieldListException`, `org.odk.collect.android.listeners.WidgetValueChangedListener`, `org.odk.collect.android.logic.ImmutableDisplayableQuestion` _(+28 more)_
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.exception.JavaRosaException`, `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.ODKView`, `org.odk.collect.android.formentry.repeats.DeleteRepeatDialogFragment`, `org.odk.collect.android.formhierarchy.FormHierarchyFragment.FormHiearchyMenuProvider`, `org.odk.collect.android.formhierarchy.FormHierarchyFragment.FormHiearchyMenuProvider.OnClickListener`, `org.odk.collect.android.formhierarchy.FormHierarchyViewModel`, `org.odk.collect.android.formhierarchy.HierarchyItem`, `org.odk.collect.android.formhierarchy.HierarchyItemType`, `org.odk.collect.android.formhierarchy.HierarchyListAdapter`, `org.odk.collect.android.formhierarchy.QuestionAnswerProcessor`, `org.odk.collect.android.formmanagement.FormFillingIntentFactory` _(+11 more)_
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveTask` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveRequest`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveTask.Listener`, `org.odk.collect.android.formentry.saving.FormSaver`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.tasks.SaveToDiskResult`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.formentry.saving.FormSaveViewModel` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.dynamicpreload.ExternalDataManager`, `org.odk.collect.android.formentry.FormSession`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.audit.AuditUtils`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveRequest`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveResult`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveResult.State`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveTask`, `org.odk.collect.android.formentry.saving.FormSaveViewModel.SaveTask.Listener`, `org.odk.collect.android.formentry.saving.FormSaver`, `org.odk.collect.android.instancemanagement.InstancesDataService` _(+19 more)_
+- [ ] `org.odk.collect.android.formentry.saving.DiskFormSaver` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaver`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.tasks.SaveFormToDisk`, `org.odk.collect.android.tasks.SaveToDiskResult`, `org.odk.collect.android.utilities.MediaUtils`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationHelper` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.formentry.FormSession`, `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.formentry.audit.AuditConfig`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.androidshared.system.PlayServicesChecker`, `org.odk.collect.permissions.PermissionsProvider`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.audit.AuditConfig`, `org.odk.collect.android.formentry.audit.AuditEvent`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationHelper`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager.BackgroundLocationMessage`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager.BackgroundLocationState`, `org.odk.collect.location.LocationClient`
+- [ ] `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationViewModel` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.activities.FormEntryViewModelFactory` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.entities.EntitiesRepositoryProvider`, `org.odk.collect.android.formentry.BackgroundAudioViewModel`, `org.odk.collect.android.formentry.BackgroundAudioViewModel.RecordAudioActionRegistry`, `org.odk.collect.android.formentry.FormEndViewModel`, `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.FormOpeningMode`, `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.formentry.PrinterWidgetViewModel`, `org.odk.collect.android.formentry.audit.IdentityPromptViewModel`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationHelper`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationManager`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationViewModel` _(+19 more)_
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyFragmentHostActivity` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.activities.FormEntryViewModelFactory`, `org.odk.collect.android.entities.EntitiesRepositoryProvider`, `org.odk.collect.android.formentry.FormOpeningMode`, `org.odk.collect.android.formentry.FormSessionRepository`, `org.odk.collect.android.formentry.repeats.DeleteRepeatDialogFragment`, `org.odk.collect.android.formhierarchy.FormHierarchyFragment`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.instancemanagement.autosend.AutoSendSettingsProvider`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.ChangeLockProvider` _(+14 more)_
+- [ ] `org.odk.collect.android.formentry.saving.SaveFormProgressDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaveViewModel`, `org.odk.collect.material.MaterialProgressDialogFragment`
+- [ ] `org.odk.collect.android.formentry.saving.SaveAnswerFileErrorDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaveViewModel`
+- [ ] `org.odk.collect.android.formentry.audit.ChangesReasonPromptDialogFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.saving.FormSaveViewModel`, `org.odk.collect.material.MaterialFullScreenDialogFragment`
+- [ ] `org.odk.collect.android.formentry.QuitFormDialog` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.saving.FormSaveViewModel`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.projects.ProjectDeleter` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.backgroundwork.FormUpdateScheduler`, `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler`, `org.odk.collect.android.projects.DeleteProjectResult`, `org.odk.collect.android.projects.DeleteProjectResult.DeletedSuccessfullyCurrentProject`, `org.odk.collect.android.projects.DeleteProjectResult.DeletedSuccessfullyInactiveProject`, `org.odk.collect.android.projects.DeleteProjectResult.DeletedSuccessfullyLastProject`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.db.sqlite.DatabaseConnection`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.preferences.screens.BasePreferencesFragment` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.androidshared.utils.AppBarUtils`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.importing.SettingsChangeHandler`, `org.odk.collect.shared.settings.Settings.OnSettingChangeListener`
+- [ ] `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment` · collect_app · class · used-by 10 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.PreferenceVisibilityHandler`, `org.odk.collect.android.preferences.ProjectPreferencesViewModel`, `org.odk.collect.android.preferences.screens.BasePreferencesFragment`, `org.odk.collect.android.preferences.source.SettingsStore`, `org.odk.collect.android.utilities.AdminPasswordProvider`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.preferences.Defaults` · collect_app · object · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.projects.SettingsConnectionMatcherImpl` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.Defaults`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.projects.SettingsConnectionMatcher`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.AppConfigurationKeys`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.configure.qr.AppConfigurationGenerator` · collect_app · class · used-by 9 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.Defaults`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.AppConfigurationKeys`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.projects.ManualProjectCreatorDialog` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.projects.DuplicateProjectConfirmationDialog`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.projects.SettingsConnectionMatcherImpl`, `org.odk.collect.android.utilities.SoftKeyboardController`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.ToastUtils` _(+6 more)_
+- [ ] `org.odk.collect.android.projects.QrCodeProjectCreatorDialog` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.projects.DuplicateProjectConfirmationDialog`, `org.odk.collect.android.projects.DuplicateProjectConfirmationKeys`, `org.odk.collect.android.projects.ManualProjectCreatorDialog`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.projects.SettingsConnectionMatcherImpl`, `org.odk.collect.androidshared.system.IntentLauncher`, `org.odk.collect.androidshared.ui.DialogFragmentUtils` _(+14 more)_
+- [ ] `org.odk.collect.android.mainmenu.CurrentProjectViewModel` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.projects.Project`
+- [ ] `org.odk.collect.android.projects.ProjectSettingsDialog` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.AboutActivity`, `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.CurrentProjectViewModel`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity`, `org.odk.collect.android.projects.ProjectListItemView`, `org.odk.collect.android.projects.QrCodeProjectCreatorDialog`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectsRepository` _(+1 more)_
+- [ ] `org.odk.collect.android.instancemanagement.InstanceDiskSynchronizer` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.exception.EncryptionException`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.android.javarosawrapper.InstanceMetadata`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.android.tasks.SaveFormToDisk`, `org.odk.collect.android.utilities.EncryptionUtils`, `org.odk.collect.android.utilities.FormsRepositoryProvider` _(+6 more)_
+- [ ] `org.odk.collect.android.mainmenu.MainMenuViewModel` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.instancemanagement.InstanceDiskSynchronizer`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.instancemanagement.autosend.AutoSendSettingsProvider`, `org.odk.collect.android.mainmenu.MainMenuViewModel.SavedForm`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.ContentUriHelper`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.instances.Instance` _(+3 more)_
+- [ ] `org.odk.collect.android.mainmenu.MainMenuViewModelFactory` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.instancemanagement.autosend.AutoSendSettingsProvider`, `org.odk.collect.android.mainmenu.CurrentProjectViewModel`, `org.odk.collect.android.mainmenu.MainMenuViewModel`, `org.odk.collect.android.mainmenu.RequestPermissionsViewModel`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.async.Scheduler`, `org.odk.collect.permissions.PermissionsChecker`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.utilities.InstanceUploaderUtils` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.tasks.InstanceUploaderTask` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.instancemanagement.InstanceDeleter`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.listeners.InstanceUploaderListener`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.tasks.InstanceUploaderTask.Outcome`, `org.odk.collect.android.upload.FormUploadAuthRequestedException`, `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.android.upload.InstanceServerUploader`, `org.odk.collect.android.utilities.InstanceAutoDeleteChecker` _(+9 more)_
+- [ ] `org.odk.collect.android.instancemanagement.send.InstanceUploaderActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.fragments.dialogs.SimpleDialog`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.listeners.InstanceUploaderListener`, `org.odk.collect.android.tasks.InstanceUploaderTask`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.android.utilities.ArrayUtils`, `org.odk.collect.android.utilities.AuthDialogUtility`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstanceUploaderUtils`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.android.views.DayNightProgressDialog` _(+5 more)_
+- [ ] `org.odk.collect.android.dao.CursorLoaderFactory` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.formmanagement.LocalFormUseCases` · collect_app · object · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.formmanagement.LocalFormUseCases.IdFile`, `org.odk.collect.android.formmanagement.metadata.FormMetadata`, `org.odk.collect.android.formmanagement.metadata.FormMetadataParser`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.androidshared.utils.Validator`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.formmanagement.matchexactly.ServerFormsSynchronizer` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formmanagement.LocalFormUseCases`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.formmanagement.download.FormDownloader`, `org.odk.collect.android.formmanagement.matchexactly.ServerFormsSynchronizer.ServerFormsDetailsFetcher`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormSource`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.InstancesRepository`
+- [ ] `org.odk.collect.android.formmanagement.ServerFormUseCases` · collect_app · object · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.formmanagement.MediaFilesDownloadResult`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.formmanagement.download.FormDownloader`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.FormUtils`, `org.odk.collect.async.OngoingWorkListener`, `org.odk.collect.entities.LocalEntityUseCases`, `org.odk.collect.entities.server.EntitySource`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.forms.Form` _(+5 more)_
+- [ ] `org.odk.collect.android.formmanagement.FormsDataService` · collect_app · class · used-by 15 `[C1]`
+  - needs ↓: `org.odk.collect.android.formmanagement.LocalFormUseCases`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.ServerFormUseCases`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.formmanagement.matchexactly.ServerFormsSynchronizer`, `org.odk.collect.android.notifications.Notifier`, `org.odk.collect.android.projects.ProjectDependencyModule`, `org.odk.collect.android.state.DataKeys`, `org.odk.collect.androidshared.data.AppState`, `org.odk.collect.androidshared.data.DataService`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormSourceException` _(+2 more)_
+- [ ] `org.odk.collect.android.backgroundwork.SyncFormsTaskSpec` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.backgroundwork.TaskData`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.notifications.Notifier`, `org.odk.collect.async.TaskSpec`
+- [ ] `org.odk.collect.android.backgroundwork.SendFormsTaskSpec` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.backgroundwork.TaskData`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.async.TaskSpec`
+- [ ] `org.odk.collect.android.backgroundwork.AutoUpdateTaskSpec` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.backgroundwork.TaskData`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.async.TaskSpec`
+- [ ] `org.odk.collect.android.backgroundwork.FormUpdateAndInstanceSubmitScheduler` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.backgroundwork.AutoUpdateTaskSpec`, `org.odk.collect.android.backgroundwork.FormUpdateScheduler`, `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler`, `org.odk.collect.android.backgroundwork.SendFormsTaskSpec`, `org.odk.collect.android.backgroundwork.SyncFormsTaskSpec`, `org.odk.collect.android.backgroundwork.TaskData`, `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.enums.AutoSend`, `org.odk.collect.settings.enums.StringIdEnumUtils`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.adapters.InstanceUploaderAdapter` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.database.DatabaseObjectMapper`, `org.odk.collect.android.formlists.savedformlist.SelectableSavedFormListItemViewHolder`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.instancemanagement.send.InstanceUploaderListActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.adapters.InstanceUploaderAdapter`, `org.odk.collect.android.backgroundwork.FormUpdateAndInstanceSubmitScheduler`, `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler`, `org.odk.collect.android.dao.CursorLoaderFactory`, `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.android.formlists.sorting.FormListSortingBottomSheetDialog`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`, `org.odk.collect.android.formmanagement.FormFillingIntentFactory`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.instancemanagement.send.InstanceUploaderActivity`, `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel` _(+10 more)_
+- [ ] `org.odk.collect.android.preferences.dialogs.ServerAuthDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel` · collect_app · class · used-by 8 `[C1]`
+  - needs ↓: `org.odk.collect.android.backgroundwork.SyncFormsTaskSpec`, `org.odk.collect.android.backgroundwork.TaskData`, `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`, `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel.SortOrder`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.async.NotificationInfo`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.Form`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.FormSourceException.AuthRequired`, `org.odk.collect.forms.instances.InstancesRepository` _(+3 more)_
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListMenuProvider` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.formlists.sorting.FormListSortingBottomSheetDialog`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`, `org.odk.collect.async.network.NetworkStateProvider`
+- [ ] `org.odk.collect.android.activities.FormMapActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.formmanagement.FormFillingIntentFactory`, `org.odk.collect.android.formmanagement.formmap.FormMapViewModel`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.async.Scheduler`, `org.odk.collect.geo.selection.SelectionMapFragment`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListActivity` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormMapActivity`, `org.odk.collect.android.formlists.blankformlist.BlankFormListAdapter`, `org.odk.collect.android.formlists.blankformlist.BlankFormListMenuProvider`, `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.formlists.blankformlist.OnFormItemClickListener`, `org.odk.collect.android.formmanagement.FormFillingIntentFactory`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.dialogs.ServerAuthDialogFragment`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.ObviousProgressBar`, `org.odk.collect.androidshared.ui.SnackbarUtils`, `org.odk.collect.async.network.NetworkStateProvider` _(+5 more)_
+- [ ] `org.odk.collect.android.formmanagement.drafts.BulkFinalizationViewModel` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.instancemanagement.FinalizeAllResult`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.androidshared.livedata.MutableNonNullLiveData`, `org.odk.collect.androidshared.livedata.NonNullLiveData`, `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.instancemanagement.InstanceListItemView` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.material.ErrorsPill`
+- [ ] `org.odk.collect.android.adapters.InstanceListCursorAdapter` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.database.DatabaseObjectMapper`, `org.odk.collect.android.instancemanagement.InstanceListItemView`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.activities.AppListActivity` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.android.formlists.sorting.FormListSortingBottomSheetDialog`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.androidshared.ui.ObviousProgressBar`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.android.activities.InstanceChooserList` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.AppListActivity`, `org.odk.collect.android.adapters.InstanceListCursorAdapter`, `org.odk.collect.android.dao.CursorLoaderFactory`, `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.android.entities.EntitiesRepositoryProvider`, `org.odk.collect.android.external.FormUriActivity`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.formentry.FormOpeningMode`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`, `org.odk.collect.android.formmanagement.drafts.BulkFinalizationViewModel`, `org.odk.collect.android.formmanagement.drafts.DraftsMenuProvider`, `org.odk.collect.android.injection.DaggerUtils` _(+10 more)_
+- [ ] `org.odk.collect.android.tasks.DownloadFormsTask` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.listeners.DownloadFormsTaskListener`
+- [ ] `org.odk.collect.android.injection.config.ProjectDependencyModuleFactory` · collect_app · class · used-by 4 `[C1]`
+  - needs ↓: `org.odk.collect.android.entities.EntitiesRepositoryProvider`, `org.odk.collect.android.formmanagement.OpenRosaClientProvider`, `org.odk.collect.android.projects.ProjectDependencyModule`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.utilities.ChangeLockProvider`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.android.utilities.SavepointsRepositoryProvider`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.tasks.DownloadFormListTask` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.ServerFormUseCases`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.injection.config.ProjectDependencyModuleFactory`, `org.odk.collect.android.listeners.FormListDownloaderListener`, `org.odk.collect.android.projects.ProjectDependencyModule`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.WebCredentialsUtils`, `org.odk.collect.forms.FormSource`, `org.odk.collect.forms.FormSourceException` _(+2 more)_
+- [ ] `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog.FormDownloadResultDialogListener`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.utilities.FormsDownloadResultInterpreter`, `org.odk.collect.errors.ErrorActivity`
+- [ ] `org.odk.collect.android.activities.FormListActivity` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.AppListActivity`, `org.odk.collect.android.database.forms.DatabaseFormColumns`
+- [ ] `org.odk.collect.android.activities.FormDownloadListActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormListActivity`, `org.odk.collect.android.activities.viewmodels.FormDownloadListViewModel`, `org.odk.collect.android.adapters.FormDownloadListAdapter`, `org.odk.collect.android.formentry.RefreshFormListDialogFragment`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`, `org.odk.collect.android.formmanagement.FormSourceExceptionMapper`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.listeners.DownloadFormsTaskListener` _(+14 more)_
+- [ ] `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel.SortOrder`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.androidshared.async.TrackableWorker`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.formlists.savedformlist.SavedFormListListMenuProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel`, `org.odk.collect.android.formlists.sorting.FormListSortingBottomSheetDialog`, `org.odk.collect.android.formlists.sorting.FormListSortingOption`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.formlists.savedformlist.DeleteSavedFormFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.formlists.savedformlist.SavedFormListListMenuProvider`, `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel`, `org.odk.collect.android.formlists.savedformlist.SelectableSavedFormListItemViewHolder`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.androidshared.ui.SnackbarUtils`, `org.odk.collect.androidshared.ui.SnackbarUtils.SnackbarPresenterObserver`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.lists.RecyclerViewUtils`, `org.odk.collect.lists.selects.MultiSelectControlsFragment`, `org.odk.collect.lists.selects.MultiSelectListFragment` _(+3 more)_
+- [ ] `org.odk.collect.android.formlists.blankformlist.DeleteBlankFormFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`, `org.odk.collect.android.formlists.blankformlist.BlankFormListMenuProvider`, `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.formlists.blankformlist.SelectableBlankFormListItemViewHolder`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.lists.RecyclerViewUtils`, `org.odk.collect.lists.selects.MultiSelectControlsFragment`, `org.odk.collect.lists.selects.MultiSelectListFragment`, `org.odk.collect.lists.selects.MultiSelectViewModel`, `org.odk.collect.lists.selects.SelectItem`
+- [ ] `org.odk.collect.android.activities.DeleteFormsActivity.ViewModelFactory` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.formlists.savedformlist.SavedFormListViewModel`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.activities.DeleteFormsActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.DeleteFormsActivity.ViewModelFactory`, `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.formlists.blankformlist.DeleteBlankFormFragment`, `org.odk.collect.android.formlists.savedformlist.DeleteSavedFormFragment`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.injection.config.ProjectDependencyModuleFactory`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.androidshared.ui.ListFragmentStateAdapter`, `org.odk.collect.androidshared.utils.UniqueIdGenerator` _(+2 more)_
+- [ ] `org.odk.collect.android.mainmenu.MainMenuFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.DeleteFormsActivity`, `org.odk.collect.android.activities.FormDownloadListActivity`, `org.odk.collect.android.activities.InstanceChooserList`, `org.odk.collect.android.application.MapboxClassInstanceCreator`, `org.odk.collect.android.formentry.FormOpeningMode`, `org.odk.collect.android.formlists.blankformlist.BlankFormListActivity`, `org.odk.collect.android.formmanagement.FormFillingIntentFactory`, `org.odk.collect.android.instancemanagement.send.InstanceUploaderListActivity`, `org.odk.collect.android.mainmenu.CurrentProjectViewModel`, `org.odk.collect.android.mainmenu.MainMenuViewModel`, `org.odk.collect.android.mainmenu.MinSdkDeprecationBanner`, `org.odk.collect.android.mainmenu.PermissionsDialogFragment` _(+9 more)_
+- [ ] `org.odk.collect.android.activities.FirstLaunchViewModel` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.async.Scheduler`, `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectsRepository`
+- [ ] `org.odk.collect.android.activities.FirstLaunchActivity` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.activities.FirstLaunchViewModel`, `org.odk.collect.android.application.CollectComposeThemeProvider`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.projects.ManualProjectCreatorDialog`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.projects.QrCodeProjectCreatorDialog`, `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.material.MaterialProgressDialogFragment` _(+4 more)_
+- [ ] `org.odk.collect.android.activities.CrashHandlerActivity` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.crashhandler.CrashHandler`, `org.odk.collect.strings.localization.LocalizedActivity`
+- [ ] `org.odk.collect.android.mainmenu.MainMenuActivity` · collect_app · class · used-by 11 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.activities.CrashHandlerActivity`, `org.odk.collect.android.activities.FirstLaunchActivity`, `org.odk.collect.android.application.CollectComposeThemeProvider`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.CurrentProjectViewModel`, `org.odk.collect.android.mainmenu.MainMenuFragment`, `org.odk.collect.android.mainmenu.MainMenuViewModelFactory`, `org.odk.collect.android.mainmenu.PermissionsDialogFragment`, `org.odk.collect.android.mainmenu.RequestPermissionsViewModel`, `org.odk.collect.android.projects.ProjectSettingsDialog`, `org.odk.collect.android.utilities.ThemeUtils` _(+7 more)_
+- [ ] `org.odk.collect.android.preferences.screens.UserInterfacePreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.android.utilities.LocaleHelper`, `org.odk.collect.android.version.VersionInformation`
+- [ ] `org.odk.collect.android.preferences.screens.ServerPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.backgroundwork.FormUpdateScheduler`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.ServerPreferencesAdder`, `org.odk.collect.android.preferences.filters.ControlCharacterFilter`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.androidshared.utils.Validator`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.screens.BasePreferencesFragment`, `org.odk.collect.android.preferences.source.SettingsStore`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.projects.ProjectResetter` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.projects.ProjectResetter.ResetAction`, `org.odk.collect.android.storage.StoragePaths`, `org.odk.collect.android.utilities.WebCredentialsUtils`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.savepoints.SavepointsRepository`, `org.odk.collect.metadata.PropertyManager`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.preferences.dialogs.ResetDialogPreferenceFragmentCompat` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.fragments.dialogs.ResetSettingsResultDialog`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.dialogs.ResetProgressDialog`, `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity`, `org.odk.collect.android.projects.ProjectResetter`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`
+- [ ] `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog.DeleteProjectViewModel` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog.DeleteProjectViewModel.ProjectData`, `org.odk.collect.android.projects.DeleteProjectResult`, `org.odk.collect.android.projects.ProjectDeleter`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.androidshared.async.TrackableWorker`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.activities.FirstLaunchActivity`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog.DeleteProjectViewModel`, `org.odk.collect.android.projects.DeleteProjectResult`, `org.odk.collect.android.projects.ProjectDeleter`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.android.configure.qr.QRCodeGenerator` · collect_app · interface · used-by 7 `[C1]`
+  - needs ↓: `org.odk.collect.android.configure.qr.AppConfigurationGenerator`
+- [ ] `org.odk.collect.android.configure.qr.QRCodeViewModel` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.configure.qr.QRCodeGenerator`, `org.odk.collect.androidshared.bitmap.ImageFileUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.settings.keys.ProtectedProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.configure.qr.ShowQRCodeFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.configure.qr.QRCodeGenerator`, `org.odk.collect.android.configure.qr.QRCodeViewModel`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.fragments.BarCodeScannerFragment` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.async.Scheduler`, `org.odk.collect.qrcode.BarcodeScannerView`, `org.odk.collect.qrcode.BarcodeScannerViewContainer`
+- [ ] `org.odk.collect.android.configure.qr.QRCodeScannerFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.fragments.BarCodeScannerFragment`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.androidshared.utils.CompressionUtils`, `org.odk.collect.projects.ProjectConfigurationResult`, `org.odk.collect.settings.ODKAppSettingsImporter`
+- [ ] `org.odk.collect.android.configure.qr.QRCodeMenuProvider` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.configure.qr.QRCodeGenerator`, `org.odk.collect.android.configure.qr.QRCodeViewModel`, `org.odk.collect.android.utilities.FileProvider`, `org.odk.collect.androidshared.system.IntentLauncher`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`, `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.configure.qr.QRCodeActivityResultDelegate` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.configure.qr.QRCodeMenuProvider`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.projects.Project.Saved`, `org.odk.collect.projects.ProjectConfigurationResult`, `org.odk.collect.qrcode.zxing.QRCodeDecoder`, `org.odk.collect.settings.ODKAppSettingsImporter`
+- [ ] `org.odk.collect.android.configure.qr.QRCodeTabsActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.CollectComposeThemeProvider`, `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.configure.qr.QRCodeActivityResultDelegate`, `org.odk.collect.android.configure.qr.QRCodeGenerator`, `org.odk.collect.android.configure.qr.QRCodeMenuProvider`, `org.odk.collect.android.configure.qr.QRCodeScannerFragment`, `org.odk.collect.android.configure.qr.ShowQRCodeFragment`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.utilities.FileProvider`, `org.odk.collect.androidshared.system.IntentLauncher`, `org.odk.collect.androidshared.ui.ListFragmentStateAdapter` _(+7 more)_
+- [ ] `org.odk.collect.android.preferences.screens.ProjectManagementPreferencesFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.configure.qr.QRCodeTabsActivity`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog`, `org.odk.collect.android.preferences.dialogs.ResetDialogPreference`, `org.odk.collect.android.preferences.dialogs.ResetDialogPreferenceFragmentCompat`, `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment.ProjectDetailsSummaryProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.projects.ProjectsDataService`
+- [ ] `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment`, `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment.ProjectDetailsSummaryProvider`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.androidshared.ColorPickerDialog`, `org.odk.collect.androidshared.ColorPickerViewModel`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.OneSignTextWatcher`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard` _(+3 more)_
+- [ ] `org.odk.collect.android.preferences.screens.MapsPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.geo.MapConfiguratorProvider`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.androidshared.ui.FragmentFactoryBuilder`, `org.odk.collect.androidshared.ui.PrefUtils`, `org.odk.collect.async.Scheduler`, `org.odk.collect.maps.MapConfigurator`, `org.odk.collect.maps.layers.OfflineMapLayersPickerBottomSheetDialogFragment`, `org.odk.collect.maps.layers.ReferenceLayerRepository`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.webpage.WebPageService`
+- [ ] `org.odk.collect.android.preferences.screens.FormMetadataPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.android.preferences.screens.FormMetadataPreferencesFragment.PropertyManagerPropertySummaryProvider`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.androidshared.utils.Validator`, `org.odk.collect.metadata.PropertyManager`
+- [ ] `org.odk.collect.android.preferences.screens.IdentityPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.android.preferences.screens.FormMetadataPreferencesFragment`, `org.odk.collect.android.preferences.utilities.PreferencesUtils`, `org.odk.collect.android.version.VersionInformation`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.preferences.screens.FormManagementPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.backgroundwork.FormUpdateScheduler`, `org.odk.collect.android.backgroundwork.InstanceSubmitScheduler`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.settings.enums.AutoSend`, `org.odk.collect.settings.enums.StringIdEnumUtils`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.preferences.screens.DevToolsPreferencesFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`
+- [ ] `org.odk.collect.android.preferences.screens.ExperimentalPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.android.preferences.screens.DevToolsPreferencesFragment`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.entities.browser.EntityBrowserActivity`
+- [ ] `org.odk.collect.android.preferences.screens.UserSettingsAccessPreferencesFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment`
+- [ ] `org.odk.collect.android.preferences.screens.MainMenuAccessPreferencesFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment`, `org.odk.collect.android.preferences.utilities.PreferencesUtils`, `org.odk.collect.settings.enums.FormUpdateMode`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.preferences.screens.FormEntryAccessPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.fragments.dialogs.MovingBackwardsDialog`, `org.odk.collect.android.fragments.dialogs.SimpleDialog`, `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.preferences.screens.AccessControlPreferencesFragment` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.screens.BaseAdminPreferencesFragment`, `org.odk.collect.android.preferences.screens.FormEntryAccessPreferencesFragment`, `org.odk.collect.android.preferences.screens.MainMenuAccessPreferencesFragment`, `org.odk.collect.android.preferences.screens.UserSettingsAccessPreferencesFragment`, `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickGuard`
+- [ ] `org.odk.collect.android.preferences.dialogs.ChangeAdminPasswordDialog` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.ProjectPreferencesViewModel`, `org.odk.collect.android.utilities.SoftKeyboardController`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProtectedProjectKeys`
+- [ ] `org.odk.collect.android.preferences.dialogs.AdminPasswordDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.ProjectPreferencesViewModel`, `org.odk.collect.android.utilities.AdminPasswordProvider`, `org.odk.collect.android.utilities.SoftKeyboardController`, `org.odk.collect.androidshared.ui.ToastUtils`
+- [ ] `org.odk.collect.android.preferences.screens.ProjectPreferencesFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.preferences.ProjectPreferencesViewModel`, `org.odk.collect.android.preferences.dialogs.AdminPasswordDialogFragment`, `org.odk.collect.android.preferences.dialogs.ChangeAdminPasswordDialog`, `org.odk.collect.android.preferences.screens.AccessControlPreferencesFragment`, `org.odk.collect.android.preferences.screens.BaseProjectPreferencesFragment`, `org.odk.collect.android.preferences.screens.ExperimentalPreferencesFragment`, `org.odk.collect.android.preferences.screens.FormManagementPreferencesFragment`, `org.odk.collect.android.preferences.screens.IdentityPreferencesFragment`, `org.odk.collect.android.preferences.screens.MapsPreferencesFragment`, `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment`, `org.odk.collect.android.preferences.screens.ProjectManagementPreferencesFragment` _(+5 more)_
+- [ ] `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity` · collect_app · class · used-by 5 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.ActivityUtils`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.android.fragments.dialogs.MovingBackwardsDialog.MovingBackwardsDialogListener`, `org.odk.collect.android.fragments.dialogs.ResetSettingsResultDialog.ResetSettingsResultDialogListener`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.instancemanagement.InstancesDataService`, `org.odk.collect.android.mainmenu.MainMenuActivity`, `org.odk.collect.android.preferences.dialogs.DeleteProjectDialog`, `org.odk.collect.android.preferences.screens.FormEntryAccessPreferencesFragment`, `org.odk.collect.android.preferences.screens.ProjectPreferencesFragment`, `org.odk.collect.android.projects.ProjectDeleter`, `org.odk.collect.android.projects.ProjectsDataService` _(+4 more)_
+- [ ] `org.odk.collect.android.formentry.FormEntryMenuProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.BackgroundAudioViewModel`, `org.odk.collect.android.formentry.FormEntryMenuProvider.FormEntryMenuClickListener`, `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.formentry.RecordingWarningDialogFragment`, `org.odk.collect.android.formentry.backgroundlocation.BackgroundLocationViewModel`, `org.odk.collect.android.formentry.questions.AnswersProvider`, `org.odk.collect.android.formhierarchy.FormHierarchyFragmentHostActivity`, `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity`, `org.odk.collect.android.utilities.ActionRegister`, `org.odk.collect.android.utilities.ApplicationConstants`, `org.odk.collect.androidshared.system.PlayServicesChecker`, `org.odk.collect.audiorecorder.recording.AudioRecorder` _(+3 more)_
+- [ ] `org.odk.collect.android.formentry.BackgroundAudioPermissionDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.formentry.BackgroundAudioViewModel`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.permissions.PermissionListener`, `org.odk.collect.permissions.PermissionsProvider`
+- [ ] `org.odk.collect.android.dao.helpers.InstancesDaoHelper` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.javarosawrapper.FormController`, `org.odk.collect.android.utilities.InstancesRepositoryProvider`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.audio.AudioRecordingErrorDialogFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.MicInUseException`
+- [ ] `org.odk.collect.android.audio.AudioRecordingControllerFragment` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.audio.AudioRecordingErrorDialogFragment`, `org.odk.collect.android.audio.BackgroundAudioHelpDialogFragment`, `org.odk.collect.android.formentry.BackgroundAudioViewModel`, `org.odk.collect.android.formentry.FormEntryViewModel`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.androidshared.data.Consumable`, `org.odk.collect.androidshared.livedata.LiveDataUtils`, `org.odk.collect.audiorecorder.recording.AudioRecorder`, `org.odk.collect.audiorecorder.recording.RecordingSession`
+- [ ] `org.odk.collect.android.activities.FormFillingActivity` · collect_app · class · used-by 12 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormEntryViewModelFactory`, `org.odk.collect.android.activities.FormFillingActivity.EmptyView`, `org.odk.collect.android.activities.FormFillingActivity.LocationProvidersReceiver`, `org.odk.collect.android.analytics.AnalyticsUtils`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.application.CollectComposeThemeProvider`, `org.odk.collect.android.audio.AMRAppender`, `org.odk.collect.android.audio.AudioControllerView`, `org.odk.collect.android.audio.AudioRecordingControllerFragment`, `org.odk.collect.android.audio.M4AAppender`, `org.odk.collect.android.dao.helpers.InstancesDaoHelper`, `org.odk.collect.android.entities.EntitiesRepositoryProvider` _(+110 more)_
+- [ ] `org.odk.collect.android.tasks.MediaLoadingTask` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.utilities.ContentUriHelper`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.ImageCompressionController`, `org.odk.collect.android.widgets.BaseImageWidget`, `org.odk.collect.android.widgets.QuestionWidget`, `org.odk.collect.androidshared.ui.DialogFragmentUtils`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.projects.ProjectCreatorImpl` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectConfigurationResult`, `org.odk.collect.projects.ProjectCreator`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.ODKAppSettingsImporter`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.preferences.source.SharedPreferencesSettingsProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.preferences.Defaults`, `org.odk.collect.android.preferences.source.SharedPreferencesSettings`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.MetaKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.notifications.builders.FormsSyncStoppedNotificationBuilder` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListActivity`, `org.odk.collect.android.notifications.NotificationManagerNotifier`
+- [ ] `org.odk.collect.android.notifications.builders.FormsSyncFailedNotificationBuilder` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formmanagement.FormSourceExceptionMapper`, `org.odk.collect.android.notifications.NotificationManagerNotifier`, `org.odk.collect.android.notifications.NotificationUtils`, `org.odk.collect.errors.ErrorItem`, `org.odk.collect.forms.FormSourceException`
+- [ ] `org.odk.collect.android.notifications.builders.FormsSubmissionNotificationBuilder` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.notifications.NotificationManagerNotifier`, `org.odk.collect.android.notifications.NotificationUtils`, `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.android.utilities.FormsUploadResultInterpreter`, `org.odk.collect.forms.instances.Instance`
+- [ ] `org.odk.collect.android.notifications.builders.FormUpdatesDownloadedNotificationBuilder` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.notifications.NotificationManagerNotifier`, `org.odk.collect.android.notifications.NotificationUtils`, `org.odk.collect.android.utilities.FormsDownloadResultInterpreter`
+- [ ] `org.odk.collect.android.notifications.builders.FormUpdatesAvailableNotificationBuilder` · collect_app · object · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.notifications.NotificationManagerNotifier`, `org.odk.collect.android.notifications.NotificationUtils`
+- [ ] `org.odk.collect.android.notifications.NotificationManagerNotifier` · collect_app · class · used-by 6 `[C1]`
+  - needs ↓: `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.notifications.Notifier`, `org.odk.collect.android.notifications.builders.FormUpdatesAvailableNotificationBuilder`, `org.odk.collect.android.notifications.builders.FormUpdatesDownloadedNotificationBuilder`, `org.odk.collect.android.notifications.builders.FormsSubmissionNotificationBuilder`, `org.odk.collect.android.notifications.builders.FormsSyncFailedNotificationBuilder`, `org.odk.collect.android.notifications.builders.FormsSyncStoppedNotificationBuilder`, `org.odk.collect.android.upload.FormUploadException`, `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.forms.FormSourceException`, `org.odk.collect.forms.instances.Instance` _(+3 more)_
+- [ ] `org.odk.collect.android.database.itemsets.DatabaseFastExternalItemsetsRepository` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.fastexternalitemset.ItemsetDbAdapter`, `org.odk.collect.android.itemsets.FastExternalItemsetsRepository`
+- [ ] `org.odk.collect.android.configure.qr.CachingQRCodeGenerator` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.configure.qr.QRCodeGenerator`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.storage.StorageSubdirectory`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.androidshared.bitmap.ImageFileUtils`, `org.odk.collect.qrcode.zxing.QRCodeCreator`, `org.odk.collect.qrcode.zxing.QRCodeDecoder`
+- [ ] `org.odk.collect.android.application.initialization.upgrade.BeforeProjectsInstallDetector` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.upgrade.InstallDetector`
+- [ ] `org.odk.collect.android.application.initialization.GoogleDriveProjectsDeleter` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.projects.ProjectDeleter`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.upgrade.Upgrade`
+- [ ] `org.odk.collect.android.application.initialization.ExistingProjectMigrator` · collect_app · class · used-by 3 `[C1]`
+  - needs ↓: `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.importing.ProjectDetailsCreator`, `org.odk.collect.settings.keys.MetaKeys`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.upgrade.Upgrade`
+- [ ] `org.odk.collect.android.application.initialization.upgrade.UpgradeInitializer` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.initialization.CachedFormsCleaner`, `org.odk.collect.android.application.initialization.ExistingProjectMigrator`, `org.odk.collect.android.application.initialization.ExistingSettingsMigrator`, `org.odk.collect.android.application.initialization.GoogleDriveProjectsDeleter`, `org.odk.collect.android.application.initialization.SavepointsImporter`, `org.odk.collect.android.application.initialization.ScheduledWorkUpgrade`, `org.odk.collect.android.application.initialization.upgrade.BeforeProjectsInstallDetector`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.keys.MetaKeys`, `org.odk.collect.upgrade.AppUpgrader`
+- [ ] `org.odk.collect.android.application.initialization.UserPropertiesInitializer` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.preferences.Defaults`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.FormsRepository`, `org.odk.collect.forms.instances.Instance`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.projects.Project`, `org.odk.collect.projects.ProjectDependencyFactory`, `org.odk.collect.projects.ProjectsRepository`, `org.odk.collect.settings.SettingsProvider`, `org.odk.collect.settings.enums.AutoSend`, `org.odk.collect.settings.enums.FormUpdateMode` _(+1 more)_
+- [ ] `org.odk.collect.android.logic.actions.setgeopoint.CollectSetGeopointAction` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.location.client.MaxAccuracyWithinTimeoutLocationClientWrapper`, `org.odk.collect.androidshared.system.PlayServicesChecker`, `org.odk.collect.geo.GeoUtils`, `org.odk.collect.location.GoogleFusedLocationClient`
+- [ ] `org.odk.collect.android.logic.actions.setgeopoint.CollectSetGeopointActionHandler` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.logic.actions.setgeopoint.CollectSetGeopointAction`
+- [ ] `org.odk.collect.android.dynamicpreload.DynamicPreloadParseProcessor` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.DynamicPreloadExtra`, `org.odk.collect.android.dynamicpreload.ExternalDataUtil`
+- [ ] `org.odk.collect.android.dynamicpreload.DynamicPreloadXFormParserFactory` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.DynamicPreloadParseProcessor`
+- [ ] `org.odk.collect.android.application.initialization.JavaRosaInitializer` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.dynamicpreload.DynamicPreloadXFormParserFactory`, `org.odk.collect.android.logic.actions.setgeopoint.CollectSetGeopointActionHandler`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.entities.javarosa.intance.LocalEntitiesExternalInstanceParserFactory`, `org.odk.collect.entities.javarosa.parse.EntityXFormParserFactory`, `org.odk.collect.entities.storage.EntitiesRepository`, `org.odk.collect.metadata.PropertyManager`, `org.odk.collect.projects.ProjectDependencyFactory`
+- [ ] `org.odk.collect.android.application.initialization.ApplicationInitializer` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.application.initialization.AnalyticsInitializer`, `org.odk.collect.android.application.initialization.CrashReportingTree`, `org.odk.collect.android.application.initialization.JavaRosaInitializer`, `org.odk.collect.android.application.initialization.MapsInitializer`, `org.odk.collect.android.application.initialization.UserPropertiesInitializer`, `org.odk.collect.android.application.initialization.upgrade.UpgradeInitializer`, `org.odk.collect.android.entities.EntitiesRepositoryProvider`, `org.odk.collect.android.projects.ProjectsDataService`, `org.odk.collect.androidshared.ui.ToastUtils`, `org.odk.collect.async.Scheduler` _(+6 more)_
+- [ ] `org.odk.collect.android.application.CollectSettingsChangeHandler` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.analytics.AnalyticsUtils`, `org.odk.collect.android.backgroundwork.FormUpdateScheduler`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.metadata.PropertyManager`, `org.odk.collect.settings.importing.SettingsChangeHandler`, `org.odk.collect.settings.keys.ProjectKeys`
+- [ ] `org.odk.collect.android.injection.config.AppDependencyModule` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.analytics.BlockableFirebaseAnalytics`, `org.odk.collect.analytics.NoopAnalytics`, `org.odk.collect.android.application.CollectSettingsChangeHandler`, `org.odk.collect.android.application.MapboxClassInstanceCreator`, `org.odk.collect.android.application.initialization.AnalyticsInitializer`, `org.odk.collect.android.application.initialization.ApplicationInitializer`, `org.odk.collect.android.application.initialization.CachedFormsCleaner`, `org.odk.collect.android.application.initialization.ExistingProjectMigrator`, `org.odk.collect.android.application.initialization.ExistingSettingsMigrator`, `org.odk.collect.android.application.initialization.GoogleDriveProjectsDeleter`, `org.odk.collect.android.application.initialization.MapsInitializer` _(+112 more)_
+- [ ] `org.odk.collect.android.injection.config.AppDependencyComponent.Builder` · collect_app · interface · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.injection.config.AppDependencyComponent`, `org.odk.collect.android.injection.config.AppDependencyModule`
+- [ ] `org.odk.collect.android.external.InstanceProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.analytics.AnalyticsUtils`, `org.odk.collect.android.dao.CursorLoaderFactory`, `org.odk.collect.android.database.instances.DatabaseInstanceColumns`, `org.odk.collect.android.database.instances.DatabaseInstancesRepository`, `org.odk.collect.android.external.InstancesContract`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.instancemanagement.InstanceDeleter`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.utilities.ContentUriHelper`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider` _(+3 more)_
+- [ ] `org.odk.collect.android.external.FormsProvider` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.analytics.AnalyticsUtils`, `org.odk.collect.android.dao.CursorLoaderFactory`, `org.odk.collect.android.database.forms.DatabaseFormsRepository`, `org.odk.collect.android.external.FormsContract`, `org.odk.collect.android.formmanagement.LocalFormUseCases`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.android.itemsets.FastExternalItemsetsRepository`, `org.odk.collect.android.storage.StoragePathProvider`, `org.odk.collect.android.utilities.ContentUriHelper`, `org.odk.collect.android.utilities.FormsRepositoryProvider`, `org.odk.collect.android.utilities.InstancesRepositoryProvider` _(+4 more)_
+- [ ] `org.odk.collect.android.external.AndroidShortcutsActivity` · collect_app · class · used-by 1 `[C1]`
+  - needs ↓: `org.odk.collect.analytics.Analytics`, `org.odk.collect.android.analytics.AnalyticsEvents`, `org.odk.collect.android.formlists.blankformlist.BlankFormListItem`, `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.injection.config.AppDependencyComponent` · collect_app · interface · used-by 10 `[C1]`
+  - needs ↓: `org.odk.collect.android.activities.AboutActivity`, `org.odk.collect.android.activities.AppListActivity`, `org.odk.collect.android.activities.DeleteFormsActivity`, `org.odk.collect.android.activities.FirstLaunchActivity`, `org.odk.collect.android.activities.FormDownloadListActivity`, `org.odk.collect.android.activities.FormFillingActivity`, `org.odk.collect.android.activities.FormMapActivity`, `org.odk.collect.android.activities.InstanceChooserList`, `org.odk.collect.android.application.Collect`, `org.odk.collect.android.application.initialization.ApplicationInitializer`, `org.odk.collect.android.application.initialization.ExistingProjectMigrator`, `org.odk.collect.android.audio.AudioRecordingControllerFragment` _(+77 more)_
+- [ ] `org.odk.collect.android.injection.DaggerUtils` · collect_app · object · used-by 58 `[C1]`
+  - needs ↓: `org.odk.collect.android.application.Collect`, `org.odk.collect.android.injection.config.AppDependencyComponent`
+- [ ] `org.odk.collect.android.activities.AboutActivity` · collect_app · class · used-by 2 `[C1]`
+  - needs ↓: `org.odk.collect.android.adapters.AboutItemClickListener`, `org.odk.collect.android.adapters.AboutListAdapter`, `org.odk.collect.android.injection.DaggerUtils`, `org.odk.collect.androidshared.system.IntentLauncher`, `org.odk.collect.strings.localization.LocalizedActivity`, `org.odk.collect.webpage.WebPageService`
+
+### Level 9 — 10 classes
+
+- [ ] `org.odk.collect.android.configure.qr.QRCodeViewModel.Factory` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.configure.qr.AppConfigurationGenerator`, `org.odk.collect.android.configure.qr.QRCodeGenerator`, `org.odk.collect.android.configure.qr.QRCodeViewModel`, `org.odk.collect.async.Scheduler`, `org.odk.collect.settings.SettingsProvider`
+- [ ] `org.odk.collect.android.formentry.media.FormMediaUtils` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.audioclips.Clip`
+- [ ] `org.odk.collect.android.formhierarchy.FormHierarchyViewModel.Factory` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.formhierarchy.FormHierarchyViewModel`, `org.odk.collect.async.Scheduler`
+- [ ] `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel.Factory` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel`, `org.odk.collect.android.formmanagement.FormsDataService`, `org.odk.collect.androidshared.utils.UniqueIdGenerator`, `org.odk.collect.async.Scheduler`, `org.odk.collect.forms.instances.InstancesRepository`, `org.odk.collect.settings.keys.ProjectKeys`, `org.odk.collect.shared.settings.Settings`
+- [ ] `org.odk.collect.android.formmanagement.download.ServerFormDownloader` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.formmanagement.MediaFilesDownloadResult`, `org.odk.collect.android.formmanagement.ServerFormDetails`, `org.odk.collect.android.formmanagement.ServerFormUseCases`, `org.odk.collect.android.formmanagement.download.FormDownloadException`, `org.odk.collect.android.formmanagement.download.FormDownloader`, `org.odk.collect.android.formmanagement.download.ServerFormDownloader.FileResult`, `org.odk.collect.android.formmanagement.download.ServerFormDownloader.FormResult`, `org.odk.collect.android.formmanagement.download.ServerFormDownloader.ProgressReporterAndSupplierStateListener`, `org.odk.collect.android.formmanagement.metadata.FormMetadata`, `org.odk.collect.android.formmanagement.metadata.FormMetadataParser`, `org.odk.collect.android.utilities.FileUtils`, `org.odk.collect.android.utilities.FormNameUtils` _(+10 more)_
+- [ ] `org.odk.collect.android.fragments.BarcodeWidgetScannerFragment` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.fragments.BarCodeScannerFragment`
+- [ ] `org.odk.collect.android.fragments.viewmodels.SelectMinimalViewModel.Factory` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.fragments.viewmodels.SelectMinimalViewModel`
+- [ ] `org.odk.collect.android.views.ChoicesRecyclerView` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.adapters.AbstractSelectListAdapter`, `org.odk.collect.android.utilities.ThemeUtils`, `org.odk.collect.android.views.ChoicesRecyclerView.FlexItemDecoration`, `org.odk.collect.androidshared.utils.ScreenUtils`
+- [ ] `org.odk.collect.android.views.CustomNumberPicker` · collect_app · class · used-by 0
+  - needs ↓: `org.odk.collect.android.widgets.utilities.QuestionFontSizeUtils`
+- [ ] `org.odk.collect.android.widgets.range.RangeSliderState.Companion` · collect_app · object · used-by 0
+  - needs ↓: `org.odk.collect.android.utilities.Appearances`, `org.odk.collect.android.widgets.range.RangeSliderState`
+
+## Roots — entry points, audit last
+
+Nothing internal depends on these; each is the top of a dependency branch.
+
+- `org.odk.collect.analytics.Analytics.Companion` · analytics · object · needs 2
+- `org.odk.collect.androidshared.ColorPickerDialog.Companion` · androidshared · object · needs 0
+- `org.odk.collect.androidshared.livedata.LiveDataExt` · androidshared · object · needs 1
+- `org.odk.collect.androidshared.ui.Animations` · androidshared · object · needs 1
+- `org.odk.collect.androidshared.ui.ComposeThemeProvider.Companion` · androidshared · object · needs 1
+- `org.odk.collect.androidshared.ui.ObviousProgressBar.Companion` · androidshared · object · needs 0
+- `org.odk.collect.androidshared.ui.OffsetUtils` · androidshared · object · needs 0
+- `org.odk.collect.androidshared.ui.multiclicksafe.DoubleClickSafeMaterialButton` · androidshared · class · needs 1
+- `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeOnClickListener` · androidshared · class · needs 1
+- `org.odk.collect.androidshared.ui.multiclicksafe.MultiClickSafeTextInputEditText` · androidshared · class · needs 0
+- `org.odk.collect.androidshared.utils.InMemUniqueIdGenerator` · androidshared · class · needs 1
+- `org.odk.collect.androidshared.utils.PathUtils` · androidshared · object · needs 0
+- `org.odk.collect.androidshared.utils.SettingsUniqueIdGenerator.Companion` · androidshared · object · needs 0
+- `org.odk.collect.async.TaskSpec.Result` · async · enum class · needs 0
+- `org.odk.collect.async.TaskSpecWorker.Companion` · async · object · needs 0
+- `org.odk.collect.audioclips.AudioClipViewModel.Factory` · audio-clips · class · needs 2
+- `org.odk.collect.audiorecorder.recording.AudioRecorderService.Companion` · audio-recorder · object · needs 0
+- `org.odk.collect.audiorecorder.recording.internal.RecordingForegroundServiceNotification.Companion` · audio-recorder · object · needs 0
+- `org.odk.collect.audiorecorder.testsupport.StubAudioRecorder` · audio-recorder · class · needs 4
+- `org.odk.collect.android.activities.AboutActivity.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.activities.FormMapActivity.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.activities.viewmodels.FormDownloadListViewModel.Factory` · collect_app · class · needs 1
+- `org.odk.collect.android.application.FeatureFlags` · collect_app · object · needs 0
+- `org.odk.collect.android.application.initialization.MapsInitializer.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.audio.VolumeBar` · collect_app · class · needs 0
+- `org.odk.collect.android.audio.Waveform` · collect_app · class · needs 0
+- `org.odk.collect.android.backgroundwork.BackgroundWorkUtils` · collect_app · class · needs 0
+- `org.odk.collect.android.configure.qr.CachingQRCodeGenerator.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.configure.qr.QRCodeMenuProvider.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.configure.qr.QRCodeViewModel.Factory` · collect_app · class · needs 5
+- `org.odk.collect.android.database.entities.DatabaseEntitiesRepository.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.external.FormInspectionResult.Savepoint` · collect_app · data class · needs 1
+- `org.odk.collect.android.external.FormUriActivity.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.formentry.AppStateFormSessionRepository.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.formentry.FormError.Fatal` · collect_app · data class · needs 0
+- `org.odk.collect.android.formentry.FormError.NonFatal` · collect_app · data class · needs 0
+- `org.odk.collect.android.formentry.audit.AuditConfig.Builder` · collect_app · class · needs 1
+- `org.odk.collect.android.formentry.audit.AuditEventCSVLine` · collect_app · class · needs 2
+- `org.odk.collect.android.formentry.media.FormMediaUtils` · collect_app · class · needs 2
+- `org.odk.collect.android.formhierarchy.FormHierarchyFragmentHostActivity.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.formhierarchy.FormHierarchyViewModel.Factory` · collect_app · class · needs 2
+- `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.formlists.blankformlist.BlankFormListViewModel.Factory` · collect_app · class · needs 7
+- `org.odk.collect.android.formmanagement.EntityListUpdateException` · collect_app · class · needs 0
+- `org.odk.collect.android.formmanagement.ServerFormDetails.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.formmanagement.download.FormDownloadException.DiskError` · collect_app · class · needs 0
+- `org.odk.collect.android.formmanagement.download.FormDownloadException.DownloadingInterrupted` · collect_app · sealed class · needs 0
+- `org.odk.collect.android.formmanagement.download.FormDownloadException.FormParsingError` · collect_app · class · needs 0
+- `org.odk.collect.android.formmanagement.download.FormDownloadException.FormSourceError` · collect_app · class · needs 0
+- `org.odk.collect.android.formmanagement.download.FormDownloadException.FormWithNoHash` · collect_app · class · needs 0
+- `org.odk.collect.android.formmanagement.download.FormDownloadException.InvalidSubmission` · collect_app · class · needs 0
+- `org.odk.collect.android.formmanagement.download.ServerFormDownloader` · collect_app · class · needs 22
+- `org.odk.collect.android.fragments.BarcodeWidgetScannerFragment` · collect_app · class · needs 1
+- `org.odk.collect.android.fragments.dialogs.FormsDownloadResultDialog.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.fragments.dialogs.NumberPickerDialog.Companion` · collect_app · object · needs 1
+- `org.odk.collect.android.fragments.viewmodels.RankingViewModel.Factory` · collect_app · class · needs 1
+- `org.odk.collect.android.fragments.viewmodels.SelectMinimalViewModel.Factory` · collect_app · class · needs 2
+- `org.odk.collect.android.instancemanagement.send.ReadyToSendBanner` · collect_app · class · needs 2
+- `org.odk.collect.android.instancemanagement.send.ReadyToSendViewModel.Factory` · collect_app · value class · needs 3
+- `org.odk.collect.android.javarosawrapper.FormDesignException` · collect_app · class · needs 0
+- `org.odk.collect.android.javarosawrapper.FormIndexUtils` · collect_app · class · needs 0
+- `org.odk.collect.android.listeners.DeleteInstancesListener` · collect_app · interface · needs 0
+- `org.odk.collect.android.mainmenu.MainMenuButton` · collect_app · class · needs 1
+- `org.odk.collect.android.mainmenu.MinSdkDeprecationBanner.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.mainmenu.StartNewFormButton` · collect_app · class · needs 1
+- `org.odk.collect.android.notifications.NotificationManagerNotifier.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.preferences.ProjectPreferencesViewModel.Factory` · collect_app · value class · needs 2
+- `org.odk.collect.android.preferences.SettingsExt` · collect_app · object · needs 2
+- `org.odk.collect.android.preferences.screens.AccessControlPreferencesFragment.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.preferences.screens.ProjectDisplayPreferencesFragment.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.preferences.screens.ProjectManagementPreferencesFragment.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.preferences.screens.ProjectPreferencesActivity.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.preferences.screens.ProjectPreferencesFragment.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.preferences.source.SharedPreferencesSettingsProvider.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.savepoints.SavepointTask.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.utilities.ApplicationConstants.BundleKeys` · collect_app · class · needs 0
+- `org.odk.collect.android.utilities.ApplicationConstants.Namespaces` · collect_app · class · needs 0
+- `org.odk.collect.android.utilities.ApplicationConstants.SortingOrder` · collect_app · class · needs 0
+- `org.odk.collect.android.utilities.CSVUtils` · collect_app · class · needs 0
+- `org.odk.collect.android.views.ChoicesRecyclerView` · collect_app · class · needs 4
+- `org.odk.collect.android.views.CustomNumberPicker` · collect_app · class · needs 1
+- `org.odk.collect.android.views.CustomWebView` · collect_app · class · needs 0
+- `org.odk.collect.android.views.DecoratedBarcodeView` · collect_app · class · needs 0
+- `org.odk.collect.android.views.DecoratedBarcodeView.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.views.TrackingTouchSlider` · collect_app · class · needs 0
+- `org.odk.collect.android.views.TransparentProgressScreen` · collect_app · class · needs 0
+- `org.odk.collect.android.views.TwoItemMultipleChoiceView` · collect_app · class · needs 0
+- `org.odk.collect.android.widgets.BaseImageWidget.DrawImageClickHandler` · collect_app · class · needs 3
+- `org.odk.collect.android.widgets.BaseImageWidget.ImageCaptureHandler` · collect_app · class · needs 2
+- `org.odk.collect.android.widgets.BaseImageWidget.ViewImageClickHandler` · collect_app · class · needs 1
+- `org.odk.collect.android.widgets.CounterWidget.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.widgets.WidgetAnswerView` · collect_app · class · needs 0
+- `org.odk.collect.android.widgets.datetime.pickers.BuddhistDatePickerDialog.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.widgets.items.SelectChoicesMapData.PropertyNames` · collect_app · object · needs 1
+- `org.odk.collect.android.widgets.items.SelectOneFromMapDialogFragment.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.widgets.range.RangeSliderState.Companion` · collect_app · object · needs 2
+- `org.odk.collect.android.widgets.utilities.ActivityGeoDataRequester.Companion` · collect_app · object · needs 0
+- `org.odk.collect.android.widgets.utilities.AdditionalAttributes` · collect_app · object · needs 0
+- `org.odk.collect.android.widgets.utilities.WidgetAnswerDialogFragment.Companion` · collect_app · object · needs 0
+- `org.odk.collect.crashhandler.CrashHandler.Companion` · crash-handler · object · needs 1
+- `org.odk.collect.db.sqlite.CursorExt` · db · object · needs 0
+- `org.odk.collect.db.sqlite.DatabaseConnection.Companion` · db · object · needs 0
+- `org.odk.collect.db.sqlite.RowNumbers` · db · object · needs 1
+- `org.odk.collect.db.sqlite.SQLiteColumns` · db · object · needs 0
+- `org.odk.collect.db.sqlite.SqlQuery` · db · data class · needs 0
+- `org.odk.collect.draw.RobolectricApplication` · draw · class · needs 3
+- `org.odk.collect.entities.javarosa.filter.PullDataFunctionHandler.Companion` · entities · object · needs 0
+- `org.odk.collect.entities.javarosa.parse.EntityFormParseProcessor.Companion` · entities · object · needs 1
+- `org.odk.collect.entities.javarosa.parse.EntityFormParseProcessor.Companion.VERSIONS` · entities · object · needs 0
+- `org.odk.collect.entities.javarosa.parse.XPathExpressionExt` · entities · object · needs 1
+- `org.odk.collect.entities.javarosa.spec.FormEntityElement` · entities · object · needs 0
+- `org.odk.collect.entities.storage.Entity.Saved` · entities · data class · needs 0
+- `org.odk.collect.entities.storage.InMemEntitiesRepository` · entities · class · needs 6
+- `org.odk.collect.errors.ErrorActivity.Companion` · errors · object · needs 0
+- `org.odk.collect.forms.FormSourceException.ParseError` · forms · class · needs 0
+- `org.odk.collect.forms.FormSourceException.ServerError` · forms · class · needs 0
+- `org.odk.collect.forms.FormSourceException.Unreachable` · forms · sealed class · needs 0
+- `org.odk.collect.forms.instances.InstancesRepository.IntegrityException` · forms · class · needs 0
+- `org.odk.collect.geo.Constants` · geo · object · needs 0
+- `org.odk.collect.geo.GeoActivityUtils` · geo · object · needs 2
+- `org.odk.collect.geo.geopoint.AccuracyProgressView` · geo · class · needs 1
+- `org.odk.collect.geo.geopoint.GeoPointActivity.Companion` · geo · object · needs 0
+- `org.odk.collect.geo.geopoint.LocationAccuracy.Poor` · geo · data class · needs 0
+- `org.odk.collect.geo.geopoly.GeoPolyFragment.Companion` · geo · object · needs 0
+- `org.odk.collect.geo.geopoly.GeoPolyUtils` · geo · object · needs 1
+- `org.odk.collect.geo.geopoly.InfoDialog.InfoItem` · geo · data class · needs 0
+- `org.odk.collect.geo.selection.MappableSelectItem.MappableSelectLine` · geo · data class · needs 0
+- `org.odk.collect.geo.selection.MappableSelectItem.MappableSelectPoint` · geo · data class · needs 0
+- `org.odk.collect.geo.selection.MappableSelectItem.MappableSelectPolygon` · geo · data class · needs 0
+- `org.odk.collect.geo.selection.SelectionMapFragment.Companion` · geo · object · needs 0
+- `org.odk.collect.imageloader.svg.SvgModule` · image-loader · class · needs 2
+- `org.odk.collect.lists.selects.MultiSelectControlsFragment.Companion` · lists · object · needs 0
+- `org.odk.collect.lists.selects.MultiSelectViewModel.Factory` · lists · value class · needs 2
+- `org.odk.collect.location.GoogleFusedLocationClient.Companion` · location · object · needs 0
+- `org.odk.collect.location.tracker.LocationTrackerService.Companion` · location · object · needs 0
+- `org.odk.collect.mapbox.MapBoxInitializationFragment` · mapbox · class · needs 4
+- `org.odk.collect.mapbox.MapBoxInitializationFragment.Companion` · mapbox · object · needs 0
+- `org.odk.collect.mapbox.MapboxMapFragment.Companion` · mapbox · object · needs 0
+- `org.odk.collect.maps.MapFragment.Companion` · maps · object · needs 1
+- `org.odk.collect.maps.MapFragment.Companion.IconAnchor` · maps · annotation class · needs 0
+- `org.odk.collect.maps.MapViewModel.Companion` · maps · object · needs 0
+- `org.odk.collect.maps.markers.MarkerIconDescription.DrawableResource` · maps · data class · needs 2
+- `org.odk.collect.maps.markers.MarkerIconDescription.TracePoint` · maps · data class · needs 0
+- `org.odk.collect.material.BottomSheetBehavior.Companion` · material · object · needs 1
+- `org.odk.collect.metadata.PropertyManager.Companion` · metadata · object · needs 0
+- `org.odk.collect.openrosa.http.OpenRosaHttpInterface.FileToContentTypeMapper` · open-rosa · interface · needs 0
+- `org.odk.collect.projects.Project.Companion` · projects · object · needs 1
+- `org.odk.collect.qrcode.DetectedState.Full` · qr-code · data class · needs 0
+- `org.odk.collect.qrcode.DetectedState.None` · qr-code · object · needs 0
+- `org.odk.collect.qrcode.DetectedState.Potential` · qr-code · object · needs 0
+- `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerView.Companion` · qr-code · object · needs 2
+- `org.odk.collect.qrcode.mlkit.MlKitBarcodeScannerViewFactory.Companion` · qr-code · object · needs 0
+- `org.odk.collect.qrcode.zxing.QRCodeCreatorImpl.Companion` · qr-code · object · needs 0
+- `org.odk.collect.selfiecamera.CaptureSelfieActivity.Companion` · selfie-camera · object · needs 0
+- `org.odk.collect.settings.InMemSettingsProvider` · settings · class · needs 3
+- `org.odk.collect.settings.migration.MigrationUtils` · settings · class · needs 10
+- `org.odk.collect.shared.Query.And` · shared · data class · needs 0
+- `org.odk.collect.shared.Query.NumericEq` · shared · data class · needs 0
+- `org.odk.collect.shared.Query.NumericNotEq` · shared · data class · needs 0
+- `org.odk.collect.shared.Query.Or` · shared · data class · needs 0
+- `org.odk.collect.shared.Query.StringEq` · shared · data class · needs 0
+- `org.odk.collect.shared.Query.StringNotEq` · shared · data class · needs 0
+- `org.odk.collect.shared.collections.CollectionExtensions` · shared · object · needs 0
+- `org.odk.collect.shared.geometry.LineSegment` · shared · data class · needs 0
+- `org.odk.collect.shared.geometry.Orientation` · shared · enum class · needs 0
+- `org.odk.collect.shared.locks.BooleanChangeLock` · shared · class · needs 1
+- `org.odk.collect.shared.locks.ChangeLock.Companion` · shared · object · needs 0
+- `org.odk.collect.shared.result.Result` · shared · sealed class · needs 0
+- `org.odk.collect.shared.result.Result.Companion` · shared · object · needs 2
+- `org.odk.collect.timedgrid.FinishType.Companion` · timedgrid · object · needs 1
+- `org.odk.collect.timedgrid.TimedGridSummary.Builder` · timedgrid · data class · needs 1
+- `org.odk.collect.timedgrid.TimedGridSummaryAnswerCreator.Companion` · timedgrid · object · needs 0
+- `org.odk.collect.timedgrid.TimedGridWidgetConfiguration.Companion` · timedgrid · object · needs 5
+- `org.odk.collect.timedgrid.TimedGridWidgetLayout.Companion` · timedgrid · object · needs 0

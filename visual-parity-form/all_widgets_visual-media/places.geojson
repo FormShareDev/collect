@@ -1,0 +1,47 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "m1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.08,
+          46.58
+        ]
+      },
+      "properties": {
+        "title": "Museum One"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "m2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1,
+          51.5
+        ]
+      },
+      "properties": {
+        "title": "Museum Two"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "m3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.0,
+          40.7
+        ]
+      },
+      "properties": {
+        "title": "Museum Three"
+      }
+    }
+  ]
+}

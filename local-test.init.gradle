@@ -1,0 +1,10 @@
+// Local-only fix for running the entire unit suite on one machine (CI shards it).
+// Robolectric leaks classloaders/threads, so a single long-lived test JVM ends in
+// a GC death spiral on collect_app (2658 tests). Recycle the JVM periodically and
+// cap fork parallelism. Use together with -Ptest.heap.max=4g.
+allprojects {
+    tasks.withType(Test).configureEach {
+        forkEvery = 40
+        maxParallelForks = 2
+    }
+}
